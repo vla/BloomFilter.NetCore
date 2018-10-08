@@ -62,6 +62,18 @@ namespace PerformanceTest
             {
                 bf.ComputeHash(array[n % arrayCount]);
             }, count);
+
+
+            Helper.TimeWithThread($"{name} Thread", (t, n) =>
+            {
+                bf.ComputeHash(array[n % arrayCount]);
+            }, Environment.ProcessorCount, count);
+
+            Helper.TimeWithParallel($"{name} Parallel", (n) =>
+            {
+                bf.ComputeHash(array[n % arrayCount]);
+            }, count);
+
         }
 
     }
