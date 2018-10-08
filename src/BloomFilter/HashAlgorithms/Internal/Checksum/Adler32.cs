@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace BloomFilter.NetCore.HashAlgorithms.Checksum
+namespace BloomFilter.HashAlgorithms.Checksum
 {
     /// <summary>
     /// Computes Adler32 checksum for a stream of data

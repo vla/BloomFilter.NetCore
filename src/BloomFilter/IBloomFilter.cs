@@ -1,4 +1,4 @@
-﻿namespace BloomFilter.NetCore
+﻿namespace BloomFilter
 {
     /// <summary>
     /// Represents a Bloom filter.

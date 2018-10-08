@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace BloomFilter.NetCore.HashAlgorithms.Checksum
+namespace BloomFilter.HashAlgorithms.Checksum
 {
     /// <summary>
     /// CRC-32 with unreversed data and reversed output

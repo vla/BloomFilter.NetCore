@@ -1,4 +1,4 @@
-﻿using BloomFilter.NetCore;
+﻿using BloomFilter;
 using System;
 using System.Collections.Generic;
 using System.Text;

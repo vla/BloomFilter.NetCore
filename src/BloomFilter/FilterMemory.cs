@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace BloomFilter.NetCore
+namespace BloomFilter
 {
     public class FilterMemory<T> : Filter<T>
     {

@@ -1,4 +1,4 @@
-﻿namespace BloomFilter.NetCore.HashAlgorithms
+﻿namespace BloomFilter.HashAlgorithms
 {
     /// <summary>
     /// Interface to compute a data checksum used by checked input/output streams.

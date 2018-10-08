@@ -1,9 +1,9 @@
-﻿using BloomFilter.NetCore.HashAlgorithms;
+﻿using BloomFilter.HashAlgorithms;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BloomFilter.NetCore
+namespace BloomFilter
 {
     public partial class FilterBuilder
     {

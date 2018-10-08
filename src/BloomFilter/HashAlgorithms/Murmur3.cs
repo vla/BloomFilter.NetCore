@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BloomFilter.NetCore.HashAlgorithms
+namespace BloomFilter.HashAlgorithms
 {
     /// <summary>
     /// Building a Better Bloom Filter" by Adam Kirsch and Michael Mitzenmacher,

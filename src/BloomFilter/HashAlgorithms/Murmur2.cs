@@ -1,4 +1,4 @@
-﻿namespace BloomFilter.NetCore.HashAlgorithms
+﻿namespace BloomFilter.HashAlgorithms
 {
     public class Murmur2 : HashFunction
     {

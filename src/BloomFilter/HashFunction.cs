@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BloomFilter.NetCore
+namespace BloomFilter
 {
     /// <summary>
     /// An implemented to provide custom hash functions.

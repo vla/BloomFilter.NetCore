@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BloomFilter.NetCore\BloomFilter.NetCore.csproj" />
+    <ProjectReference Include="..\..\src\BloomFilter\BloomFilter.csproj" />
   </ItemGroup>
 
 </Project>

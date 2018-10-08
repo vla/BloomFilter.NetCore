@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Security.Cryptography;
 
-namespace BloomFilter.NetCore.HashAlgorithms
+namespace BloomFilter.HashAlgorithms
 {
     public class HashCryptoMD5 : HashCrypto
     {

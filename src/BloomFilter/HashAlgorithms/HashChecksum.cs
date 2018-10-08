@@ -1,7 +1,7 @@
-﻿using BloomFilter.NetCore.HashAlgorithms.Checksum;
+﻿using BloomFilter.HashAlgorithms.Checksum;
 using System;
 
-namespace BloomFilter.NetCore.HashAlgorithms
+namespace BloomFilter.HashAlgorithms
 {
     public class HashChecksumCrc32 : HashChecksum
     {
