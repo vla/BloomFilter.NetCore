@@ -7,34 +7,30 @@ namespace BloomFilter
 {
     public partial class FilterBuilder
     {
-        private static Dictionary<HashMethod, HashFunction> HashFunctions;
-
-        static FilterBuilder()
+        private static Dictionary<HashMethod, HashFunction> HashFunctions = new Dictionary<HashMethod, HashFunction>
         {
-            HashFunctions = new Dictionary<HashMethod, HashFunction>
-            {
-                { HashMethod.LCGWithFNV1,new LCGWithFNV() },
-                { HashMethod.LCGWithFNV1a,new LCGWithFNV1a() },
-                { HashMethod.LCGModifiedFNV1,new LCGModifiedFNV1() },
+            { HashMethod.LCGWithFNV1,new LCGWithFNV() },
+            { HashMethod.LCGWithFNV1a,new LCGWithFNV1a() },
+            { HashMethod.LCGModifiedFNV1,new LCGModifiedFNV1() },
 
-                { HashMethod.RNGWithFNV1,new RNGWithFNV1() },
-                { HashMethod.RNGWithFNV1a,new RNGWithFNV1a() },
-                { HashMethod.RNGModifiedFNV1,new RNGModifiedFNV1() },
+            { HashMethod.RNGWithFNV1,new RNGWithFNV1() },
+            { HashMethod.RNGWithFNV1a,new RNGWithFNV1a() },
+            { HashMethod.RNGModifiedFNV1,new RNGModifiedFNV1() },
 
-                { HashMethod.CRC32,new HashChecksumCrc32() },
-                { HashMethod.Adler32,new HashChecksumAdler32() },
+            { HashMethod.CRC32,new HashChecksumCrc32() },
+            { HashMethod.Adler32,new HashChecksumAdler32() },
 
-                { HashMethod.Murmur2,new Murmur2() },
-                { HashMethod.Murmur3,new Murmur3() },
-                { HashMethod.Murmur3KirschMitzenmacher,new Murmur3KirschMitzenmacher() },
+            { HashMethod.Murmur2,new Murmur2() },
+            { HashMethod.Murmur3,new Murmur3() },
+            { HashMethod.Murmur3KirschMitzenmacher,new Murmur3KirschMitzenmacher() },
 
-                { HashMethod.MD5,new HashCryptoMD5() },
-                { HashMethod.SHA1,new HashCryptoSHA1() },
-                { HashMethod.SHA256,new HashCryptoSHA256() },
-                { HashMethod.SHA384,new HashCryptoSHA384() },
-                { HashMethod.SHA512,new HashCryptoSHA512() },
-            };
-        }
+            { HashMethod.MD5,new HashCryptoMD5() },
+            { HashMethod.SHA1,new HashCryptoSHA1() },
+            { HashMethod.SHA256,new HashCryptoSHA256() },
+            { HashMethod.SHA384,new HashCryptoSHA384() },
+            { HashMethod.SHA512,new HashCryptoSHA512() },
+        };
+
 
         public static Filter<T> Build<T>(int expectedElements)
         {

@@ -5,16 +5,33 @@ using System.Text;
 
 namespace BloomFilter
 {
+    /// <summary>
+    /// Represents a Bloom filter and provides
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="IBloomFilter" />
     public abstract class Filter<T> : IBloomFilter
     {
         public HashFunction Hash { get; }
 
+        /// <summary>
+        /// the Capacity of the Bloom filter
+        /// </summary>
         public int Capacity { get; }
 
+        /// <summary>
+        /// number of hash functions
+        /// </summary>
         public int Hashes { get; }
 
+        /// <summary>
+        ///  the expected elements.
+        /// </summary>
         public int ExpectedElements { get; }
 
+        /// <summary>
+        /// the number of expected elements
+        /// </summary>
         public double ErrorRate { get; }
 
         public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
@@ -86,7 +103,7 @@ namespace BloomFilter
         {
             var positions = Hash.ComputeHash(data, Capacity, Hashes);
 
-            foreach(var position in positions)
+            foreach (var position in positions)
             {
                 Console.WriteLine($"position:{position}");
             }
@@ -94,16 +111,12 @@ namespace BloomFilter
             return positions;
         }
 
-        public double GetBitsPerElement(int n)
-        {
-            return Capacity / (double)n;
-        }
 
-        public double GetBitZeroProbability(int n)
-        {
-            return Math.Pow(1 - (double)1 / Capacity, Hashes * n);
-        }
-
+        /// <summary>
+        /// Converts the element to UTF8 bytes
+        /// </summary>
+        /// <param name="elemnt">The elemnt.</param>
+        /// <returns></returns>
         protected virtual byte[] ToBytes(T elemnt)
         {
             return Encoding.UTF8.GetBytes(elemnt.ToString());

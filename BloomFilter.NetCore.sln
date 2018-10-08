@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "test\Demo\Demo.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloomFilter", "src\BloomFilter\BloomFilter.csproj", "{E9FB2A60-8EFE-49E9-98FE-D75A076CAD0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloomFilterTest", "test\BloomFilterTest\BloomFilterTest.csproj", "{24193FBE-88A5-4C26-9996-341DEBE0CA80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{E9FB2A60-8EFE-49E9-98FE-D75A076CAD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9FB2A60-8EFE-49E9-98FE-D75A076CAD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9FB2A60-8EFE-49E9-98FE-D75A076CAD0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24193FBE-88A5-4C26-9996-341DEBE0CA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24193FBE-88A5-4C26-9996-341DEBE0CA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24193FBE-88A5-4C26-9996-341DEBE0CA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24193FBE-88A5-4C26-9996-341DEBE0CA80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{42A8F6A2-7CE7-493F-B3A7-07A1753F5285} = {BFDF8E72-A7F7-4894-8782-74BB34438F99}
 		{E9FB2A60-8EFE-49E9-98FE-D75A076CAD0F} = {8D22B289-3A76-4399-BDA3-FD1B699B2F13}
+		{24193FBE-88A5-4C26-9996-341DEBE0CA80} = {BFDF8E72-A7F7-4894-8782-74BB34438F99}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12D6ACDC-31C9-4A69-BE24-76E0F73E48A6}

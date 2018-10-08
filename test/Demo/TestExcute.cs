@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Class TestAttribute.
@@ -26,10 +27,14 @@ using System.Text;
 public class TestAttribute : Attribute
 {
     /// <summary>
-    /// Gets or sets the description.
+    /// Description
     /// </summary>
-    /// <value>The description.</value>
     public string Description { get; set; }
+
+    /// <summary>
+    /// Code
+    /// </summary>
+    public string Code { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TestAttribute"/> class.
@@ -42,9 +47,10 @@ public class TestAttribute : Attribute
     /// Initializes a new instance of the <see cref="TestAttribute"/> class.
     /// </summary>
     /// <param name="description">The description.</param>
-    public TestAttribute(string description)
+    public TestAttribute(string description, string code = "")
     {
         Description = description;
+        Code = code;
     }
 }
 
@@ -59,7 +65,7 @@ public static class TestExcute
     /// <param name="t">The t.</param>
     public static void Excute(Type t)
     {
-#if NET45
+#if NETFULL
         var dataAccess = Assembly.GetAssembly(t);
 #else
         var dataAccess = t.GetTypeInfo().Assembly;
@@ -67,17 +73,18 @@ public static class TestExcute
 
         IList<ExecuteFunc> list = new List<ExecuteFunc>();
 
+
         foreach (var type in dataAccess.GetTypes())
         {
             var clazz = type.GetConstructor(Type.EmptyTypes);
             if (clazz == null) continue;
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                var attr = method.GetCustomAttributes(typeof(TestAttribute), false).FirstOrDefault() as TestAttribute;
-                if (attr != null)
+                if (method.GetCustomAttributes(typeof(TestAttribute), false).FirstOrDefault() is TestAttribute attr)
                 {
                     object instance = Activator.CreateInstance(type);
-                    ExecuteFunc func = new ExecuteFunc(instance, method, attr.Description);
+                    ExecuteFunc func = new ExecuteFunc(instance, method, attr.Description, attr.Code);
+
                     list.Add(func);
                 }
             }
@@ -87,11 +94,18 @@ public static class TestExcute
         {
             StringBuilder text = new StringBuilder();
 
-            lrTag("Select the use-case", "-", 20);
+            LrTag("Select the use-case", "-", 20);
 
             for (int i = 0; i < list.Count; i++)
             {
-                text.AppendFormat("[{0}] {1}{2}", i + 1, list[i], Environment.NewLine);
+                if (string.IsNullOrWhiteSpace(list[i]._code))
+                {
+                    text.AppendFormat("[number:{0}] {1}{2}", i + 1, list[i], Environment.NewLine);
+                }
+                else
+                {
+                    text.AppendFormat("[serial:{0},number:{1}] {2}{3}", i + 1, list[i]._code, list[i], Environment.NewLine);
+                }
             }
 
             text.AppendLine("\r\n[0] \texit. ");
@@ -106,19 +120,32 @@ public static class TestExcute
                 {
                     Console.Clear();
                 }
-                int idx;
-                if (int.TryParse(input, out idx))
+
+
+                var findCode = list.FirstOrDefault(w => !string.IsNullOrWhiteSpace(w._code) && w._code == input);
+
+                if (findCode != null)
                 {
-                    if (idx > 0 && idx <= list.Count)
+                    Console.Clear();
+                    Console.Out.WriteLine(ConsoleColor.DarkCyan, findCode + " Running...");
+                    findCode.Execute();
+                    Console.Out.WriteLine(ConsoleColor.DarkCyan, findCode + " Complete...");
+                }
+                else
+                {
+                    if (int.TryParse(input, out int idx))
                     {
-                        Console.Clear();
-                        Console.Out.WriteLine(ConsoleColor.DarkCyan, list[idx - 1] + " Running...");
-                        list[idx - 1].Execute();
-                        Console.Out.WriteLine(ConsoleColor.DarkCyan, list[idx - 1] + " Complete...");
+                        if (idx > 0 && idx <= list.Count)
+                        {
+                            Console.Clear();
+                            Console.Out.WriteLine(ConsoleColor.DarkCyan, list[idx - 1] + " Running...");
+                            list[idx - 1].Execute();
+                            Console.Out.WriteLine(ConsoleColor.DarkCyan, list[idx - 1] + " Complete...");
+                        }
                     }
                 }
                 Console.Out.WriteLine();
-                lrTag("Select the use-case", "-", 20);
+                LrTag("Select the use -case", " -", 20);
                 Console.Out.WriteLine(ConsoleColor.Green, _display);
                 Console.Out.Write("select>");
                 input = Console.ReadLine();
@@ -137,7 +164,7 @@ public static class TestExcute
     /// <param name="view">The view.</param>
     /// <param name="tag">The tag.</param>
     /// <param name="size">The size.</param>
-    private static void lrTag(string view, string tag, int size)
+    private static void LrTag(string view, string tag, int size)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -177,16 +204,19 @@ public static class TestExcute
 
         private string _description;
 
+        public string _code;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecuteFunc"/> class.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="method">The method.</param>
         /// <param name="description">The description.</param>
-        public ExecuteFunc(object instance, MethodInfo method, string description = "")
+        public ExecuteFunc(object instance, MethodInfo method, string description = "", string code = "")
         {
             _instance = instance;
             _method = method;
+            _code = code;
 
             if (string.IsNullOrEmpty(description))
             {
@@ -204,7 +234,10 @@ public static class TestExcute
         /// </summary>
         public void Execute()
         {
-            _method.Invoke(_instance, null);
+            if (_method.Invoke(_instance, null) is Task task)
+            {
+                task.Wait();
+            }
         }
 
         /// <summary>
