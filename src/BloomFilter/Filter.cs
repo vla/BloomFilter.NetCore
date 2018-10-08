@@ -101,14 +101,7 @@ namespace BloomFilter
 
         public int[] ComputeHash(byte[] data)
         {
-            var positions = Hash.ComputeHash(data, Capacity, Hashes);
-
-            foreach (var position in positions)
-            {
-                Console.WriteLine($"position:{position}");
-            }
-
-            return positions;
+            return Hash.ComputeHash(data, Capacity, Hashes);
         }
 
 
@@ -195,6 +188,11 @@ namespace BloomFilter
                 default:
                     throw new NotSupportedException("Element type are not supported " + type.Name);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Capacity:{Capacity},Hashes:{Hashes},ExpectedElements:{ExpectedElements},ErrorRate:{ErrorRate}";
         }
     }
 }

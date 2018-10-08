@@ -18,6 +18,7 @@ namespace BloomFilter
             { HashMethod.RNGModifiedFNV1,new RNGModifiedFNV1() },
 
             { HashMethod.CRC32,new HashChecksumCrc32() },
+            { HashMethod.CRC32u,new HashChecksumCrc32u() },
             { HashMethod.Adler32,new HashChecksumAdler32() },
 
             { HashMethod.Murmur2,new Murmur2() },
@@ -72,6 +73,7 @@ namespace BloomFilter
         RNGWithFNV1a,
         RNGModifiedFNV1,
         CRC32,
+        CRC32u,
         Adler32,
         Murmur2,
         Murmur3,
