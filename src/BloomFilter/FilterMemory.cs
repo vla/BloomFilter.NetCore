@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 
 namespace BloomFilter
 {
     public class FilterMemory<T> : Filter<T>
     {
         private BitArray _hashBits;
+
+        private readonly object sync = new object();
 
         public FilterMemory(int expectedElements, double errorRate, HashFunction hashFunction)
             : base(expectedElements, errorRate, hashFunction)
@@ -22,32 +23,43 @@ namespace BloomFilter
         public override bool Add(byte[] element)
         {
             bool added = false;
-
-            foreach (int position in ComputeHash(element))
+            var positions = ComputeHash(element);
+            lock (sync)
             {
-                if (!_hashBits.Get(position))
+                foreach (int position in positions)
                 {
-                    added = true;
-                    _hashBits.Set(position, true);
+
+                    if (!_hashBits.Get(position))
+                    {
+                        added = true;
+                        _hashBits.Set(position, true);
+                    }
                 }
             }
-
             return added;
         }
 
         public override bool Contains(byte[] element)
         {
-            foreach (int position in ComputeHash(element))
+            var positions = ComputeHash(element);
+            lock (sync)
             {
-                if (!_hashBits.Get(position))
-                    return false;
+                foreach (int position in positions)
+                {
+
+                    if (!_hashBits.Get(position))
+                        return false;
+                }
             }
             return true;
         }
 
         public override void Clear()
         {
-            _hashBits.SetAll(false);
+            lock (sync)
+            {
+                _hashBits.SetAll(false);
+            }
         }
     }
 }
