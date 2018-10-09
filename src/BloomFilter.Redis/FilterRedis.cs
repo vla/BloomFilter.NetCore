@@ -1,6 +1,9 @@
 ﻿using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BloomFilter.Redis
 {
@@ -38,20 +41,20 @@ namespace BloomFilter.Redis
 
         public override bool Add(byte[] element)
         {
-            bool added = false;
             var positions = ComputeHash(element);
-
             var db = Database();
+       
+            var results = new Task<bool>[positions.Length];
 
-            foreach (int position in positions)
+            for (int i = 0; i < positions.Length; i++)
             {
-                if (!db.StringGetBit(_redisKey, position))
-                {
-                    added = true;
-                    db.StringSetBit(_redisKey, position, true);
-                }
+                var position = positions[i];
+                results[i] = db.StringSetBitAsync(_redisKey, position, true);
             }
-            return added;
+
+            db.WaitAll(results);
+
+            return results.Any(a => !a.Result);
         }
 
         public override void Clear()
@@ -64,12 +67,17 @@ namespace BloomFilter.Redis
             var positions = ComputeHash(element);
             var db = Database();
 
-            foreach (int position in positions)
+            var results = new Task<bool>[positions.Length];
+
+            for (int i = 0; i < positions.Length; i++)
             {
-                if (!db.StringGetBit(_redisKey, position))
-                    return false;
+                var position = positions[i];
+                results[i] = db.StringGetBitAsync(_redisKey, position);
             }
-            return true;
+
+            db.WaitAll(results);
+
+            return results.All(a => a.Result);
         }
 
         private IDatabase Database(int? db = default(int?))
@@ -79,11 +87,13 @@ namespace BloomFilter.Redis
 
         private ConnectionMultiplexer GetConnection()
         {
-            if (_connection != null && _connection.IsConnected) return _connection;
+            if (_connection != null && _connection.IsConnected)
+                return _connection;
 
             _connectionLock.Wait();
 
-            if (_connection != null && _connection.IsConnected) return _connection;
+            if (_connection != null && _connection.IsConnected)
+                return _connection;
 
             try
             {
