@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BloomFilter.Redis\BloomFilter.Redis.csproj" />
     <ProjectReference Include="..\..\src\BloomFilter\BloomFilter.csproj" />
   </ItemGroup>
 

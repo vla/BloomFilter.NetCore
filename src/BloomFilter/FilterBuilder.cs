@@ -7,7 +7,7 @@ namespace BloomFilter
 {
     public partial class FilterBuilder
     {
-        private static Dictionary<HashMethod, HashFunction> HashFunctions = new Dictionary<HashMethod, HashFunction>
+        protected readonly static IReadOnlyDictionary<HashMethod, HashFunction> HashFunctions = new Dictionary<HashMethod, HashFunction>
         {
             { HashMethod.LCGWithFNV1,new LCGWithFNV() },
             { HashMethod.LCGWithFNV1a,new LCGWithFNV1a() },
