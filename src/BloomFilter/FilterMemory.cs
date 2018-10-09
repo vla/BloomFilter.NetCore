@@ -28,7 +28,6 @@ namespace BloomFilter
             {
                 foreach (int position in positions)
                 {
-
                     if (!_hashBits.Get(position))
                     {
                         added = true;
@@ -46,7 +45,6 @@ namespace BloomFilter
             {
                 foreach (int position in positions)
                 {
-
                     if (!_hashBits.Get(position))
                         return false;
                 }

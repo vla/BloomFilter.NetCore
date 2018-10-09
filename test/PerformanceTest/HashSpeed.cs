@@ -49,10 +49,10 @@ namespace PerformanceTest
 
             for (int i = 0; i < 1000; i++)
             {
-                array.Add(Utilitiy.GenerateBytes(16));
+                array.Add(Helper.GenerateBytes(16));
             }
 
-            bf.Add(Utilitiy.GenerateString(20));
+            bf.Add(Helper.GenerateString(20));
 
             Console.WriteLine(name + ":" + bf);
 
@@ -64,7 +64,7 @@ namespace PerformanceTest
             }, count);
 
 
-            Helper.TimeWithThread($"{name} Thread", (t, n) =>
+            Helper.TimeWithThread($"{name} {Environment.ProcessorCount} Thread", (t, n) =>
             {
                 bf.ComputeHash(array[n % arrayCount]);
             }, Environment.ProcessorCount, count);
