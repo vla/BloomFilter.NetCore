@@ -25,7 +25,7 @@ namespace BloomFilter
 
         /// <summary>
         /// Perform rejection sampling on a 32-bit,
-        /// <see cref="https://en.wikipedia.org/wiki/Rejection_sampling"/>
+        ///https://en.wikipedia.org/wiki/Rejection_sampling
         /// </summary>
         /// <param name="random">The random.</param>
         /// <param name="m">integer output range.</param>
@@ -37,7 +37,7 @@ namespace BloomFilter
 
         /// <summary>
         /// Perform rejection sampling on a 32-bit,
-        /// <see cref="https://en.wikipedia.org/wiki/Rejection_sampling" />
+        /// https://en.wikipedia.org/wiki/Rejection_sampling
         /// </summary>
         /// <param name="random">The random.</param>
         /// <param name="m">integer output range.</param>

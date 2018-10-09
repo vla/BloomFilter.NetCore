@@ -1,0 +1,11 @@
+language: csharp
+mono: none
+sudo: required
+dist: trusty
+dotnet: 2.1.402
+addons:
+  branches:
+    - master
+script:
+  - dotnet restore test/BloomFilterTest
+  - dotnet test test/BloomFilterTest

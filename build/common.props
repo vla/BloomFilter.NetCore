@@ -1,0 +1,22 @@
+<Project>
+  <Import Project="version.props" />
+
+  <PropertyGroup>
+    <Description>Library Bloom filters in C# with optional Redis-backing</Description>
+    <Product>Bloom filters</Product>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/vla/BloomFilter.NetCore</RepositoryUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)sign.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+    <Authors>v.la@live.cn</Authors>
+    <PackageTags>bloomfilter</PackageTags>
+    <PackageIconUrl>http://s.gravatar.com/avatar/28dfa5190889f7190e74b683fc30b827?s=80</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/vla/BloomFilter.NetCore</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/vla/BloomFilter.NetCore/blob/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+</Project>

@@ -4,7 +4,7 @@ namespace BloomFilter.HashAlgorithms
 {
     /// <summary>
     /// Building a Better Bloom Filter" by Adam Kirsch and Michael Mitzenmacher,
-    /// <see cref="https://www.eecs.harvard.edu/~michaelm/postscripts/tr-02-05.pdf"/>
+    /// https://www.eecs.harvard.edu/~michaelm/postscripts/tr-02-05.pdf
     /// </summary>
     public class Murmur3KirschMitzenmacher : Murmur3
     {

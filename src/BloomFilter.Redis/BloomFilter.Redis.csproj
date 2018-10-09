@@ -1,7 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\build\common.props" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>BloomFilter.Redis</AssemblyName>
+    <AssemblyTitle>BloomFilter.Redis</AssemblyTitle>
+    <PackageId>BloomFilter.Redis.NetCore</PackageId>
+    <TargetFrameworks>netstandard2.0;net45;</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
+    <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NETFULL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,5 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
   </ItemGroup>
+
 
 </Project>
