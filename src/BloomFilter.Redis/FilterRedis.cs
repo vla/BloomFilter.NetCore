@@ -43,16 +43,18 @@ namespace BloomFilter.Redis
         {
             var positions = ComputeHash(element);
             var db = Database();
-       
+
             var results = new Task<bool>[positions.Length];
+
+            var batch = db.CreateBatch();
 
             for (int i = 0; i < positions.Length; i++)
             {
-                var position = positions[i];
-                results[i] = db.StringSetBitAsync(_redisKey, position, true);
+                results[i] = batch.StringSetBitAsync(_redisKey, positions[i], true);
             }
 
-            db.WaitAll(results);
+            batch.Execute();
+            batch.WaitAll(results);
 
             return results.Any(a => !a.Result);
         }
@@ -69,13 +71,15 @@ namespace BloomFilter.Redis
 
             var results = new Task<bool>[positions.Length];
 
+            var batch = db.CreateBatch();
+
             for (int i = 0; i < positions.Length; i++)
             {
-                var position = positions[i];
-                results[i] = db.StringGetBitAsync(_redisKey, position);
+                results[i] = batch.StringGetBitAsync(_redisKey, positions[i]);
             }
 
-            db.WaitAll(results);
+            batch.Execute();
+            batch.WaitAll(results);
 
             return results.All(a => a.Result);
         }
