@@ -75,7 +75,7 @@ namespace BloomFilter
             return Add(ToBytes(element));
         }
 
-        public IList<bool> Add(IEnumerable<T> elements)
+        public virtual IList<bool> Add(IEnumerable<T> elements)
         {
             return elements.Select(e => Add(e)).ToList();
         }
@@ -89,12 +89,12 @@ namespace BloomFilter
             return Contains(ToBytes(element));
         }
 
-        public IList<bool> Contains(IEnumerable<T> elements)
+        public virtual IList<bool> Contains(IEnumerable<T> elements)
         {
             return elements.Select(e => Contains(e)).ToList();
         }
 
-        public bool All(IEnumerable<T> elements)
+        public virtual bool All(IEnumerable<T> elements)
         {
             return elements.Select(e => Contains(e)).All(e => e);
         }
