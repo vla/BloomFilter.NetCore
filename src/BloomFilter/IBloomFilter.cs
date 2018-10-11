@@ -25,7 +25,7 @@
         void Clear();
 
         /// <summary>
-        /// Dispatches the hash function for a string value
+        ///  Hashes the specified value.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>

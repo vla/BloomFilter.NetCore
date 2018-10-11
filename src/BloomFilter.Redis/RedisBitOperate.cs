@@ -6,25 +6,43 @@ using System.Threading.Tasks;
 
 namespace BloomFilter.Redis
 {
+    /// <summary>
+    /// Redis Bit Operate
+    /// </summary>
+    /// <seealso cref="BloomFilter.Redis.IRedisBitOperate" />
+    /// <seealso cref="System.IDisposable" />
     public class RedisBitOperate : IRedisBitOperate, IDisposable
     {
         private volatile ConnectionMultiplexer _connection;
         private readonly ConfigurationOptions _configurationOptions;
         private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(initialCount: 1, maxCount: 1);
 
+        //allow the release of connection
         private bool allowRelease;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public RedisBitOperate(string configuration)
             : this(ConfigurationOptions.Parse(configuration))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
+        /// </summary>
+        /// <param name="configurationOptions">The <see cref="ConfigurationOptions"/> options.</param>
         public RedisBitOperate(ConfigurationOptions configurationOptions)
         {
             _configurationOptions = configurationOptions;
         }
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
+        /// </summary>
+        /// <param name="connection">The <see cref="ConnectionMultiplexer"/>.</param>
         public RedisBitOperate(ConnectionMultiplexer connection)
         {
             _connection = connection;
@@ -104,6 +122,7 @@ namespace BloomFilter.Redis
 
             try
             {
+                //Create a new connection instance
                 if (_connection == null)
                 {
                     _connection = ConnectionMultiplexer.Connect(_configurationOptions);
@@ -111,11 +130,14 @@ namespace BloomFilter.Redis
                 }
                 else
                 {
+
                     if (allowRelease)
                     {
                         _connection.Dispose();
                     }
 
+                    //If the constructor parameter USES ConnectionMultiplexer,
+                    //the configuration of ConnectionMultiplexer is reused
                     _connection = ConnectionMultiplexer.Connect(_connection.Configuration);
                     allowRelease = true;
                 }

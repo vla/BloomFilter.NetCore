@@ -1,12 +1,16 @@
 ﻿using BloomFilter.HashAlgorithms;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BloomFilter
 {
+    /// <summary>
+    /// BloomFilter Builder
+    /// </summary>
     public partial class FilterBuilder
     {
+        /// <summary>
+        /// The hash functions
+        /// </summary>
         protected readonly static IReadOnlyDictionary<HashMethod, HashFunction> HashFunctions = new Dictionary<HashMethod, HashFunction>
         {
             { HashMethod.LCGWithFNV1,new LCGWithFNV() },
@@ -32,38 +36,83 @@ namespace BloomFilter
             { HashMethod.SHA512,new HashCryptoSHA512() },
         };
 
-
+        /// <summary>
+        /// Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements)
         {
             return Build<T>(expectedElements, 0.01);
         }
 
+        /// <summary>
+        ///Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements, HashMethod hashMethod)
         {
             return Build<T>(expectedElements, 0.01, hashMethod);
         }
 
+        /// <summary>
+        /// Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements, HashFunction hashFunction)
         {
             return Build<T>(expectedElements, 0.01, hashFunction);
         }
 
+        /// <summary>
+        /// Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements, double errorRate)
         {
             return Build<T>(expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
+        /// <summary>
+        /// Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements, double errorRate, HashMethod hashMethod)
         {
             return new FilterMemory<T>(expectedElements, errorRate, HashFunctions[hashMethod]);
         }
 
+        /// <summary>
+        /// Creates a BloomFilter for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <returns></returns>
         public static Filter<T> Build<T>(int expectedElements, double errorRate, HashFunction hashFunction)
         {
             return new FilterMemory<T>(expectedElements, errorRate, hashFunction);
         }
     }
 
+    /// <summary>
+    /// Hash Methods
+    /// </summary>
     public enum HashMethod
     {
         LCGWithFNV1,

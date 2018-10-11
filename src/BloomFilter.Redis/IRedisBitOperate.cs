@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BloomFilter.Redis
+﻿namespace BloomFilter.Redis
 {
     /// <summary>
     /// Redis BitMap operate Interface
@@ -18,6 +14,5 @@ namespace BloomFilter.Redis
         bool[] Get(string redisKey, int[] positions);
 
         void Clear(string redisKey);
-
     }
 }

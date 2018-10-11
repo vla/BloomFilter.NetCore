@@ -12,6 +12,9 @@ namespace BloomFilter
     /// <seealso cref="IBloomFilter" />
     public abstract class Filter<T> : IBloomFilter
     {
+        /// <summary>
+        /// <see cref="HashFunction"/>
+        /// </summary>
         public HashFunction Hash { get; }
 
         /// <summary>
@@ -34,6 +37,18 @@ namespace BloomFilter
         /// </summary>
         public double ErrorRate { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Filter{T}"/> class.
+        /// </summary>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// expectedElements - expectedElements must be > 0
+        /// or
+        /// errorRate
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
         public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
         {
             if (expectedElements < 1)
@@ -51,6 +66,18 @@ namespace BloomFilter
             CheckElementType();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Filter{T}"/> class.
+        /// </summary>
+        /// <param name="capacity">The capacity.</param>
+        /// <param name="hashes">The hashes.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// capacity - capacity must be > 0
+        /// or
+        /// hashes - hashes must be > 0
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
         public Filter(int capacity, int hashes, HashFunction hashFunction)
         {
             if (capacity < 1)
@@ -68,42 +95,84 @@ namespace BloomFilter
             CheckElementType();
         }
 
+        /// <summary>
+        /// Adds the passed value to the filter.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public abstract bool Add(byte[] element);
 
+        /// <summary>
+        /// Adds the specified element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns></returns>
         public bool Add(T element)
         {
             return Add(ToBytes(element));
         }
 
+        /// <summary>
+        /// Adds the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
         public virtual IList<bool> Add(IEnumerable<T> elements)
         {
             return elements.Select(e => Add(e)).ToList();
         }
 
+        /// <summary>
+        /// Removes all elements from the filter
+        /// </summary>
         public abstract void Clear();
 
+        /// <summary>
+        /// Tests whether an element is present in the filter
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public abstract bool Contains(byte[] element);
 
+        /// <summary>
+        /// Tests whether an element is present in the filter
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public bool Contains(T element)
         {
             return Contains(ToBytes(element));
         }
 
+        /// <summary>
+        /// Tests whether an elements is present in the filter
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
         public virtual IList<bool> Contains(IEnumerable<T> elements)
         {
             return elements.Select(e => Contains(e)).ToList();
         }
 
+        /// <summary>
+        /// Alls the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
         public bool All(IEnumerable<T> elements)
         {
             return Contains(elements).All(e => e);
         }
 
+        /// <summary>
+        ///  Hashes the specified value.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public int[] ComputeHash(byte[] data)
         {
             return Hash.ComputeHash(data, Capacity, Hashes);
         }
-
 
         /// <summary>
         /// Converts the element to UTF8 bytes

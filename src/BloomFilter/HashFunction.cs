@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BloomFilter
 {
@@ -62,7 +60,6 @@ namespace BloomFilter
             y = i << 2; if (y != 0) { n = n - 2; i = y; }
             return n - ((i << 1) >> 31);
         }
-
 
         public static uint NumberOfLeadingZeros(uint i)
         {
