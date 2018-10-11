@@ -56,6 +56,3 @@ $RECYCLE.BIN/
 
 .vs/
 artifacts/
-node_modules/*
-nuget.exe
-.nuget/
