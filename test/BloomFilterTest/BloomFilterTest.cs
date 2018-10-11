@@ -1,5 +1,6 @@
 using System;
 using BloomFilter;
+using BloomFilter.HashAlgorithms;
 using Xunit;
 
 namespace BloomFilterTest
@@ -44,7 +45,7 @@ namespace BloomFilterTest
             Assert.All(bf.Contains(array), r => Assert.False(r));
             Assert.False(bf.All(array));
 
-           
+
         }
 
 
@@ -61,5 +62,40 @@ namespace BloomFilterTest
                 FilterBuilder.Build<object>(10000, 0.01);
             });
         }
+
+        [Fact]
+        public void BuildTest()
+        {
+            var hashFun = new HashChecksumCrc32();
+            buildTest(FilterBuilder.Build<string>(10000));
+            buildTest(FilterBuilder.Build<string>(10000, hashFun));
+            buildTest(FilterBuilder.Build<string>(10000, HashMethod.Adler32));
+            buildTest(FilterBuilder.Build<string>(10000, 0.01));
+            buildTest(FilterBuilder.Build<string>(10000, 0.01, hashFun));
+            buildTest(FilterBuilder.Build<string>(10000, 0.01, HashMethod.Adler32));
+
+
+        }
+
+        void buildTest(Filter<string> bf)
+        {
+            var len = 20;
+            var array = new string[len];
+            for (int i = 0; i < len; i++)
+            {
+                array[i] = Utilitiy.GenerateString(10);
+            }
+
+            Assert.All(bf.Add(array), r => Assert.True(r));
+            Assert.All(bf.Contains(array), r => Assert.True(r));
+
+            Assert.True(bf.All(array));
+
+            bf.Clear();
+
+            Assert.All(bf.Contains(array), r => Assert.False(r));
+            Assert.False(bf.All(array));
+        }
+
     }
 }

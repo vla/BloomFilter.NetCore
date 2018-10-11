@@ -94,9 +94,9 @@ namespace BloomFilter
             return elements.Select(e => Contains(e)).ToList();
         }
 
-        public virtual bool All(IEnumerable<T> elements)
+        public bool All(IEnumerable<T> elements)
         {
-            return elements.Select(e => Contains(e)).All(e => e);
+            return Contains(elements).All(e => e);
         }
 
         public int[] ComputeHash(byte[] data)

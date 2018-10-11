@@ -1,124 +1,100 @@
-﻿using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BloomFilter.Redis
 {
-    public class FilterRedis<T> : Filter<T>, IDisposable
+    public class FilterRedis<T> : Filter<T>
     {
-        private readonly string _redisKey;
-        private volatile ConnectionMultiplexer _connection;
-        private readonly ConfigurationOptions _configurationOptions;
-        private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(initialCount: 1, maxCount: 1);
+        private readonly IRedisBitOperate _redisBitOperate;
+        private readonly string _name;
 
-        public FilterRedis(ConfigurationOptions configurationOptions, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int expectedElements, double errorRate, HashFunction hashFunction)
             : base(expectedElements, errorRate, hashFunction)
         {
-            _configurationOptions = configurationOptions;
-            _redisKey = redisKey;
+            _redisBitOperate = redisBitOperate;
+            _name = name;
         }
 
-        public FilterRedis(ConfigurationOptions configurationOptions, string redisKey, int capacity, int hashes, HashFunction hashFunction)
+        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int capacity, int hashes, HashFunction hashFunction)
             : base(capacity, hashes, hashFunction)
         {
-            _configurationOptions = configurationOptions;
-            _redisKey = redisKey;
-        }
-
-
-        public FilterRedis(string configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
-           : this(ConfigurationOptions.Parse(configuration), redisKey, expectedElements, errorRate, hashFunction)
-        {
-        }
-
-        public FilterRedis(string configuration, string redisKey, int capacity, int hashes, HashFunction hashFunction)
-            : this(ConfigurationOptions.Parse(configuration), redisKey, capacity, hashes, hashFunction)
-        {
+            _redisBitOperate = redisBitOperate;
+            _name = name;
         }
 
         public override bool Add(byte[] element)
         {
             var positions = ComputeHash(element);
-            var db = Database();
+            var results = _redisBitOperate.Set(_name, positions, true);
+            return results.Any(a => !a);
+        }
 
-            var results = new Task<bool>[positions.Length];
-
-            var batch = db.CreateBatch();
-
-            for (int i = 0; i < positions.Length; i++)
+        public override IList<bool> Add(IEnumerable<T> elements)
+        {
+            var addHashs = new List<int>();
+            foreach (var element in elements)
             {
-                results[i] = batch.StringSetBitAsync(_redisKey, positions[i], true);
+                addHashs.AddRange(ComputeHash(ToBytes(element)));
             }
 
-            batch.Execute();
-            batch.WaitAll(results);
+            IList<bool> results = new List<bool>();
 
-            return results.Any(a => !a.Result);
+            var processResults = _redisBitOperate.Set(_name, addHashs.ToArray(), true);
+            bool wasAdded = false;
+            int processed = 0;
+            foreach (var item in processResults)
+            {
+                if (!item) wasAdded = true;
+                if ((processed + 1) % Hashes == 0)
+                {
+                    results.Add(wasAdded);
+                    wasAdded = false;
+                }
+                processed++;
+            }
+
+            return results;
         }
 
         public override void Clear()
         {
-            Database().KeyDelete(_redisKey);
+            _redisBitOperate.Clear(_name);
         }
 
         public override bool Contains(byte[] element)
         {
             var positions = ComputeHash(element);
-            var db = Database();
 
-            var results = new Task<bool>[positions.Length];
+            var results = _redisBitOperate.Get(_name, positions);
 
-            var batch = db.CreateBatch();
+            return results.All(a => a);
+        }
 
-            for (int i = 0; i < positions.Length; i++)
+        public override IList<bool> Contains(IEnumerable<T> elements)
+        {
+            var addHashs = new List<int>();
+            foreach (var element in elements)
             {
-                results[i] = batch.StringGetBitAsync(_redisKey, positions[i]);
+                addHashs.AddRange(ComputeHash(ToBytes(element)));
             }
 
-            batch.Execute();
-            batch.WaitAll(results);
+            IList<bool> results = new List<bool>();
 
-            return results.All(a => a.Result);
-        }
-
-        private IDatabase Database(int? db = default(int?))
-        {
-            return GetConnection().GetDatabase(db ?? -1);
-        }
-
-        private ConnectionMultiplexer GetConnection()
-        {
-            if (_connection != null && _connection.IsConnected)
-                return _connection;
-
-            _connectionLock.Wait();
-
-            if (_connection != null && _connection.IsConnected)
-                return _connection;
-
-            try
+            var processResults = _redisBitOperate.Get(_name, addHashs.ToArray());
+            bool isPresent = true;
+            int processed = 0;
+            foreach (var item in processResults)
             {
-                if (_connection != null)
+                if (!item) isPresent = false;
+                if ((processed + 1) % Hashes == 0)
                 {
-                    _connection.Dispose();
+                    results.Add(isPresent);
+                    isPresent = true;
                 }
-
-                _connection = ConnectionMultiplexer.Connect(_configurationOptions);
-            }
-            finally
-            {
-                _connectionLock.Release();
+                processed++;
             }
 
-            return _connection;
-        }
-
-        public void Dispose()
-        {
-            _connection?.Dispose();
+            return results;
         }
     }
 }
