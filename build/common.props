@@ -16,7 +16,8 @@
     <PackageTags>bloomfilter</PackageTags>
     <PackageIconUrl>http://s.gravatar.com/avatar/28dfa5190889f7190e74b683fc30b827?s=80</PackageIconUrl>
     <PackageProjectUrl>https://github.com/vla/BloomFilter.NetCore</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/vla/BloomFilter.NetCore/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseType>MIT</PackageLicenseType>
   </PropertyGroup>
 
 </Project>
