@@ -115,13 +115,13 @@ namespace BloomFilter.Redis
             if (_connection != null && _connection.IsConnected)
                 return _connection;
 
-            _connectionLock.Wait();
-
-            if (_connection != null && _connection.IsConnected)
-                return _connection;
-
             try
             {
+                _connectionLock.Wait();
+
+                if (_connection != null && _connection.IsConnected)
+                    return _connection;
+
                 //Create a new connection instance
                 if (_connection == null)
                 {
