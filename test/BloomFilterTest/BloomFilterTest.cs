@@ -19,7 +19,6 @@ namespace BloomFilterTest
         [InlineData(HashMethod.Murmur2)]
         [InlineData(HashMethod.Murmur3)]
         [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
-        [InlineData(HashMethod.MD5)]
         [InlineData(HashMethod.SHA1)]
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]

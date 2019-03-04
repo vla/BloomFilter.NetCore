@@ -3,16 +3,6 @@ using System.Security.Cryptography;
 
 namespace BloomFilter.HashAlgorithms
 {
-    public class HashCryptoMD5 : HashCrypto
-    {
-        public override int[] ComputeHash(byte[] data, int m, int k)
-        {
-            using (var hashAlgorithm = MD5.Create())
-            {
-                return ComputeHash(hashAlgorithm, data, m, k);
-            }
-        }
-    }
 
     public class HashCryptoSHA1 : HashCrypto
     {

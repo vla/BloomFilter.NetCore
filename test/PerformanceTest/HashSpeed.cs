@@ -14,8 +14,7 @@ namespace PerformanceTest
             HashPerformance(new HashChecksumCrc32());
             HashPerformance(new HashChecksumCrc32u());
             HashPerformance(new HashChecksumAdler32());
-
-            HashPerformance(new HashCryptoMD5());
+            
             HashPerformance(new HashCryptoSHA1());
             HashPerformance(new HashCryptoSHA256());
             HashPerformance(new HashCryptoSHA384());

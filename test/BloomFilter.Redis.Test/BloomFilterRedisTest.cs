@@ -20,7 +20,6 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.Murmur2)]
         [InlineData(HashMethod.Murmur3)]
         [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
-        [InlineData(HashMethod.MD5)]
         [InlineData(HashMethod.SHA1)]
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
@@ -76,7 +75,7 @@ namespace BloomFilter.Redis.Test
         [Fact]
         public void BuildTest()
         {
-            var hashFun = new HashAlgorithms.HashCryptoMD5();
+            var hashFun = new HashAlgorithms.HashCryptoSHA256();
             var config = ConfigurationOptions.Parse("localhost");
             var conn = ConnectionMultiplexer.Connect(config);
             var operate = new RedisBitOperate(conn);

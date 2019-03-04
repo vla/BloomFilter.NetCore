@@ -29,7 +29,6 @@ namespace BloomFilter
             { HashMethod.Murmur3,new Murmur3() },
             { HashMethod.Murmur3KirschMitzenmacher,new Murmur3KirschMitzenmacher() },
 
-            { HashMethod.MD5,new HashCryptoMD5() },
             { HashMethod.SHA1,new HashCryptoSHA1() },
             { HashMethod.SHA256,new HashCryptoSHA256() },
             { HashMethod.SHA384,new HashCryptoSHA384() },
@@ -127,7 +126,6 @@ namespace BloomFilter
         Murmur2,
         Murmur3,
         Murmur3KirschMitzenmacher,
-        MD5,
         SHA1,
         SHA256,
         SHA384,
