@@ -56,3 +56,4 @@ $RECYCLE.BIN/
 
 .vs/
 artifacts/
+*.log
