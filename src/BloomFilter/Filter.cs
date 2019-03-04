@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -181,7 +182,7 @@ namespace BloomFilter
         /// <returns></returns>
         protected virtual byte[] ToBytes(T elemnt)
         {
-            return Encoding.UTF8.GetBytes(elemnt.ToString());
+            return Encoding.UTF8.GetBytes(Convert.ToString(elemnt, CultureInfo.InvariantCulture));
         }
 
         /// <summary>
