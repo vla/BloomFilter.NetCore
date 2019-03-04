@@ -238,14 +238,15 @@ namespace BloomFilter
 
             switch (typeCode)
             {
+                case TypeCode.Char:
                 case TypeCode.Byte:
+                case TypeCode.SByte:
                 case TypeCode.Decimal:
                 case TypeCode.Double:
+                case TypeCode.Single:
                 case TypeCode.Int16:
                 case TypeCode.Int32:
                 case TypeCode.Int64:
-                case TypeCode.SByte:
-                case TypeCode.Single:
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
