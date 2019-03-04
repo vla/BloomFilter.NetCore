@@ -57,3 +57,4 @@ $RECYCLE.BIN/
 .vs/
 artifacts/
 *.log
+/test/BenchmarkTest/BenchmarkDotNet.Artifacts
