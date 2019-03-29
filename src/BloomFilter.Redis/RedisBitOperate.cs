@@ -13,7 +13,7 @@ namespace BloomFilter.Redis
     /// <seealso cref="System.IDisposable" />
     public class RedisBitOperate : IRedisBitOperate, IDisposable
     {
-        private volatile ConnectionMultiplexer _connection;
+        private volatile IConnectionMultiplexer _connection;
         private readonly ConfigurationOptions _configurationOptions;
         private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(initialCount: 1, maxCount: 1);
 
@@ -42,8 +42,8 @@ namespace BloomFilter.Redis
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
         /// </summary>
-        /// <param name="connection">The <see cref="ConnectionMultiplexer"/>.</param>
-        public RedisBitOperate(ConnectionMultiplexer connection)
+        /// <param name="connection">The <see cref="IConnectionMultiplexer"/>.</param>
+        public RedisBitOperate(IConnectionMultiplexer connection)
         {
             _connection = connection;
         }
@@ -110,7 +110,7 @@ namespace BloomFilter.Redis
             return GetConnection().GetDatabase(db ?? -1);
         }
 
-        private ConnectionMultiplexer GetConnection()
+        private IConnectionMultiplexer GetConnection()
         {
             if (_connection != null && _connection.IsConnected)
                 return _connection;

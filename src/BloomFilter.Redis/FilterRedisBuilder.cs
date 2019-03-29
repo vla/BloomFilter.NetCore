@@ -188,7 +188,7 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod)
         {
             return Build<T>(connection, redisKey, expectedElements, 0.01, hashMethod);
         }
@@ -202,7 +202,7 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction)
         {
             return Build<T>(connectionn, redisKey, expectedElements, 0.01, hashFunction);
         }
@@ -216,7 +216,7 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate)
         {
             return Build<T>(connection, redisKey, expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
         }
@@ -229,7 +229,7 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connection, string redisKey, int expectedElements)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements)
         {
             return Build<T>(connection, redisKey, expectedElements, 0.01, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
         }
@@ -244,7 +244,7 @@ namespace BloomFilter.Redis
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
         {
             return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunctions[hashMethod]);
         }
@@ -259,7 +259,7 @@ namespace BloomFilter.Redis
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
         /// <returns></returns>
-        public static Filter<T> Build<T>(ConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
         {
             return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, hashFunction);
         }
