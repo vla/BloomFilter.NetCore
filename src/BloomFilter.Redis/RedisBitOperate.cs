@@ -153,12 +153,12 @@ namespace BloomFilter.Redis
             }
         }
 
-        private IDatabase Database(int? db = default)
+        private IDatabase Database(int? db = null)
         {
             return GetConnection().GetDatabase(db ?? -1);
         }
 
-        private async Task<IDatabase> DatabaseAsync(int? db = default)
+        private async Task<IDatabase> DatabaseAsync(int? db = null)
         {
             var conn = await GetConnectionAsync();
             return conn.GetDatabase(db ?? -1);
