@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BloomFilter;
 using BloomFilter.Redis;
@@ -33,6 +34,12 @@ namespace BenchmarkTest
         public void Add()
         {
             filter.Add(data);
+        }
+
+        [Benchmark]
+        public Task AddAsync()
+        {
+            return filter.AddAsync(data);
         }
     }
 }

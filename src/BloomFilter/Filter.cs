@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BloomFilter
 {
@@ -104,6 +105,13 @@ namespace BloomFilter
         public abstract bool Add(byte[] element);
 
         /// <summary>
+        /// Async Adds the passed value to the filter.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public abstract Task<bool> AddAsync(byte[] element);
+
+        /// <summary>
         /// Adds the specified element.
         /// </summary>
         /// <param name="element">The element.</param>
@@ -111,6 +119,16 @@ namespace BloomFilter
         public bool Add(T element)
         {
             return Add(ToBytes(element));
+        }
+
+        /// <summary>
+        /// Async Adds the specified element.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns></returns>
+        public Task<bool> AddAsync(T element)
+        {
+            return AddAsync(ToBytes(element));
         }
 
         /// <summary>
@@ -124,9 +142,29 @@ namespace BloomFilter
         }
 
         /// <summary>
+        /// Async Adds the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public async virtual Task<IList<bool>> AddAsync(IEnumerable<T> elements)
+        {
+            var result = new List<bool>();
+            foreach (var el in elements)
+            {
+                result.Add(await AddAsync(el));
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Removes all elements from the filter
         /// </summary>
         public abstract void Clear();
+
+        /// <summary>
+        /// Async Removes all elements from the filter
+        /// </summary>
+        public abstract Task ClearAsync();
 
         /// <summary>
         /// Tests whether an element is present in the filter
@@ -136,6 +174,13 @@ namespace BloomFilter
         public abstract bool Contains(byte[] element);
 
         /// <summary>
+        /// Async Tests whether an element is present in the filter
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public abstract Task<bool> ContainsAsync(byte[] element);
+
+        /// <summary>
         /// Tests whether an element is present in the filter
         /// </summary>
         /// <param name="element"></param>
@@ -143,6 +188,16 @@ namespace BloomFilter
         public bool Contains(T element)
         {
             return Contains(ToBytes(element));
+        }
+
+        /// <summary>
+        /// Async Tests whether an element is present in the filter
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public Task<bool> ContainsAsync(T element)
+        {
+            return ContainsAsync(ToBytes(element));
         }
 
         /// <summary>
@@ -156,6 +211,21 @@ namespace BloomFilter
         }
 
         /// <summary>
+        /// Async Tests whether an elements is present in the filter
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public async virtual Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
+        {
+            var result = new List<bool>();
+            foreach (var el in elements)
+            {
+                result.Add(await ContainsAsync(el));
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Alls the specified elements.
         /// </summary>
         /// <param name="elements">The elements.</param>
@@ -163,6 +233,16 @@ namespace BloomFilter
         public bool All(IEnumerable<T> elements)
         {
             return Contains(elements).All(e => e);
+        }
+
+        /// <summary>
+        /// Async Alls the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public async Task<bool> AllAsync(IEnumerable<T> elements)
+        {
+            return (await ContainsAsync(elements)).All(e => e);
         }
 
         /// <summary>

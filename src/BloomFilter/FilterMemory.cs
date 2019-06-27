@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Threading.Tasks;
 
 namespace BloomFilter
 {
@@ -12,6 +13,8 @@ namespace BloomFilter
         private BitArray _hashBits;
 
         private readonly object sync = new object();
+
+        private readonly static Task Empty = Task.FromResult(0);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterMemory{T}"/> class.
@@ -61,6 +64,16 @@ namespace BloomFilter
         }
 
         /// <summary>
+        /// Adds the passed value to the filter.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public override Task<bool> AddAsync(byte[] element)
+        {
+            return Task.FromResult(Add(element));
+        }
+
+        /// <summary>
         /// Tests whether an element is present in the filter
         /// </summary>
         /// <param name="element"></param>
@@ -79,6 +92,11 @@ namespace BloomFilter
             return true;
         }
 
+        public override Task<bool> ContainsAsync(byte[] element)
+        {
+            return Task.FromResult(Contains(element));
+        }
+
         /// <summary>
         /// Removes all elements from the filter
         /// </summary>
@@ -90,9 +108,15 @@ namespace BloomFilter
             }
         }
 
+        public override Task ClearAsync()
+        {
+            Clear();
+            return Empty;
+        }
+
         public override void Dispose()
         {
-            
+
         }
     }
 }

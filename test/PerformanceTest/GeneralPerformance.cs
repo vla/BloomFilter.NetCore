@@ -2,61 +2,15 @@
 using BloomFilter.Redis;
 using StackExchange.Redis;
 using System;
-using System.Threading;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PerformanceTest
 {
     public class GeneralPerformance
     {
-
-        [Test("RedisConcurrentPerformance")]
-        public void RedisConcurrentPerformance()
-        {
-            var sw = Stopwatch.StartNew();
-
-            var n = 3000000;
-            var errRate = 0.01;
-
-            var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", n, errRate);
-
-            var manual = new ManualResetEvent(false);
-
-            var tasks = new Task[4];
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                tasks[i] = new Task(() =>
-                {
-                    manual.WaitOne();
-                    int count = 10000;
-                    while (count-- > 0)
-                    {
-                        var data = Helper.GenerateBytes(12);
-                        bf.Add(data);
-                        if (!bf.Contains(data))
-                        {
-                            Console.WriteLine("match data!");
-                        }
-                    }
-
-                });
-
-                tasks[i].Start();
-            }
-
-            manual.Set();
-            Task.WaitAll(tasks);
-
-            sw.Stop();
-            Console.WriteLine("Time" + sw.Elapsed);
-
-            bf.Dispose();
-
-        }
-
         [Test("RedisPerformance")]
         public void RedisPerformance()
         {
@@ -65,16 +19,20 @@ namespace PerformanceTest
 
             var hashData = Helper.GenerateData(n);
 
+            var warm_up = FilterRedisBuilder.Build<string>("localhost", "RedisPerformance", n, errRate);
+            warm_up.Clear();
+            Console.WriteLine($"=================== warm_up Performance =================== ");
+            Performance(hashData, warm_up);
+
             var names = Enum.GetNames(typeof(HashMethod));
             foreach (var name in names)
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", n, errRate, hm);
+                    var bf = FilterRedisBuilder.Build<string>("localhost", "RedisPerformance", n, errRate, hm);
                     bf.Clear();
                     Console.WriteLine($"=================== {name} Performance =================== ");
                     Performance(hashData, bf);
-                    bf.Dispose();
                 }
             }
         }
@@ -134,21 +92,47 @@ namespace PerformanceTest
         private void Performance(IList<byte[]> hashData, Filter<string> bf)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            foreach (var data in hashData)
+
+            int index = 0;
+            int count = hashData.Count;
+
+            Parallel.ForEach(hashData, (data) =>
             {
                 bf.Add(data);
-            }
+                Interlocked.Increment(ref index);
+            });
+
+            while (index < count) { }
+
             sw.Stop();
 
             Console.WriteLine($"Added Speed {sw.ElapsedMilliseconds}ms");
 
             sw.Restart();
-            foreach (var data in hashData)
+
+            bool hasErr = false;
+
+            int index2 = 0;
+
+            var ret = Parallel.ForEach(hashData, (data) =>
             {
-                bf.Contains(data);
-            }
+                var hasDta = bf.Contains(data);
+                Interlocked.Increment(ref index2);
+                if (!hasDta)
+                {
+                    if (hasErr)
+                        return;
+                    hasErr = true;
+                    Console.WriteLine(bf.Hash.ToString() + ":Error Match!");
+                }
+            });
+
+            while (index2 < count) { }
+
             sw.Stop();
             Console.WriteLine($"Contains Speed {sw.ElapsedMilliseconds}ms");
+
+            bf.Dispose();
         }
     }
 }

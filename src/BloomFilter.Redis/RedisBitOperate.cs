@@ -18,6 +18,7 @@ namespace BloomFilter.Redis
 
         //allow the release of connection
         private bool allowRelease;
+        private const int TimeoutMilliseconds = 5 * 1000;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
@@ -37,7 +38,6 @@ namespace BloomFilter.Redis
             _configurationOptions = configurationOptions;
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisBitOperate"/> class.
         /// </summary>
@@ -50,6 +50,12 @@ namespace BloomFilter.Redis
         public void Clear(string redisKey)
         {
             Database().KeyDelete(redisKey);
+        }
+
+        public async Task ClearAsync(string redisKey)
+        {
+            var db = await DatabaseAsync();
+            await db.KeyDeleteAsync(redisKey).ConfigureAwait(false);
         }
 
         public bool Get(string redisKey, int position)
@@ -69,9 +75,32 @@ namespace BloomFilter.Redis
             }
 
             batch.Execute();
-            batch.WaitAll(results);
+
+            if (!Task.WaitAll(results, TimeoutMilliseconds)) throw new TimeoutException();
 
             return results.Select(r => r.Result).ToArray();
+        }
+
+        public async Task<bool> GetAsync(string redisKey, int position)
+        {
+            var db = await DatabaseAsync();
+            return await db.StringGetBitAsync(redisKey, position).ConfigureAwait(false);
+        }
+
+        public async Task<bool[]> GetAsync(string redisKey, int[] positions)
+        {
+            var results = new bool[positions.Length];
+
+            var db = await DatabaseAsync();
+
+
+            for (int i = 0; i < positions.Length; i++)
+            {
+                results[i] = await db.StringGetBitAsync(redisKey, positions[i]).ConfigureAwait(false);
+            }
+
+
+            return results;
         }
 
         public bool[] Set(string redisKey, int[] positions, bool value)
@@ -82,18 +111,38 @@ namespace BloomFilter.Redis
 
             for (int i = 0; i < positions.Length; i++)
             {
-                results[i] = batch.StringSetBitAsync(redisKey, positions[i], true);
+                results[i] = batch.StringSetBitAsync(redisKey, positions[i], value);
             }
 
             batch.Execute();
-            batch.WaitAll(results);
+            if (!Task.WaitAll(results, TimeoutMilliseconds)) throw new TimeoutException();
 
             return results.Select(r => r.Result).ToArray();
+        }
+
+        public async Task<bool[]> SetAsync(string redisKey, int[] positions, bool value)
+        {
+            var results = new bool[positions.Length];
+
+            var db = await DatabaseAsync();
+
+            for (int i = 0; i < positions.Length; i++)
+            {
+                results[i] = await db.StringSetBitAsync(redisKey, positions[i], value).ConfigureAwait(false);
+            }
+
+            return results;
         }
 
         public bool Set(string redisKey, int position, bool value)
         {
             return Database().StringSetBit(redisKey, position, value);
+        }
+
+        public async Task<bool> SetAsync(string redisKey, int position, bool value)
+        {
+            var db = await DatabaseAsync();
+            return await db.StringSetBitAsync(redisKey, position, value).ConfigureAwait(false);
         }
 
         public void Dispose()
@@ -104,9 +153,15 @@ namespace BloomFilter.Redis
             }
         }
 
-        private IDatabase Database(int? db = default(int?))
+        private IDatabase Database(int? db = default)
         {
             return GetConnection().GetDatabase(db ?? -1);
+        }
+
+        private async Task<IDatabase> DatabaseAsync(int? db = default)
+        {
+            var conn = await GetConnectionAsync();
+            return conn.GetDatabase(db ?? -1);
         }
 
         private IConnectionMultiplexer GetConnection()
@@ -129,7 +184,6 @@ namespace BloomFilter.Redis
                 }
                 else
                 {
-
                     if (allowRelease)
                     {
                         _connection.Dispose();
@@ -138,6 +192,43 @@ namespace BloomFilter.Redis
                     //If the constructor parameter USES ConnectionMultiplexer,
                     //the configuration of ConnectionMultiplexer is reused
                     _connection = ConnectionMultiplexer.Connect(_connection.Configuration);
+                    allowRelease = true;
+                }
+            }
+            finally
+            {
+                _connectionLock.Release();
+            }
+
+            return _connection;
+        }
+
+        private async Task<IConnectionMultiplexer> GetConnectionAsync()
+        {
+
+            if (_connection != null && _connection.IsConnected)
+                return _connection;
+
+            await _connectionLock.WaitAsync();
+
+            try
+            {
+                if (_connection != null && _connection.IsConnected)
+                    return _connection;
+
+                if (_connection == null)
+                {
+                    _connection = await ConnectionMultiplexer.ConnectAsync(_configurationOptions);
+                    allowRelease = true;
+                }
+                else
+                {
+                    if (allowRelease)
+                    {
+                        _connection.Dispose();
+                    }
+
+                    _connection = await ConnectionMultiplexer.ConnectAsync(_connection.Configuration);
                     allowRelease = true;
                 }
             }

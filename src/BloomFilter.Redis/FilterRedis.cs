@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BloomFilter.Redis
 {
@@ -55,6 +56,13 @@ namespace BloomFilter.Redis
             return results.Any(a => !a);
         }
 
+        public override async Task<bool> AddAsync(byte[] element)
+        {
+            var positions = ComputeHash(element);
+            var results = await _redisBitOperate.SetAsync(_name, positions, true);
+            return results.Any(a => !a);
+        }
+
         /// <summary>
         /// Adds the specified elements.
         /// </summary>
@@ -87,12 +95,44 @@ namespace BloomFilter.Redis
             return results;
         }
 
+        public override async Task<IList<bool>> AddAsync(IEnumerable<T> elements)
+        {
+            var addHashs = new List<int>();
+            foreach (var element in elements)
+            {
+                addHashs.AddRange(ComputeHash(ToBytes(element)));
+            }
+
+            IList<bool> results = new List<bool>();
+
+            var processResults = await _redisBitOperate.SetAsync(_name, addHashs.ToArray(), true);
+            bool wasAdded = false;
+            int processed = 0;
+            foreach (var item in processResults)
+            {
+                if (!item) wasAdded = true;
+                if ((processed + 1) % Hashes == 0)
+                {
+                    results.Add(wasAdded);
+                    wasAdded = false;
+                }
+                processed++;
+            }
+
+            return results;
+        }
+
         /// <summary>
         /// Removes all elements from the filter
         /// </summary>
         public override void Clear()
         {
             _redisBitOperate.Clear(_name);
+        }
+
+        public override Task ClearAsync()
+        {
+            return _redisBitOperate.ClearAsync(_name);
         }
 
         /// <summary>
@@ -105,6 +145,15 @@ namespace BloomFilter.Redis
             var positions = ComputeHash(element);
 
             var results = _redisBitOperate.Get(_name, positions);
+
+            return results.All(a => a);
+        }
+
+        public override async Task<bool> ContainsAsync(byte[] element)
+        {
+            var positions = ComputeHash(element);
+
+            var results = await _redisBitOperate.GetAsync(_name, positions);
 
             return results.All(a => a);
         }
@@ -125,6 +174,33 @@ namespace BloomFilter.Redis
             IList<bool> results = new List<bool>();
 
             var processResults = _redisBitOperate.Get(_name, addHashs.ToArray());
+            bool isPresent = true;
+            int processed = 0;
+            foreach (var item in processResults)
+            {
+                if (!item) isPresent = false;
+                if ((processed + 1) % Hashes == 0)
+                {
+                    results.Add(isPresent);
+                    isPresent = true;
+                }
+                processed++;
+            }
+
+            return results;
+        }
+
+        public override async Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
+        {
+            var addHashs = new List<int>();
+            foreach (var element in elements)
+            {
+                addHashs.AddRange(ComputeHash(ToBytes(element)));
+            }
+
+            IList<bool> results = new List<bool>();
+
+            var processResults = await _redisBitOperate.GetAsync(_name, addHashs.ToArray());
             bool isPresent = true;
             int processed = 0;
             foreach (var item in processResults)
