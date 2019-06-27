@@ -17,6 +17,7 @@ namespace Demo
                 {
                     var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", 5000000, 0.001, hm);
                     Sample(bf);
+                    bf.Dispose();
                 }
             }
         }

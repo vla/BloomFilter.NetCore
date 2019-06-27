@@ -265,5 +265,10 @@ namespace BloomFilter
         {
             return $"Capacity:{Capacity},Hashes:{Hashes},ExpectedElements:{ExpectedElements},ErrorRate:{ErrorRate}";
         }
+
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        public abstract void Dispose();
     }
 }

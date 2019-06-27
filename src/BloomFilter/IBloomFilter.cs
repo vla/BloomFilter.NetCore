@@ -1,9 +1,11 @@
-﻿namespace BloomFilter
+﻿using System;
+
+namespace BloomFilter
 {
     /// <summary>
     /// Represents a Bloom filter.
     /// </summary>
-    public interface IBloomFilter
+    public interface IBloomFilter: IDisposable
     {
         /// <summary>
         /// Adds the passed value to the filter.

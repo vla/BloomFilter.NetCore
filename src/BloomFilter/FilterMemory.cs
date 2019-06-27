@@ -89,5 +89,10 @@ namespace BloomFilter
                 _hashBits.SetAll(false);
             }
         }
+
+        public override void Dispose()
+        {
+            
+        }
     }
 }

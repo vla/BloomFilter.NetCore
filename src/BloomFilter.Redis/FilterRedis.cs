@@ -140,5 +140,10 @@ namespace BloomFilter.Redis
 
             return results;
         }
+
+        public override void Dispose()
+        {
+            _redisBitOperate.Dispose();
+        }
     }
 }

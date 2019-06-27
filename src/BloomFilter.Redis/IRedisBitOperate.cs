@@ -1,9 +1,11 @@
-﻿namespace BloomFilter.Redis
+﻿using System;
+
+namespace BloomFilter.Redis
 {
     /// <summary>
     /// Redis BitMap operate Interface
     /// </summary>
-    public interface IRedisBitOperate
+    public interface IRedisBitOperate : IDisposable
     {
         bool[] Set(string redisKey, int[] positions, bool value);
 

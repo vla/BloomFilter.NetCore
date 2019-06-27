@@ -9,9 +9,8 @@ namespace BloomFilter.Redis
     /// <summary>
     /// Redis Bit Operate
     /// </summary>
-    /// <seealso cref="BloomFilter.Redis.IRedisBitOperate" />
-    /// <seealso cref="System.IDisposable" />
-    public class RedisBitOperate : IRedisBitOperate, IDisposable
+    /// <seealso cref="IRedisBitOperate" />
+    public class RedisBitOperate : IRedisBitOperate
     {
         private volatile IConnectionMultiplexer _connection;
         private readonly ConfigurationOptions _configurationOptions;
