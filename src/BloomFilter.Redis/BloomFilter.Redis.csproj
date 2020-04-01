@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="..\..\build\common.props" />
-
   <PropertyGroup>
     <AssemblyName>BloomFilter.Redis</AssemblyName>
     <AssemblyTitle>BloomFilter.Redis</AssemblyTitle>
@@ -23,6 +20,5 @@
   <ItemGroup>
     <ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
   </ItemGroup>
-
 
 </Project>

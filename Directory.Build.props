@@ -1,0 +1,39 @@
+<Project>
+
+  <PropertyGroup>
+    <Version>$(Ver)</Version>
+    <PackageVersion>$(Ver)</PackageVersion> 
+    <Copyright>2019 v.la, Inc.</Copyright>
+    <Authors>v.la@live.cn</Authors>
+    <Description>Library Bloom filters in C# with optional Redis-backing</Description>
+    <Product>Bloom filters</Product>
+    
+    <PackageOutputPath>$(MSBuildThisFileDirectory)/artifacts</PackageOutputPath>
+    <PackageTags>Common Lib;Framework</PackageTags>
+    <LangVersion>latest</LangVersion>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- <PackageIcon>icon.png</PackageIcon> -->
+    <PackageIconUrl>http://s.gravatar.com/avatar/28dfa5190889f7190e74b683fc30b827?s=80</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/vla/BloomFilter.NetCore</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseType>MIT</PackageLicenseType>
+
+    <RepositoryUrl>git://github.com/vla/BloomFilter.NetCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>master</RepositoryBranch> 
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup>
+   
+    <SignAssembly>True</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/sign.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>  
+
+</Project>
