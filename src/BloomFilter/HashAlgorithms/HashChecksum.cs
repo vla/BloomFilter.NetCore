@@ -7,10 +7,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var checkSum = new Crc32())
-            {
-                return ComputeHash(checkSum, data, m, k);
-            }
+            using var checkSum = new Crc32();
+            return ComputeHash(checkSum, data, m, k);
         }
     }
 
@@ -18,10 +16,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var checkSum = new Crc32u())
-            {
-                return ComputeHash(checkSum, data, m, k);
-            }
+            using var checkSum = new Crc32u();
+            return ComputeHash(checkSum, data, m, k);
         }
     }
 
@@ -29,10 +25,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var checkSum = new Adler32())
-            {
-                return ComputeHash(checkSum, data, m, k);
-            }
+            using var checkSum = new Adler32();
+            return ComputeHash(checkSum, data, m, k);
         }
     }
 
@@ -48,8 +42,6 @@ namespace BloomFilter.HashAlgorithms
             int[] positions = new int[k];
             int hashes = 0;
             int salt = 0;
-
-            byte[] output = new byte[64];
 
             const int seed32 = 89478583;
 

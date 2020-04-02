@@ -10,7 +10,7 @@ namespace BloomFilter
     /// <seealso cref="BloomFilter.Filter{T}" />
     public class FilterMemory<T> : Filter<T>
     {
-        private BitArray _hashBits;
+        private readonly BitArray _hashBits;
 
         private readonly object sync = new object();
 

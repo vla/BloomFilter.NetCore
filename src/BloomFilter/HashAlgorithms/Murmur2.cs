@@ -9,8 +9,6 @@
             const uint seed = 89478583;
 
             int hashes = 0;
-            int lastHash = 0;
-
             while (hashes < k)
             {
                 for (int i = 0; i < data.Length; i++)
@@ -29,8 +27,7 @@
 
                 uint hash = MurmurHash2(seed, data, 0, data.Length);
 
-                lastHash = Rejection(hash, m);
-
+                int lastHash = Rejection(hash, m);
                 if (lastHash != -1)
                 {
                     positions[hashes++] = lastHash;
@@ -62,10 +59,10 @@
                 {
                     uint current = *ptrUInt;
 
-                    current = current * M;
+                    current *= M;
                     current ^= current >> R;
-                    current = current * M;
-                    hash = hash * M;
+                    current *= M;
+                    hash *= M;
                     hash ^= current;
 
                     count--;

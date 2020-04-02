@@ -47,9 +47,9 @@ namespace BloomFilter.HashAlgorithms
 
             int length = count;
             int blocks = length / 4;
-            uint k1 = 0;
             uint hash = seed;
 
+            uint k1;
             // body
             for (int i = 0; i < blocks; ++i)
             {

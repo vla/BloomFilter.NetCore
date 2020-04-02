@@ -8,10 +8,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var hashAlgorithm = SHA1.Create())
-            {
-                return ComputeHash(hashAlgorithm, data, m, k);
-            }
+            using var hashAlgorithm = SHA1.Create();
+            return ComputeHash(hashAlgorithm, data, m, k);
         }
     }
 
@@ -19,10 +17,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var hashAlgorithm = SHA256.Create())
-            {
-                return ComputeHash(hashAlgorithm, data, m, k);
-            }
+            using var hashAlgorithm = SHA256.Create();
+            return ComputeHash(hashAlgorithm, data, m, k);
         }
     }
 
@@ -30,10 +26,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var hashAlgorithm = SHA384.Create())
-            {
-                return ComputeHash(hashAlgorithm, data, m, k);
-            }
+            using var hashAlgorithm = SHA384.Create();
+            return ComputeHash(hashAlgorithm, data, m, k);
         }
     }
 
@@ -41,10 +35,8 @@ namespace BloomFilter.HashAlgorithms
     {
         public override int[] ComputeHash(byte[] data, int m, int k)
         {
-            using (var hashAlgorithm = SHA512.Create())
-            {
-                return ComputeHash(hashAlgorithm, data, m, k);
-            }
+            using var hashAlgorithm = SHA512.Create();
+            return ComputeHash(hashAlgorithm, data, m, k);
         }
     }
 
@@ -61,7 +53,7 @@ namespace BloomFilter.HashAlgorithms
 
             while (computedHashes < k)
             {
-                int calcSize = hashAlgorithm.TransformBlock(digest, 0, digest.Length, output, 0);
+                hashAlgorithm.TransformBlock(digest, 0, digest.Length, output, 0);
                 digest = hashAlgorithm.ComputeHash(data, 0, data.Length);
 
                 BitArray hashed = new BitArray(digest);
