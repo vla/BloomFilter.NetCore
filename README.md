@@ -13,6 +13,26 @@ Package  | NuGet         |
 |**BloomFilter.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.NetCore)](https://www.nuget.org/packages/BloomFilter.NetCore)
 |**BloomFilter.Redis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.Redis.NetCore)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)
 
+
+Usage
+---
+
+In Memory
+```cs
+  var bf = FilterBuilder.Build<string>(10000000, 0.01);
+  bf.Add("Value");
+  Console.WriteLine(bf.Contains("Value"));
+```
+
+In Redis
+```cs
+  var bf = FilterRedisBuilder.Build<string>("localhost", "InstanceName", 5000000, 0.001);
+  bf.Add("Value");
+  Console.WriteLine(bf.Contains("Value"));
+```
+
+
+
 Benchmark
 ---
 
