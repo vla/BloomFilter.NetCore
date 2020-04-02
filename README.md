@@ -19,16 +19,31 @@ Usage
 
 In Memory
 ```cs
-  var bf = FilterBuilder.Build<string>(10000000, 0.01);
-  bf.Add("Value");
-  Console.WriteLine(bf.Contains("Value"));
+    public class Demo
+    {
+        static Filter<string> bf = FilterBuilder.Build<string>(10000000, 0.01);
+        
+        public void Sample()
+        {
+            bf.Add("Value");
+            Console.WriteLine(bf.Contains("Value"));
+        }
+    }
+ 
 ```
 
-In Redis
+Use Redis
 ```cs
-  var bf = FilterRedisBuilder.Build<string>("localhost", "InstanceName", 5000000, 0.001);
-  bf.Add("Value");
-  Console.WriteLine(bf.Contains("Value"));
+    public class Demo
+    {
+        static Filter<string> bf = FilterRedisBuilder.Build<string>("localhost", "InstanceName", 5000000, 0.001);
+
+        public void Sample()
+        {
+            bf.Add("Value");
+            Console.WriteLine(bf.Contains("Value"));
+        }
+    }
 ```
 
 
