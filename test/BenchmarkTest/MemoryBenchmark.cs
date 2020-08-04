@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using BloomFilter;
 
 namespace BenchmarkTest
 {
-    [ClrJob, CoreJob]
+    [
+       SimpleJob(RuntimeMoniker.Net462),
+       SimpleJob(RuntimeMoniker.Net472),
+       SimpleJob(RuntimeMoniker.Net48),
+       SimpleJob(RuntimeMoniker.NetCoreApp22),
+       SimpleJob(RuntimeMoniker.NetCoreApp30),
+       SimpleJob(RuntimeMoniker.NetCoreApp31)
+    ]
     [MemoryDiagnoser]
     public class MemoryBenchmark
     {
