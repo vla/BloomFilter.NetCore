@@ -8,10 +8,10 @@ using BloomFilter;
 
 namespace BenchmarkTest
 {
-    [
-       SimpleJob(RuntimeMoniker.Net48),
-       SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)
-    ]
+    //[
+    //    SimpleJob(RuntimeMoniker.Net471),
+    //    SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)
+    //]
     [MemoryDiagnoser]
     public class MemoryBenchmark
     {
