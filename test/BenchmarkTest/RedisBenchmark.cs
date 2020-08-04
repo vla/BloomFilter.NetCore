@@ -10,12 +10,8 @@ using BloomFilter.Redis;
 namespace BenchmarkTest
 {
     [
-        SimpleJob(RuntimeMoniker.Net462),
-        SimpleJob(RuntimeMoniker.Net472),
-        SimpleJob(RuntimeMoniker.Net48),
-        SimpleJob(RuntimeMoniker.NetCoreApp22),
-        SimpleJob(RuntimeMoniker.NetCoreApp30),
-        SimpleJob(RuntimeMoniker.NetCoreApp31)
+       SimpleJob(RuntimeMoniker.Net48),
+       SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)
     ]
     [MemoryDiagnoser]
     public class RedisBenchmark
