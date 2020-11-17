@@ -3,7 +3,7 @@
     <AssemblyName>BloomFilter</AssemblyName>
     <AssemblyTitle>BloomFilter</AssemblyTitle>
     <PackageId>BloomFilter.NetCore</PackageId>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45;net5.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
