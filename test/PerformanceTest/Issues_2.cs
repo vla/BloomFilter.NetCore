@@ -13,11 +13,11 @@ namespace PerformanceTest
         [Test("Redis Performance")]
         public async Task Performance()
         {
-            var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", 100000, 0.001);
+            var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", 100000, 0.01);
 
             var items = new List<string>();
 
-            var count = 1000;
+            var count = 50;
 
             var rndNum = new Random(Guid.NewGuid().GetHashCode());
 
@@ -32,7 +32,7 @@ namespace PerformanceTest
 
             await bf.ContainsAsync(items);
 
-            Console.WriteLine(sw.Elapsed);//00:00:00.0959116
+            Console.WriteLine(sw.Elapsed);
         }
     }
 }
