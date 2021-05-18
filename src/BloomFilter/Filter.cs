@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BloomFilter
@@ -10,9 +6,8 @@ namespace BloomFilter
     /// <summary>
     /// Represents a Bloom filter and provides
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <seealso cref="IBloomFilter" />
-    public abstract class Filter<T> : IBloomFilter
+    public abstract class Filter : IBloomFilter
     {
         /// <summary>
         /// <see cref="HashFunction"/>
@@ -40,17 +35,17 @@ namespace BloomFilter
         public double ErrorRate { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Filter{T}"/> class.
+        /// Initializes a new instance of the <see cref="Filter"/> class.
         /// </summary>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">
         /// expectedElements - expectedElements must be > 0
         /// or
         /// errorRate
         /// </exception>
-        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
+        /// <exception cref="ArgumentNullException">hashFunction</exception>
         public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
         {
             if (expectedElements < 1)
@@ -64,8 +59,6 @@ namespace BloomFilter
 
             Capacity = BestM(expectedElements, errorRate);
             Hashes = BestK(expectedElements, Capacity);
-
-            CheckElementType();
         }
 
         /// <summary>
@@ -74,12 +67,12 @@ namespace BloomFilter
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">
         /// capacity - capacity must be > 0
         /// or
         /// hashes - hashes must be > 0
         /// </exception>
-        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
+        /// <exception cref="ArgumentNullException">hashFunction</exception>
         public Filter(int capacity, int hashes, HashFunction hashFunction)
         {
             if (capacity < 1)
@@ -93,8 +86,6 @@ namespace BloomFilter
 
             ExpectedElements = BestN(hashes, capacity);
             ErrorRate = BestP(hashes, capacity, ExpectedElements);
-
-            CheckElementType();
         }
 
         /// <summary>
@@ -110,51 +101,6 @@ namespace BloomFilter
         /// <param name="element"></param>
         /// <returns></returns>
         public abstract Task<bool> AddAsync(byte[] element);
-
-        /// <summary>
-        /// Adds the specified element.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <returns></returns>
-        public bool Add(T element)
-        {
-            return Add(ToBytes(element));
-        }
-
-        /// <summary>
-        /// Async Adds the specified element.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <returns></returns>
-        public Task<bool> AddAsync(T element)
-        {
-            return AddAsync(ToBytes(element));
-        }
-
-        /// <summary>
-        /// Adds the specified elements.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public virtual IList<bool> Add(IEnumerable<T> elements)
-        {
-            return elements.Select(e => Add(e)).ToList();
-        }
-
-        /// <summary>
-        /// Async Adds the specified elements.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public async virtual Task<IList<bool>> AddAsync(IEnumerable<T> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await AddAsync(el));
-            }
-            return result;
-        }
 
         /// <summary>
         /// Removes all elements from the filter
@@ -181,71 +127,6 @@ namespace BloomFilter
         public abstract Task<bool> ContainsAsync(byte[] element);
 
         /// <summary>
-        /// Tests whether an element is present in the filter
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        public bool Contains(T element)
-        {
-            return Contains(ToBytes(element));
-        }
-
-        /// <summary>
-        /// Async Tests whether an element is present in the filter
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        public Task<bool> ContainsAsync(T element)
-        {
-            return ContainsAsync(ToBytes(element));
-        }
-
-        /// <summary>
-        /// Tests whether an elements is present in the filter
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <returns></returns>
-        public virtual IList<bool> Contains(IEnumerable<T> elements)
-        {
-            return elements.Select(e => Contains(e)).ToList();
-        }
-
-        /// <summary>
-        /// Async Tests whether an elements is present in the filter
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <returns></returns>
-        public async virtual Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await ContainsAsync(el));
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Alls the specified elements.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public bool All(IEnumerable<T> elements)
-        {
-            return Contains(elements).All(e => e);
-        }
-
-        /// <summary>
-        /// Async Alls the specified elements.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public async Task<bool> AllAsync(IEnumerable<T> elements)
-        {
-            return (await ContainsAsync(elements)).All(e => e);
-        }
-
-        /// <summary>
         ///  Hashes the specified value.
         /// </summary>
         /// <param name="data"></param>
@@ -253,16 +134,6 @@ namespace BloomFilter
         public int[] ComputeHash(byte[] data)
         {
             return Hash.ComputeHash(data, Capacity, Hashes);
-        }
-
-        /// <summary>
-        /// Converts the element to UTF8 bytes
-        /// </summary>
-        /// <param name="elemnt">The elemnt.</param>
-        /// <returns></returns>
-        protected virtual byte[] ToBytes(T elemnt)
-        {
-            return Encoding.UTF8.GetBytes(Convert.ToString(elemnt, CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -310,35 +181,6 @@ namespace BloomFilter
         public static double BestP(long k, long m, double insertedElements)
         {
             return Math.Pow((1 - Math.Exp(-k * insertedElements / (double)m)), k);
-        }
-
-        private void CheckElementType()
-        {
-            var type = typeof(T);
-            var typeCode = Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type);
-
-            switch (typeCode)
-            {
-                case TypeCode.Char:
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.String:
-                case TypeCode.DateTime:
-                    //OK
-                    break;
-
-                default:
-                    throw new NotSupportedException("Element type are not supported " + type.Name);
-            }
         }
 
         public override string ToString()

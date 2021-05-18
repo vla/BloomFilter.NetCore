@@ -109,5 +109,31 @@ namespace BloomFilter
 
             return result;
         }
+
+        public static int RightMove(int value, int pos)
+        {
+            if (pos != 0)
+            {
+                var mask = int.MaxValue;
+                value >>= 1;
+                value &= mask;
+                value >>= pos - 1;
+            }
+
+            return value;
+        }
+
+        public static long RightMove(long value, int pos)
+        {
+            if (pos != 0)
+            {
+                var mask = int.MaxValue;
+                value >>= 1;
+                value &= mask;
+                value >>= pos - 1;
+            }
+
+            return value;
+        }
     }
 }

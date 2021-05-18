@@ -8,24 +8,26 @@
 
             const uint seed = 89478583;
 
+            var value = (byte[])data.Clone();
+
             int hashes = 0;
             while (hashes < k)
             {
                 for (int i = 0; i < data.Length; i++)
                 {
-                    if (data[i] == 0xff)
+                    if (value[i] == 0xff)
                     {
-                        data[i] = 0;
+                        value[i] = 0;
                         continue;
                     }
                     else
                     {
-                        data[i]++;
+                        value[i]++;
                         break;
                     }
                 }
 
-                uint hash = MurmurHash2(seed, data, 0, data.Length);
+                uint hash = MurmurHash2(seed, value, 0, value.Length);
 
                 int lastHash = Rejection(hash, m);
                 if (lastHash != -1)
@@ -43,62 +45,62 @@
         // just cache tail and if we have a cache dvalue and the next block is not mod4 long then throw an exception (thus only allow random length blocks for the last one)
         private static unsafe uint MurmurHash2(uint seed32, byte[] data, int offset, int length)
         {
-            const uint M = 0x5bd1e995;
+            const int M = 0x5bd1e995;
             const int R = 24;
 
-            uint seed = (uint)(0xdeadbeef * length);
-            uint hash = (uint)(seed32 ^ length);
+            int len = data.Length;
+            long hash = (uint)(seed32 ^ length);
 
-            int count = length >> 2;
-
-            fixed (byte* start = &(data[offset]))
+            int i = 0;
+            while (len >= 4)
             {
-                uint* ptrUInt = (uint*)start;
+                int k = data[i + 0] & 0xFF;
+                k |= (data[i + 1] & 0xFF) << 8;
+                k |= (data[i + 2] & 0xFF) << 16;
+                k |= (data[i + 3] & 0xFF) << 24;
 
-                while (count > 0)
-                {
-                    uint current = *ptrUInt;
+                k *= M;
+                k ^= RightMove(k, R);
+                k *= M;
 
-                    current *= M;
-                    current ^= current >> R;
-                    current *= M;
-                    hash *= M;
-                    hash ^= current;
+                hash *= M;
+                hash ^= k;
 
-                    count--;
-                    ptrUInt++;
-                }
-
-                switch (length & 3)
-                {
-                    case 3:
-                        // reverse the last 3 bytes and convert it to an uint
-                        // so cast the last to into an UInt16 and get the 3rd as a byte
-                        // ABC --> CBA; (UInt16)(AB) --> BA
-                        //h ^= (uint)(*ptrByte);
-                        //h ^= (uint)(ptrByte[1] << 8);
-                        hash ^= (*(ushort*)ptrUInt);
-                        hash ^= (uint)(((byte*)ptrUInt)[2] << 16);
-                        hash *= M;
-                        break;
-
-                    case 2:
-                        hash ^= (*(ushort*)ptrUInt);
-                        hash *= M;
-                        break;
-
-                    case 1:
-                        hash ^= (*((byte*)ptrUInt));
-                        hash *= M;
-                        break;
-                }
+                i += 4;
+                len -= 4;
             }
 
-            hash ^= hash >> 13;
-            hash *= M;
-            hash ^= hash >> 15;
+            switch (len)
+            {
+                // reverse the last 3 bytes and convert it to an uint
+                // so cast the last to into an UInt16 and get the 3rd as a byte
+                // ABC --> CBA; (UInt16)(AB) --> BA
+                //h ^= (uint)(*ptrByte);
+                //h ^= (uint)(ptrByte[1] << 8);
+                case 3:
+                    hash ^= (data[i + 2] & 0xFF) << 16;
+                    hash ^= (data[i + 1] & 0xFF) << 8;
+                    hash ^= (data[i + 0] & 0xFF);
+                    hash *= M;
+                    break;
 
-            return hash;
+                case 2:
+                    hash ^= (data[i + 1] & 0xFF) << 8;
+                    hash ^= (data[i + 0] & 0xFF);
+                    hash *= M;
+                    break;
+
+                case 1:
+                    hash ^= (data[i + 0] & 0xFF);
+                    hash *= M;
+                    break;
+            }
+
+            hash ^= RightMove(hash, 13);
+            hash *= M;
+            hash ^= RightMove(hash, 15);
+
+            return (uint)hash;
         }
     }
 }
