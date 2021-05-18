@@ -114,7 +114,7 @@ namespace BloomFilter
         {
             if (pos != 0)
             {
-                var mask = int.MaxValue;
+                var mask = 0x7fffffff;
                 value >>= 1;
                 value &= mask;
                 value >>= pos - 1;
@@ -127,7 +127,20 @@ namespace BloomFilter
         {
             if (pos != 0)
             {
-                var mask = int.MaxValue;
+                var mask = 0x7fffffff;
+                value >>= 1;
+                value &= mask;
+                value >>= pos - 1;
+            }
+
+            return value;
+        }
+
+        public static uint RightMove(uint value, int pos)
+        {
+            if (pos != 0)
+            {
+                uint mask = 0x7fffffff;
                 value >>= 1;
                 value &= mask;
                 value >>= pos - 1;

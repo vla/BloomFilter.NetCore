@@ -67,7 +67,7 @@ namespace BloomFilter.HashAlgorithms
                 //http://en.wikipedia.org/wiki/Linear_congruential_generator
                 // LCG formula: x_i+1 = (multiplier * x_i + addend) mod mask
                 seed = (seed * multiplier + addend) & mask;
-                positions[i] = (int)(seed >> (48 - 30)) % m;
+                positions[i] = (int)(RightMove(seed, (48 - 30))) % m;
             }
             return positions;
         }

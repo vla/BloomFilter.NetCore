@@ -86,11 +86,11 @@ namespace BloomFilter.HashAlgorithms
             // finalization
             hash ^= (uint)length;
 
-            hash ^= hash >> 16;
+            hash ^= RightMove(hash, 16);
             hash *= 0x85ebca6b;
-            hash ^= hash >> 13;
+            hash ^= RightMove(hash, 13);
             hash *= 0xc2b2ae35;
-            hash ^= hash >> 16;
+            hash ^= RightMove(hash, 16);
 
             return hash;
         }
