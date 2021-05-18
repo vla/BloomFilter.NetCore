@@ -60,7 +60,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate)
         {
-            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
         {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunctions[hashMethod]);
+            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate)
         {
-            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
         {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunctions[hashMethod]);
+            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate)
         {
-            return Build<T>(connection, redisKey, expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(connection, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements)
         {
-            return Build<T>(connection, redisKey, expectedElements, 0.01, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(connection, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
         {
-            return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunctions[hashMethod]);
+            return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, HashFunctions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace BloomFilter.Redis
         /// <returns></returns>
         public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
         {
-            return new FilterRedis<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunctions[hashMethod]);
+            return new FilterRedis<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>

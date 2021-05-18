@@ -28,7 +28,7 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA512)]
         public void NormalTest(HashMethod hashMethod)
         {
-            var bf = FilterBuilder.Build<string>(10000, 0.01, hashMethod);
+            var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
 
             var len = 10;
             var array = new string[len];
@@ -69,7 +69,7 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA512)]
         public void BytesArrayTest(HashMethod hashMethod)
         {
-            var bf = FilterBuilder.Build<byte[]>(10000, 0.01, hashMethod);
+            var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
 
             var rng = RandomNumberGenerator.Create();
 
@@ -80,6 +80,46 @@ namespace BloomFilterTest
                 var data = new byte[1024];
                 rng.GetBytes(data);
                 list.Add(data);
+            }
+
+            Assert.All(bf.Add(list), r => Assert.True(r));
+            Assert.All(bf.Contains(list), r => Assert.True(r));
+
+            Assert.True(bf.All(list));
+
+            bf.Clear();
+
+            Assert.All(bf.Contains(list), r => Assert.False(r));
+            Assert.False(bf.All(list));
+
+
+        }
+
+        [Theory]
+        [InlineData(HashMethod.LCGWithFNV1)]
+        [InlineData(HashMethod.LCGWithFNV1a)]
+        [InlineData(HashMethod.LCGModifiedFNV1)]
+        [InlineData(HashMethod.RNGWithFNV1)]
+        [InlineData(HashMethod.RNGWithFNV1a)]
+        [InlineData(HashMethod.RNGModifiedFNV1)]
+        [InlineData(HashMethod.CRC32)]
+        [InlineData(HashMethod.Adler32)]
+        [InlineData(HashMethod.Murmur2)]
+        [InlineData(HashMethod.Murmur3)]
+        [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
+        [InlineData(HashMethod.SHA1)]
+        [InlineData(HashMethod.SHA256)]
+        [InlineData(HashMethod.SHA384)]
+        [InlineData(HashMethod.SHA512)]
+        public void ValueTypeTest(HashMethod hashMethod)
+        {
+            var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
+
+            var len = 50;
+            var list = new List<int>(len);
+            for (int i = 0; i < len; i++)
+            {
+                list.Add(i);
             }
 
             Assert.All(bf.Add(list), r => Assert.True(r));
@@ -113,17 +153,17 @@ namespace BloomFilterTest
         public void BuildTest()
         {
             var hashFun = new HashChecksumCrc32();
-            buildTest(FilterBuilder.Build<string>(10000));
-            buildTest(FilterBuilder.Build<string>(10000, hashFun));
-            buildTest(FilterBuilder.Build<string>(10000, HashMethod.Adler32));
-            buildTest(FilterBuilder.Build<string>(10000, 0.01));
-            buildTest(FilterBuilder.Build<string>(10000, 0.01, hashFun));
-            buildTest(FilterBuilder.Build<string>(10000, 0.01, HashMethod.Adler32));
+            buildTest(FilterBuilder.Build(10000));
+            buildTest(FilterBuilder.Build(10000, hashFun));
+            buildTest(FilterBuilder.Build(10000, HashMethod.Adler32));
+            buildTest(FilterBuilder.Build(10000, 0.01));
+            buildTest(FilterBuilder.Build(10000, 0.01, hashFun));
+            buildTest(FilterBuilder.Build(10000, 0.01, HashMethod.Adler32));
 
 
         }
 
-        void buildTest(Filter<string> bf)
+        void buildTest(IBloomFilter bf)
         {
             var len = 20;
             var array = new string[len];
@@ -146,11 +186,11 @@ namespace BloomFilterTest
         [Fact]
         public void FixMurmur2Test()
         {
-            var bf = FilterBuilder.Build<byte[]>(10000, 0.01, HashMethod.Murmur2);
+            var bf = FilterBuilder.Build(10000, 0.01, HashMethod.Murmur2);
 
             var rng = RandomNumberGenerator.Create();
 
-            var data = new byte[1024]; 
+            var data = new byte[1024];
             rng.GetBytes(data);
 
             Assert.True(bf.Add(data));
