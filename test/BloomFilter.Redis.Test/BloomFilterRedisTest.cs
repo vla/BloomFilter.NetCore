@@ -27,7 +27,7 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.SHA512)]
         public void NormalTest(HashMethod hashMethod)
         {
-            var bf = FilterRedisBuilder.Build<string>("localhost", "NormalTest", 10000, 0.01, hashMethod);
+            var bf = FilterRedisBuilder.Build("localhost", "NormalTest", 10000, 0.01, hashMethod);
 
             var len = 10;
             var array = new string[len];
@@ -64,7 +64,7 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.SHA512)]
         public async Task NormalTestAsync(HashMethod hashMethod)
         {
-            var bf = FilterRedisBuilder.Build<string>("localhost", "NormalTestAsync", 10000, 0.01, hashMethod);
+            var bf = FilterRedisBuilder.Build("localhost", "NormalTestAsync", 10000, 0.01, hashMethod);
 
             var len = 10;
             var array = new string[len];
@@ -89,7 +89,7 @@ namespace BloomFilter.Redis.Test
         {
             var config = ConfigurationOptions.Parse("localhost");
 
-            var bf = FilterRedisBuilder.Build<int>(config, "IntTest", 10000, 0.01);
+            var bf = FilterRedisBuilder.Build(config, "IntTest", 10000, 0.01);
 
             var len = 10;
             var array = new int[len];
@@ -115,7 +115,7 @@ namespace BloomFilter.Redis.Test
         {
             var config = ConfigurationOptions.Parse("localhost");
 
-            var bf = FilterRedisBuilder.Build<int>(config, "IntTestAsync", 10000, 0.01);
+            var bf = FilterRedisBuilder.Build(config, "IntTestAsync", 10000, 0.01);
 
             var len = 10;
             var array = new int[len];
@@ -144,39 +144,39 @@ namespace BloomFilter.Redis.Test
             var conn = ConnectionMultiplexer.Connect(config);
             var operate = new RedisBitOperate(conn);
 
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000));
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, HashMethod.Adler32));
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01));
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000, hashFun));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01, hashFun));
+            buildTest(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000));
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, HashMethod.Adler32));
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01));
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, hashFun));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01, hashFun));
+            buildTest(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000));
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, HashMethod.Adler32));
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01));
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000, hashFun));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01, hashFun));
+            buildTest(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000));
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, HashMethod.Adler32));
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01));
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01, hashFun));
-            buildTest(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000, hashFun));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000, HashMethod.Adler32));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01, hashFun));
+            buildTest(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
 
             conn.Dispose();
         }
 
-        void buildTest(Filter<string> bf)
+        void buildTest(IBloomFilter bf)
         {
             var len = 20;
             var array = new string[len];
@@ -204,39 +204,39 @@ namespace BloomFilter.Redis.Test
             var conn = ConnectionMultiplexer.Connect(config);
             var operate = new RedisBitOperate(conn);
 
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, HashMethod.Adler32));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(config, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(config, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000));
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, HashMethod.Adler32));
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01));
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>("localhost", "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build("localhost", "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, HashMethod.Adler32));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(conn, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(conn, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, HashMethod.Adler32));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01, hashFun));
-            await buildTestAsync(FilterRedisBuilder.Build<string>(operate, "BuildTest", 10000, 0.01, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000, HashMethod.Adler32));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01, hashFun));
+            await buildTestAsync(FilterRedisBuilder.Build(operate, "BuildTest", 10000, 0.01, HashMethod.Adler32));
 
 
             conn.Dispose();
         }
 
-        async Task buildTestAsync(Filter<string> bf)
+        async Task buildTestAsync(IBloomFilter bf)
         {
             var len = 20;
             var array = new string[len];
