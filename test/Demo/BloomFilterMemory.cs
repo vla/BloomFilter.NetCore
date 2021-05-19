@@ -14,17 +14,15 @@ namespace Demo
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterBuilder.Build<string>(10000000, 0.01, hm);
+                    var bf = FilterBuilder.Build(10000000, 0.01, hm);
                     Sample(bf);
                 }
             }
         }
 
        
-        private void Sample(Filter<string> bf)
+        private void Sample(IBloomFilter bf)
         {
-            Console.WriteLine(bf.Hash.GetType().Name);
-            Console.WriteLine(bf);
 
             bf.Add("CAR_CAR_LOG1ssd3");
             Console.WriteLine(bf.Contains("CAR_CAR_LOG1ssd3"));

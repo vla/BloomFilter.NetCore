@@ -15,7 +15,7 @@ namespace Demo
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", 5000000, 0.001, hm);
+                    var bf = FilterRedisBuilder.Build("localhost", "bftest", 5000000, 0.001, hm);
                     Sample(bf);
                     bf.Dispose();
                 }
@@ -23,10 +23,8 @@ namespace Demo
         }
 
 
-        private void Sample(Filter<string> bf)
+        private void Sample(IBloomFilter bf)
         {
-            Console.WriteLine(bf.Hash.GetType().Name);
-            Console.WriteLine(bf);
 
             bf.Add("CAR_CAR_LOG1ssd3");
             Console.WriteLine(bf.Contains("CAR_CAR_LOG1ssd3"));

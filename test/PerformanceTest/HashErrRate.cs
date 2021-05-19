@@ -30,7 +30,7 @@ namespace PerformanceTest
         private void ErrRateTest(HashMethod hashMethod, IList<byte[]> hashData, IList<byte[]> probeData, int n, double p)
         {
 
-            var bf = FilterBuilder.Build<string>(n, p, hashMethod);
+            var bf = FilterBuilder.Build(n, p, hashMethod);
 
             int inserts = hashData.Count;
             int errRates = 0;

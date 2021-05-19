@@ -15,7 +15,7 @@ namespace BenchmarkTest
     [MemoryDiagnoser]
     public class MemoryBenchmark
     {
-        private Filter<string> filter;
+        private IBloomFilter filter;
         private byte[] data;
 
         [ParamsAllValues]
@@ -31,7 +31,7 @@ namespace BenchmarkTest
             var errRate = 0.01;
 
             data = Helper.GenerateBytes(DataSize);
-            filter = FilterBuilder.Build<string>(n, errRate, Method);
+            filter = FilterBuilder.Build(n, errRate, Method);
         }
 
         [Benchmark]

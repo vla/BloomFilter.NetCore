@@ -13,781 +13,265 @@ namespace BloomFilter
     {
         #region Byte
 
-        /// <summary>
-        /// Adds the specified elements.
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static bool Add(this IBloomFilter bloomFilter, byte data) => bloomFilter.Add(new[] { data });
 
-        /// <summary>
-        /// Async Adds the specified elements.
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, byte data) => bloomFilter.AddAsync(new[] { data });
 
-        /// <summary>
-        /// Tests whether an elements is present in the filter
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements"></param>
-        /// <returns></returns>
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, byte data) => bloomFilter.Contains(new[] { data });
 
-        /// <summary>
-        /// Async Tests whether an elements is present in the filter
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements"></param>
-        /// <returns></returns>
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, byte data) => bloomFilter.ContainsAsync(new[] { data });
 
-        /// <summary>
-        /// Alls the specified elements.
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.Add(elements.Select(data => new byte[] { data }));
 
-        /// <summary>
-        /// Async Alls the specified elements.
-        /// </summary>
-        /// <param name="bloomFilter"></param>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<byte[]> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.AddAsync(elements.Select(data => new byte[] { data }));
 
-        public static bool Add(this IBloomFilter bloomFilter, byte data)
-        {
-            return bloomFilter.Add(new[] { data });
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.Contains(elements.Select(data => new byte[] { data }));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, byte data)
-        {
-            return bloomFilter.AddAsync(new[] { data });
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.ContainsAsync(elements.Select(data => new byte[] { data }));
 
-        public static bool Contains(this IBloomFilter bloomFilter, byte data)
-        {
-            return bloomFilter.Contains(new[] { data });
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.All(elements.Select(data => new byte[] { data }));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, byte data)
-        {
-            return bloomFilter.ContainsAsync(new[] { data });
-        }
-
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
-
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
-
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
-
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
-
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
-
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<byte> elements) => bloomFilter.AllAsync(elements.Select(data => new byte[] { data }));
 
         #endregion Byte
 
         #region String
 
-        public static bool Add(this IBloomFilter bloomFilter, string data)
-        {
-            return bloomFilter.Add(Encoding.UTF8.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, string data) => bloomFilter.Add(Encoding.UTF8.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, string data)
-        {
-            return bloomFilter.AddAsync(Encoding.UTF8.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, string data) => bloomFilter.AddAsync(Encoding.UTF8.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, string data)
-        {
-            return bloomFilter.Contains(Encoding.UTF8.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, string data) => bloomFilter.Contains(Encoding.UTF8.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, string data)
-        {
-            return bloomFilter.ContainsAsync(Encoding.UTF8.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, string data) => bloomFilter.ContainsAsync(Encoding.UTF8.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.Add(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.AddAsync(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.Contains(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.ContainsAsync(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.All(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<string> elements) => bloomFilter.AllAsync(elements.Select(data => Encoding.UTF8.GetBytes(data)));
 
         #endregion String
 
         #region Double
 
-        public static bool Add(this IBloomFilter bloomFilter, double data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, double data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, double data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, double data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, double data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, double data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, double data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, double data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<double> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion Double
 
         #region Single
 
-        public static bool Add(this IBloomFilter bloomFilter, float data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, float data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, float data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, float data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, float data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, float data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, float data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, float data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<float> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion Single
 
         #region Int16
 
-        public static bool Add(this IBloomFilter bloomFilter, short data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, short data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, short data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, short data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, short data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, short data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, short data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, short data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<short> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion Int16
 
         #region Int32
 
-        public static bool Add(this IBloomFilter bloomFilter, int data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, int data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, int data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, int data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, int data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, int data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, int data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, int data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<int> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion Int32
 
         #region Int64
 
-        public static bool Add(this IBloomFilter bloomFilter, long data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, long data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, long data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, long data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, long data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, long data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, long data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, long data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<long> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion Int64
 
         #region UInt16
 
-        public static bool Add(this IBloomFilter bloomFilter, ushort data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, ushort data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, ushort data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, ushort data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, ushort data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, ushort data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, ushort data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, ushort data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<ushort> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion UInt16
 
         #region UInt32
 
-        public static bool Add(this IBloomFilter bloomFilter, uint data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, uint data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, uint data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, uint data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, uint data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, uint data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, uint data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, uint data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<uint> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion UInt32
 
         #region UInt64
 
-        public static bool Add(this IBloomFilter bloomFilter, ulong data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, ulong data) => bloomFilter.Add(BitConverter.GetBytes(data));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, ulong data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, ulong data) => bloomFilter.AddAsync(BitConverter.GetBytes(data));
 
-        public static bool Contains(this IBloomFilter bloomFilter, ulong data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, ulong data) => bloomFilter.Contains(BitConverter.GetBytes(data));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, ulong data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, ulong data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<ulong> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data)));
 
         #endregion UInt64
 
         #region DateTime
 
-        public static bool Add(this IBloomFilter bloomFilter, DateTime data)
-        {
-            return bloomFilter.Add(BitConverter.GetBytes(data.Ticks));
-        }
+        public static bool Add(this IBloomFilter bloomFilter, DateTime data) => bloomFilter.Add(BitConverter.GetBytes(data.Ticks));
 
-        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, DateTime data)
-        {
-            return bloomFilter.AddAsync(BitConverter.GetBytes(data.Ticks));
-        }
+        public static Task<bool> AddAsync(this IBloomFilter bloomFilter, DateTime data) => bloomFilter.AddAsync(BitConverter.GetBytes(data.Ticks));
 
-        public static bool Contains(this IBloomFilter bloomFilter, DateTime data)
-        {
-            return bloomFilter.Contains(BitConverter.GetBytes(data.Ticks));
-        }
+        public static bool Contains(this IBloomFilter bloomFilter, DateTime data) => bloomFilter.Contains(BitConverter.GetBytes(data.Ticks));
 
-        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, DateTime data)
-        {
-            return bloomFilter.ContainsAsync(BitConverter.GetBytes(data.Ticks));
-        }
+        public static Task<bool> ContainsAsync(this IBloomFilter bloomFilter, DateTime data) => bloomFilter.ContainsAsync(BitConverter.GetBytes(data.Ticks));
 
-        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            return elements.Select(e => bloomFilter.Add(e)).ToList();
-        }
+        public static IList<bool> Add(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.Add(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
-        public async static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.AddAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> AddAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.AddAsync(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
-        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            return elements.Select(e => bloomFilter.Contains(e)).ToList();
-        }
+        public static IList<bool> Contains(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.Contains(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
-        public async static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await bloomFilter.ContainsAsync(el).ConfigureAwait(false));
-            }
-            return result;
-        }
+        public static Task<IList<bool>> ContainsAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.ContainsAsync(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
-        public static bool All(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            return bloomFilter.Contains(elements).All(e => e);
-        }
+        public static bool All(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.All(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
-        public async static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements)
-        {
-            return (await bloomFilter.ContainsAsync(elements).ConfigureAwait(false)).All(e => e);
-        }
+        public static Task<bool> AllAsync(this IBloomFilter bloomFilter, IEnumerable<DateTime> elements) => bloomFilter.AllAsync(elements.Select(data => BitConverter.GetBytes(data.Ticks)));
 
         #endregion DateTime
     }

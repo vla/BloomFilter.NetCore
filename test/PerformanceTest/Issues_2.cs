@@ -1,4 +1,5 @@
-﻿using BloomFilter.Redis;
+﻿using BloomFilter;
+using BloomFilter.Redis;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +14,7 @@ namespace PerformanceTest
         [Test("Redis Performance")]
         public async Task Performance()
         {
-            var bf = FilterRedisBuilder.Build<string>("localhost", "bftest", 100000, 0.01);
+            var bf = FilterRedisBuilder.Build("localhost", "bftest", 100000, 0.01);
 
             var items = new List<string>();
 

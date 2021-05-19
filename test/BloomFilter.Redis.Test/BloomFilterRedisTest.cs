@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using BloomFilter;
 using BloomFilter.Redis;
@@ -83,6 +85,51 @@ namespace BloomFilter.Redis.Test
             Assert.All(await bf.ContainsAsync(array), r => Assert.False(r));
             Assert.False(await bf.AllAsync(array));
         }
+
+        [Theory]
+        [InlineData(HashMethod.LCGWithFNV1)]
+        [InlineData(HashMethod.LCGWithFNV1a)]
+        [InlineData(HashMethod.LCGModifiedFNV1)]
+        [InlineData(HashMethod.RNGWithFNV1)]
+        [InlineData(HashMethod.RNGWithFNV1a)]
+        [InlineData(HashMethod.RNGModifiedFNV1)]
+        [InlineData(HashMethod.CRC32)]
+        [InlineData(HashMethod.Adler32)]
+        [InlineData(HashMethod.Murmur2)]
+        [InlineData(HashMethod.Murmur3)]
+        [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
+        [InlineData(HashMethod.SHA1)]
+        [InlineData(HashMethod.SHA256)]
+        [InlineData(HashMethod.SHA384)]
+        [InlineData(HashMethod.SHA512)]
+        public void BytesArrayTest(HashMethod hashMethod)
+        {
+            var bf = FilterRedisBuilder.Build("localhost", "BytesArrayTest", 10000, 0.01, hashMethod);
+
+            var rng = RandomNumberGenerator.Create();
+
+            var len = 10;
+            var list = new List<byte[]>(len);
+            for (int i = 0; i < len; i++)
+            {
+                var data = new byte[1024];
+                rng.GetBytes(data);
+                list.Add(data);
+            }
+
+            Assert.All(bf.Add(list), r => Assert.True(r));
+            Assert.All(bf.Contains(list), r => Assert.True(r));
+
+            Assert.True(bf.All(list));
+
+            bf.Clear();
+
+            Assert.All(bf.Contains(list), r => Assert.False(r));
+            Assert.False(bf.All(list));
+
+
+        }
+
 
         [Fact]
         public void IntTest()

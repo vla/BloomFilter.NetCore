@@ -95,57 +95,22 @@ namespace BloomFilterTest
 
         }
 
-        [Theory]
-        [InlineData(HashMethod.LCGWithFNV1)]
-        [InlineData(HashMethod.LCGWithFNV1a)]
-        [InlineData(HashMethod.LCGModifiedFNV1)]
-        [InlineData(HashMethod.RNGWithFNV1)]
-        [InlineData(HashMethod.RNGWithFNV1a)]
-        [InlineData(HashMethod.RNGModifiedFNV1)]
-        [InlineData(HashMethod.CRC32)]
-        [InlineData(HashMethod.Adler32)]
-        [InlineData(HashMethod.Murmur2)]
-        [InlineData(HashMethod.Murmur3)]
-        [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
-        [InlineData(HashMethod.SHA1)]
-        [InlineData(HashMethod.SHA256)]
-        [InlineData(HashMethod.SHA384)]
-        [InlineData(HashMethod.SHA512)]
-        public void ValueTypeTest(HashMethod hashMethod)
-        {
-            var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
-
-            var len = 50;
-            var list = new List<int>(len);
-            for (int i = 0; i < len; i++)
-            {
-                list.Add(i);
-            }
-
-            Assert.All(bf.Add(list), r => Assert.True(r));
-            Assert.All(bf.Contains(list), r => Assert.True(r));
-
-            Assert.True(bf.All(list));
-
-            bf.Clear();
-
-            Assert.All(bf.Contains(list), r => Assert.False(r));
-            Assert.False(bf.All(list));
-
-
-        }
-
+        
         [Fact]
         public void Can_DataType_Exception_Constraint()
         {
             Assert.Throws<NotSupportedException>(() =>
             {
+#pragma warning disable CS0618 // 类型或成员已过时
                 FilterBuilder.Build<BloomFilterTest>(10000, 0.01);
+#pragma warning restore CS0618 // 类型或成员已过时
             });
 
             Assert.Throws<NotSupportedException>(() =>
             {
+#pragma warning disable CS0618 // 类型或成员已过时
                 FilterBuilder.Build<object>(10000, 0.01);
+#pragma warning restore CS0618 // 类型或成员已过时
             });
         }
 

@@ -19,7 +19,7 @@ namespace PerformanceTest
 
             var hashData = Helper.GenerateData(n);
 
-            var warm_up = FilterRedisBuilder.Build<string>("localhost", "RedisPerformance", n, errRate);
+            var warm_up = FilterRedisBuilder.Build("localhost", "RedisPerformance", n, errRate);
             warm_up.Clear();
             Console.WriteLine($"=================== warm_up Performance =================== ");
             Performance(hashData, warm_up);
@@ -29,7 +29,7 @@ namespace PerformanceTest
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterRedisBuilder.Build<string>("localhost", "RedisPerformance", n, errRate, hm);
+                    var bf = FilterRedisBuilder.Build("localhost", "RedisPerformance", n, errRate, hm);
                     bf.Clear();
                     Console.WriteLine($"=================== {name} Performance =================== ");
                     Performance(hashData, bf);
@@ -60,7 +60,7 @@ namespace PerformanceTest
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterRedisBuilder.Build<string>(configuration, "bftest", n, errRate, hm);
+                    var bf = FilterRedisBuilder.Build(configuration, "bftest", n, errRate, hm);
                     bf.Clear();
                     Console.WriteLine($"=================== {name} Performance =================== ");
                     Performance(hashData, bf);
@@ -82,14 +82,14 @@ namespace PerformanceTest
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterBuilder.Build<string>(n, errRate, hm);
+                    var bf = FilterBuilder.Build(n, errRate, hm);
                     Console.WriteLine($"=================== {name} Performance =================== ");
                     Performance(hashData, bf);
                 }
             }
         }
 
-        private void Performance(IList<byte[]> hashData, Filter<string> bf)
+        private void Performance(IList<byte[]> hashData, IBloomFilter bf)
         {
             Stopwatch sw = Stopwatch.StartNew();
 
@@ -123,7 +123,7 @@ namespace PerformanceTest
                     if (hasErr)
                         return;
                     hasErr = true;
-                    Console.WriteLine(bf.Hash.ToString() + ":Error Match!");
+                    Console.WriteLine("Error Match!");
                 }
             });
 

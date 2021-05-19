@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace BloomFilter.Redis
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Filter{T}" />
+    [Obsolete("Use non-generic FilterRedis")]
     public class FilterRedis<T> : Filter<T>
     {
         private readonly IRedisBitOperate _redisBitOperate;
@@ -63,17 +65,12 @@ namespace BloomFilter.Redis
             return results.Any(a => !a);
         }
 
-        /// <summary>
-        /// Adds the specified elements.
-        /// </summary>
-        /// <param name="elements">The elements.</param>
-        /// <returns></returns>
-        public override IList<bool> Add(IEnumerable<T> elements)
+        public override IList<bool> Add(IEnumerable<byte[]> elements)
         {
             var addHashs = new List<int>();
             foreach (var element in elements)
             {
-                addHashs.AddRange(ComputeHash(ToBytes(element)));
+                addHashs.AddRange(ComputeHash(element));
             }
 
             IList<bool> results = new List<bool>();
@@ -95,12 +92,12 @@ namespace BloomFilter.Redis
             return results;
         }
 
-        public override async Task<IList<bool>> AddAsync(IEnumerable<T> elements)
+        public async override Task<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
         {
             var addHashs = new List<int>();
             foreach (var element in elements)
             {
-                addHashs.AddRange(ComputeHash(ToBytes(element)));
+                addHashs.AddRange(ComputeHash(element));
             }
 
             IList<bool> results = new List<bool>();
@@ -120,19 +117,6 @@ namespace BloomFilter.Redis
             }
 
             return results;
-        }
-
-        /// <summary>
-        /// Removes all elements from the filter
-        /// </summary>
-        public override void Clear()
-        {
-            _redisBitOperate.Clear(_name);
-        }
-
-        public override Task ClearAsync()
-        {
-            return _redisBitOperate.ClearAsync(_name);
         }
 
         /// <summary>
@@ -158,17 +142,12 @@ namespace BloomFilter.Redis
             return results.All(a => a);
         }
 
-        /// <summary>
-        /// Tests whether an elements is present in the filter
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <returns></returns>
-        public override IList<bool> Contains(IEnumerable<T> elements)
+        public override IList<bool> Contains(IEnumerable<byte[]> elements)
         {
             var addHashs = new List<int>();
             foreach (var element in elements)
             {
-                addHashs.AddRange(ComputeHash(ToBytes(element)));
+                addHashs.AddRange(ComputeHash(element));
             }
 
             IList<bool> results = new List<bool>();
@@ -190,12 +169,12 @@ namespace BloomFilter.Redis
             return results;
         }
 
-        public override async Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
+        public async override Task<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
         {
             var addHashs = new List<int>();
             foreach (var element in elements)
             {
-                addHashs.AddRange(ComputeHash(ToBytes(element)));
+                addHashs.AddRange(ComputeHash(element));
             }
 
             IList<bool> results = new List<bool>();
@@ -215,6 +194,29 @@ namespace BloomFilter.Redis
             }
 
             return results;
+        }
+
+        public override bool All(IEnumerable<byte[]> elements)
+        {
+            return Contains(elements).All(e => e);
+        }
+
+        public async override Task<bool> AllAsync(IEnumerable<byte[]> elements)
+        {
+            return (await ContainsAsync(elements)).All(e => e);
+        }
+
+        /// <summary>
+        /// Removes all elements from the filter
+        /// </summary>
+        public override void Clear()
+        {
+            _redisBitOperate.Clear(_name);
+        }
+
+        public override Task ClearAsync()
+        {
+            return _redisBitOperate.ClearAsync(_name);
         }
 
         public override void Dispose()

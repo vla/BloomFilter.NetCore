@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BloomFilter
@@ -8,6 +11,7 @@ namespace BloomFilter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Filter{T}" />
+    [Obsolete("Use non-generic FilterMemory")]
     public class FilterMemory<T> : Filter<T>
     {
         private readonly BitArray _hashBits;
@@ -73,6 +77,55 @@ namespace BloomFilter
             return Task.FromResult(Add(element));
         }
 
+        public override IList<bool> Add(IEnumerable<byte[]> elements)
+        {
+            var hashes = new List<int>();
+            foreach (var element in elements)
+            {
+                hashes.AddRange(ComputeHash(element));
+            }
+
+            var processResults = new bool[hashes.Count];
+            lock (sync)
+            {
+                for (var i = 0; i < hashes.Count; i++)
+                {
+                    if (!_hashBits.Get(hashes[i]))
+                    {
+                        _hashBits.Set(hashes[i], true);
+                        processResults[i] = false;
+                    }
+                    else
+                    {
+                        processResults[i] = true;
+                    }
+                }
+            }
+
+            IList<bool> results = new List<bool>();
+            bool wasAdded = false;
+            int processed = 0;
+
+            //For each value check, if all bits in ranges of hashes bits are set
+            foreach (var item in processResults)
+            {
+                if (!item) wasAdded = true;
+                if ((processed + 1) % Hashes == 0)
+                {
+                    results.Add(wasAdded);
+                    wasAdded = false;
+                }
+                processed++;
+            }
+
+            return results;
+        }
+
+        public override Task<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
+        {
+            return Task.FromResult(Add(elements));
+        }
+
         /// <summary>
         /// Tests whether an element is present in the filter
         /// </summary>
@@ -97,6 +150,57 @@ namespace BloomFilter
             return Task.FromResult(Contains(element));
         }
 
+        public override IList<bool> Contains(IEnumerable<byte[]> elements)
+        {
+            var hashes = new List<int>();
+            foreach (var element in elements)
+            {
+                hashes.AddRange(ComputeHash(element));
+            }
+
+            var processResults = new bool[hashes.Count];
+            lock (sync)
+            {
+                for (var i = 0; i < hashes.Count; i++)
+                {
+                    processResults[i] = _hashBits.Get(hashes[i]);
+                }
+            }
+
+            IList<bool> results = new List<bool>();
+            bool isPresent = true;
+            int processed = 0;
+
+            //For each value check, if all bits in ranges of hashes bits are set
+            foreach (var item in processResults)
+            {
+                if (!item) isPresent = false;
+                if ((processed + 1) % Hashes == 0)
+                {
+                    results.Add(isPresent);
+                    isPresent = true;
+                }
+                processed++;
+            }
+
+            return results;
+        }
+
+        public override Task<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
+        {
+            return Task.FromResult(Contains(elements));
+        }
+
+        public override bool All(IEnumerable<byte[]> elements)
+        {
+            return Contains(elements).All(e => e);
+        }
+
+        public override Task<bool> AllAsync(IEnumerable<byte[]> elements)
+        {
+            return Task.FromResult(All(elements));
+        }
+
         /// <summary>
         /// Removes all elements from the filter
         /// </summary>
@@ -116,7 +220,6 @@ namespace BloomFilter
 
         public override void Dispose()
         {
-
         }
     }
 }

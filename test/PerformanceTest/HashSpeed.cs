@@ -42,7 +42,7 @@ namespace PerformanceTest
 
             int count = 100000;
 
-            var bf = new FilterMemory<string>(m, k, hashFunction);
+            var bf = new FilterMemory(m, k, hashFunction);
 
             var array = new List<byte[]>();
 

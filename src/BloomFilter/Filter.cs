@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BloomFilter
@@ -103,6 +104,20 @@ namespace BloomFilter
         public abstract Task<bool> AddAsync(byte[] element);
 
         /// <summary>
+        /// Adds the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public abstract IList<bool> Add(IEnumerable<byte[]> elements);
+
+        /// <summary>
+        /// Async Adds the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public abstract Task<IList<bool>> AddAsync(IEnumerable<byte[]> elements);
+
+        /// <summary>
         /// Removes all elements from the filter
         /// </summary>
         public abstract void Clear();
@@ -125,6 +140,34 @@ namespace BloomFilter
         /// <param name="element"></param>
         /// <returns></returns>
         public abstract Task<bool> ContainsAsync(byte[] element);
+
+        /// <summary>
+        /// Tests whether an elements is present in the filter
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public abstract IList<bool> Contains(IEnumerable<byte[]> elements);
+
+        /// <summary>
+        /// Async Tests whether an elements is present in the filter
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
+        public abstract Task<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements);
+
+        /// <summary>
+        /// Alls the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public abstract bool All(IEnumerable<byte[]> elements);
+
+        /// <summary>
+        /// Async Alls the specified elements.
+        /// </summary>
+        /// <param name="elements">The elements.</param>
+        /// <returns></returns>
+        public abstract Task<bool> AllAsync(IEnumerable<byte[]> elements);
 
         /// <summary>
         ///  Hashes the specified value.

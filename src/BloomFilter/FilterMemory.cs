@@ -4,7 +4,9 @@
     /// Bloom Filter In Mempory Implement
     /// </summary>
     /// <seealso cref="Filter" />
+#pragma warning disable CS0618 
     public class FilterMemory : FilterMemory<byte[]>
+#pragma warning restore CS0618
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterMemory{T}"/> class.

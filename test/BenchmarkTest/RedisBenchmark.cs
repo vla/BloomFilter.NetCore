@@ -16,7 +16,7 @@ namespace BenchmarkTest
     [MemoryDiagnoser]
     public class RedisBenchmark
     {
-        private Filter<string> filter;
+        private IBloomFilter filter;
         private byte[] data;
 
 
@@ -30,7 +30,7 @@ namespace BenchmarkTest
             var errRate = 0.01;
 
             data = Helper.GenerateBytes(DataSize);
-            filter = FilterRedisBuilder.Build<string>("localhost", "RedisBloomFilterTest", n, errRate, HashMethod.Murmur3KirschMitzenmacher);
+            filter = FilterRedisBuilder.Build("localhost", "RedisBloomFilterTest", n, errRate, HashMethod.Murmur3KirschMitzenmacher);
             filter.Clear();
         }
 

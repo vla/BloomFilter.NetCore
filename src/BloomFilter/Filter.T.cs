@@ -12,9 +12,9 @@ namespace BloomFilter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Filter" />
+    [Obsolete("Use non-generic Filter")]
     public abstract class Filter<T> : Filter
     {
-
         private bool isBytes;
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace BloomFilter
         /// or
         /// errorRate
         /// </exception>
-        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
+        /// <exception cref="ArgumentNullException">hashFunction</exception>
         public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
             : base(expectedElements, errorRate, hashFunction)
         {
@@ -46,19 +46,19 @@ namespace BloomFilter
         /// or
         /// hashes - hashes must be > 0
         /// </exception>
-        /// <exception cref="System.ArgumentNullException">hashFunction</exception>
+        /// <exception cref="ArgumentNullException">hashFunction</exception>
         public Filter(int capacity, int hashes, HashFunction hashFunction) : base(capacity, hashes, hashFunction)
         {
             CheckElementType();
         }
-
 
         /// <summary>
         /// Adds the specified element.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns></returns>
-        public bool Add(T element)
+        [Obsolete("Use non-generic Add")]
+        public virtual bool Add(T element)
         {
             return Add(ToBytes(element));
         }
@@ -68,7 +68,8 @@ namespace BloomFilter
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns></returns>
-        public Task<bool> AddAsync(T element)
+        [Obsolete("Use non-generic AddAsync")]
+        public virtual Task<bool> AddAsync(T element)
         {
             return AddAsync(ToBytes(element));
         }
@@ -78,9 +79,10 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements">The elements.</param>
         /// <returns></returns>
+        [Obsolete("Use non-generic Add")]
         public virtual IList<bool> Add(IEnumerable<T> elements)
         {
-            return elements.Select(e => Add(e)).ToList();
+            return Add(ToBytes(elements));
         }
 
         /// <summary>
@@ -88,14 +90,10 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements">The elements.</param>
         /// <returns></returns>
-        public async virtual Task<IList<bool>> AddAsync(IEnumerable<T> elements)
+        [Obsolete("Use non-generic AddAsync")]
+        public virtual Task<IList<bool>> AddAsync(IEnumerable<T> elements)
         {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await AddAsync(el));
-            }
-            return result;
+            return AddAsync(ToBytes(elements));
         }
 
         /// <summary>
@@ -103,7 +101,8 @@ namespace BloomFilter
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public bool Contains(T element)
+        [Obsolete("Use non-generic Contains")]
+        public virtual bool Contains(T element)
         {
             return Contains(ToBytes(element));
         }
@@ -113,7 +112,8 @@ namespace BloomFilter
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public Task<bool> ContainsAsync(T element)
+        [Obsolete("Use non-generic ContainsAsync")]
+        public virtual Task<bool> ContainsAsync(T element)
         {
             return ContainsAsync(ToBytes(element));
         }
@@ -123,9 +123,10 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
+        [Obsolete("Use non-generic Contains")]
         public virtual IList<bool> Contains(IEnumerable<T> elements)
         {
-            return elements.Select(e => Contains(e)).ToList();
+            return Contains(ToBytes(elements));
         }
 
         /// <summary>
@@ -133,14 +134,10 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements"></param>
         /// <returns></returns>
-        public async virtual Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
+        [Obsolete("Use non-generic ContainsAsync")]
+        public virtual Task<IList<bool>> ContainsAsync(IEnumerable<T> elements)
         {
-            var result = new List<bool>();
-            foreach (var el in elements)
-            {
-                result.Add(await ContainsAsync(el));
-            }
-            return result;
+            return ContainsAsync(ToBytes(elements));
         }
 
         /// <summary>
@@ -148,9 +145,10 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements">The elements.</param>
         /// <returns></returns>
-        public bool All(IEnumerable<T> elements)
+        [Obsolete("Use non-generic All")]
+        public virtual bool All(IEnumerable<T> elements)
         {
-            return Contains(elements).All(e => e);
+            return All(ToBytes(elements));
         }
 
         /// <summary>
@@ -158,23 +156,28 @@ namespace BloomFilter
         /// </summary>
         /// <param name="elements">The elements.</param>
         /// <returns></returns>
-        public async Task<bool> AllAsync(IEnumerable<T> elements)
+        [Obsolete("Use non-generic AllAsync")]
+        public virtual Task<bool> AllAsync(IEnumerable<T> elements)
         {
-            return (await ContainsAsync(elements)).All(e => e);
+            return AllAsync(ToBytes(elements));
         }
 
         /// <summary>
         /// Converts the element to UTF8 bytes
         /// </summary>
-        /// <param name="elemnt">The elemnt.</param>
+        /// <param name="element">The element.</param>
         /// <returns></returns>
-        protected virtual byte[] ToBytes(T elemnt)
+        protected virtual byte[] ToBytes(T element)
         {
-            if (isBytes) return elemnt as byte[];
+            if (isBytes) return element as byte[];
 
-            return Encoding.UTF8.GetBytes(Convert.ToString(elemnt, CultureInfo.InvariantCulture));
+            return Encoding.UTF8.GetBytes(Convert.ToString(element, CultureInfo.InvariantCulture));
         }
 
+        private IList<byte[]> ToBytes(IEnumerable<T> elements)
+        {
+            return elements.Select(s => ToBytes(s)).ToList();
+        }
 
         private void CheckElementType()
         {
@@ -211,6 +214,5 @@ namespace BloomFilter
                     throw new NotSupportedException("Element type are not supported " + type.Name);
             }
         }
-
     }
 }
