@@ -10,26 +10,28 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterRedis"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="redisBitOperate">The redis bit operate.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="redisKey">The name.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int expectedElements, double errorRate, HashFunction hashFunction)
-            : base(redisBitOperate, name, expectedElements, errorRate, hashFunction)
+        public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+            : base(name, redisBitOperate, redisKey, expectedElements, errorRate, hashFunction)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterRedis"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="redisBitOperate">The redis bit operate.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="redisKey">The name.</param>
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int capacity, int hashes, HashFunction hashFunction)
-             : base(redisBitOperate, name, capacity, hashes, hashFunction)
+        public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, int capacity, int hashes, HashFunction hashFunction)
+             : base(name, redisBitOperate, redisKey, capacity, hashes, hashFunction)
         {
         }
     }

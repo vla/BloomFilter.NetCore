@@ -10,6 +10,11 @@ namespace BloomFilter
     public interface IBloomFilter : IDisposable
     {
         /// <summary>
+        /// Gets the name specified by BloomFilter.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Adds the passed value to the filter.
         /// </summary>
         /// <param name="element"></param>

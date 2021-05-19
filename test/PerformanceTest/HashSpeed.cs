@@ -14,7 +14,7 @@ namespace PerformanceTest
             HashPerformance(new HashChecksumCrc32());
             HashPerformance(new HashChecksumCrc32u());
             HashPerformance(new HashChecksumAdler32());
-            
+
             HashPerformance(new HashCryptoSHA1());
             HashPerformance(new HashCryptoSHA256());
             HashPerformance(new HashCryptoSHA384());
@@ -42,7 +42,7 @@ namespace PerformanceTest
 
             int count = 100000;
 
-            var bf = new FilterMemory(m, k, hashFunction);
+            var bf = new FilterMemory(BloomFilterConstValue.DefaultInMemoryName, m, k, hashFunction);
 
             var array = new List<byte[]>();
 

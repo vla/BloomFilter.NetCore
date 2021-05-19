@@ -11,6 +11,11 @@ namespace BloomFilter
     public abstract class Filter : IBloomFilter
     {
         /// <summary>
+        /// Gets the name specified by BloomFilter.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
         /// <see cref="HashFunction"/>
         /// </summary>
         public HashFunction Hash { get; }
@@ -38,6 +43,7 @@ namespace BloomFilter
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
@@ -47,13 +53,14 @@ namespace BloomFilter
         /// errorRate
         /// </exception>
         /// <exception cref="ArgumentNullException">hashFunction</exception>
-        public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
+        public Filter(string name, int expectedElements, double errorRate, HashFunction hashFunction)
         {
             if (expectedElements < 1)
                 throw new ArgumentOutOfRangeException("expectedElements", expectedElements, "expectedElements must be > 0");
             if (errorRate >= 1 || errorRate <= 0)
                 throw new ArgumentOutOfRangeException("errorRate", errorRate, string.Format("errorRate must be between 0 and 1, exclusive. Was {0}", errorRate));
 
+            Name = name;
             ExpectedElements = expectedElements;
             ErrorRate = errorRate;
             Hash = hashFunction ?? throw new ArgumentNullException(nameof(hashFunction));
@@ -65,6 +72,7 @@ namespace BloomFilter
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter{T}"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
@@ -74,13 +82,14 @@ namespace BloomFilter
         /// hashes - hashes must be > 0
         /// </exception>
         /// <exception cref="ArgumentNullException">hashFunction</exception>
-        public Filter(int capacity, int hashes, HashFunction hashFunction)
+        public Filter(string name, int capacity, int hashes, HashFunction hashFunction)
         {
             if (capacity < 1)
                 throw new ArgumentOutOfRangeException("capacity", capacity, "capacity must be > 0");
             if (capacity < 1)
                 throw new ArgumentOutOfRangeException("hashes", hashes, "hashes must be > 0");
 
+            Name = name;
             Capacity = capacity;
             Hashes = hashes;
             Hash = hashFunction ?? throw new ArgumentNullException(nameof(hashFunction));

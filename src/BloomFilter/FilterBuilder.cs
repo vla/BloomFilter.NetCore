@@ -11,10 +11,11 @@ namespace BloomFilter
         /// Creates a BloomFilter for the specified expected element
         /// </summary>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements)
+        public static IBloomFilter Build(int expectedElements, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build(expectedElements, 0.01);
+            return Build(expectedElements, 0.01, name);
         }
 
         /// <summary>
@@ -22,10 +23,11 @@ namespace BloomFilter
         /// </summary>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements, HashMethod hashMethod)
+        public static IBloomFilter Build(int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build(expectedElements, 0.01, hashMethod);
+            return Build(expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -33,10 +35,11 @@ namespace BloomFilter
         /// </summary>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements, HashFunction hashFunction)
+        public static IBloomFilter Build(int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build(expectedElements, 0.01, hashFunction);
+            return Build(expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -44,10 +47,11 @@ namespace BloomFilter
         /// </summary>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements, double errorRate)
+        public static IBloomFilter Build(int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -56,10 +60,11 @@ namespace BloomFilter
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements, double errorRate, HashMethod hashMethod)
+        public static IBloomFilter Build(int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return new FilterMemory(expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterMemory(name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -68,10 +73,11 @@ namespace BloomFilter
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(int expectedElements, double errorRate, HashFunction hashFunction)
+        public static IBloomFilter Build(int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return new FilterMemory(expectedElements, errorRate, hashFunction);
+            return new FilterMemory(name, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -79,11 +85,12 @@ namespace BloomFilter
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements)
+        public static Filter<T> Build<T>(int expectedElements, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build<T>(expectedElements, 0.01);
+            return Build<T>(expectedElements, 0.01, name);
         }
 
         /// <summary>
@@ -92,11 +99,12 @@ namespace BloomFilter
         /// <typeparam name="T"></typeparam>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements, HashMethod hashMethod)
+        public static Filter<T> Build<T>(int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build<T>(expectedElements, 0.01, hashMethod);
+            return Build<T>(expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -105,11 +113,12 @@ namespace BloomFilter
         /// <typeparam name="T"></typeparam>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements, HashFunction hashFunction)
+        public static Filter<T> Build<T>(int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build<T>(expectedElements, 0.01, hashFunction);
+            return Build<T>(expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -118,11 +127,12 @@ namespace BloomFilter
         /// <typeparam name="T"></typeparam>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements, double errorRate)
+        public static Filter<T> Build<T>(int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return Build<T>(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -132,11 +142,12 @@ namespace BloomFilter
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements, double errorRate, HashMethod hashMethod)
+        public static Filter<T> Build<T>(int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return new FilterMemory<T>(expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterMemory<T>(name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -146,11 +157,12 @@ namespace BloomFilter
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(int expectedElements, double errorRate, HashFunction hashFunction)
+        public static Filter<T> Build<T>(int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
         {
-            return new FilterMemory<T>(expectedElements, errorRate, hashFunction);
+            return new FilterMemory<T>(name, expectedElements, errorRate, hashFunction);
         }
     }
 }

@@ -15,10 +15,11 @@ namespace BloomFilter.Redis
         /// <param name="configuration">The configuration.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(configuration, redisKey, expectedElements, 0.01);
+            return Build(configuration, redisKey, expectedElements, 0.01, name);
         }
 
         /// <summary>
@@ -28,10 +29,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(configuration, redisKey, expectedElements, 0.01, hashMethod);
+            return Build(configuration, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -41,10 +43,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(configuration, redisKey, expectedElements, 0.01, hashFunction);
+            return Build(configuration, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -54,89 +57,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashMethod">The hash method.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
-        {
-            return new FilterRedis(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashFunction">The hash function.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
-        {
-            return new FilterRedis(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements)
-        {
-            return Build(configuration, redisKey, expectedElements, 0.01);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="hashMethod">The hash method.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, HashMethod hashMethod)
-        {
-            return Build(configuration, redisKey, expectedElements, 0.01, hashMethod);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="hashFunction">The hash function.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, HashFunction hashFunction)
-        {
-            return Build(configuration, redisKey, expectedElements, 0.01, hashFunction);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate)
-        {
-            return Build(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -147,10 +72,11 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterRedis(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -161,10 +87,96 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static IBloomFilter Build(string configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build(configuration, redisKey, expectedElements, 0.01, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build(configuration, redisKey, expectedElements, 0.01, hashMethod, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build(configuration, redisKey, expectedElements, 0.01, hashFunction, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return new FilterRedis(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return new FilterRedis(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -174,10 +186,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(connection, redisKey, expectedElements, 0.01, hashMethod);
+            return Build(connection, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -187,10 +200,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static IBloomFilter Build(IConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(connectionn, redisKey, expectedElements, 0.01, hashFunction);
+            return Build(connectionn, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -200,10 +214,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate)
+        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(connection, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build(connection, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -212,24 +227,11 @@ namespace BloomFilter.Redis
         /// <param name="connection">The connection.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements)
+        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(connection, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
-        }
-
-        /// <summary>
-        /// Builds the specified connection.
-        /// </summary>
-        /// <param name="connection">The connection.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashMethod">The hash method.</param>
-        /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
-        {
-            return new FilterRedis(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return Build(connection, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -239,11 +241,27 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis(name, new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+        }
+
+        /// <summary>
+        /// Builds the specified connection.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBloomFilter Build(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return new FilterRedis(name, new RedisBitOperate(connection), redisKey, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -253,10 +271,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(redisBitOperate, redisKey, expectedElements, 0.01, hashMethod);
+            return Build(redisBitOperate, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -266,10 +285,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(redisBitOperate, redisKey, expectedElements, 0.01, hashFunction);
+            return Build(redisBitOperate, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -279,10 +299,11 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -291,10 +312,11 @@ namespace BloomFilter.Redis
         /// <param name="redisBitOperate">The redis bit operate.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build(redisBitOperate, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build(redisBitOperate, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -305,10 +327,11 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterRedis(name, redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -319,10 +342,11 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static IBloomFilter Build(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis(redisBitOperate, redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis(name, redisBitOperate, redisKey, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -332,102 +356,12 @@ namespace BloomFilter.Redis
         /// <param name="configuration">The configuration.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="hashMethod">The hash method.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, HashMethod hashMethod)
-        {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashMethod);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="hashFunction">The hash function.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, HashFunction hashFunction)
-        {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashFunction);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate)
-        {
-            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashMethod">The hash method.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
-        {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <param name="errorRate">The error rate.</param>
-        /// <param name="hashFunction">The hash function.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
-        {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
-        }
-
-        /// <summary>
-        /// Creates a BloomFilter Redis for the specified expected element
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="redisKey">The redis key.</param>
-        /// <param name="expectedElements">The expected elements.</param>
-        /// <returns></returns>
-        [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements)
-        {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01);
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, name);
         }
 
         /// <summary>
@@ -438,11 +372,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashMethod);
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -453,11 +388,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashFunction);
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -468,11 +404,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -484,11 +421,12 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterRedis<T>(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -500,11 +438,109 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static Filter<T> Build<T>(string configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis<T>(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashMethod, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build<T>(configuration, redisKey, expectedElements, 0.01, hashFunction, name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return Build<T>(configuration, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return new FilterRedis<T>(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+        }
+
+        /// <summary>
+        /// Creates a BloomFilter Redis for the specified expected element
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="redisKey">The redis key.</param>
+        /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="errorRate">The error rate.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [Obsolete("Use non-generic Build")]
+        public static Filter<T> Build<T>(ConfigurationOptions configuration, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
+        {
+            return new FilterRedis<T>(name, new RedisBitOperate(configuration), redisKey, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -515,11 +551,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(connection, redisKey, expectedElements, 0.01, hashMethod);
+            return Build<T>(connection, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -530,11 +567,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connectionn, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(connectionn, redisKey, expectedElements, 0.01, hashFunction);
+            return Build<T>(connectionn, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -545,11 +583,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(connection, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(connection, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -559,11 +598,12 @@ namespace BloomFilter.Redis
         /// <param name="connection">The connection.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(connection, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(connection, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -575,11 +615,12 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterRedis<T>(name, new RedisBitOperate(connection), redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -591,11 +632,12 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IConnectionMultiplexer connection, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(new RedisBitOperate(connection), redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis<T>(name, new RedisBitOperate(connection), redisKey, expectedElements, errorRate, hashFunction);
         }
 
         /// <summary>
@@ -606,11 +648,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, hashMethod);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, hashMethod, name);
         }
 
         /// <summary>
@@ -621,11 +664,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, hashFunction);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, hashFunction, name);
         }
 
         /// <summary>
@@ -636,11 +680,12 @@ namespace BloomFilter.Redis
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -650,11 +695,12 @@ namespace BloomFilter.Redis
         /// <param name="redisBitOperate">The redis bit operate.</param>
         /// <param name="redisKey">The redis key.</param>
         /// <param name="expectedElements">The expected elements.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+            return Build<T>(redisBitOperate, redisKey, expectedElements, 0.01, HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher], name);
         }
 
         /// <summary>
@@ -666,11 +712,12 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashMethod">The hash method.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+            return new FilterRedis<T>(name, redisBitOperate, redisKey, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
         }
 
         /// <summary>
@@ -682,11 +729,12 @@ namespace BloomFilter.Redis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
+        /// <param name="name"></param>
         /// <returns></returns>
         [Obsolete("Use non-generic Build")]
-        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public static Filter<T> Build<T>(IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultRedisName)
         {
-            return new FilterRedis<T>(redisBitOperate, redisKey, expectedElements, errorRate, hashFunction);
+            return new FilterRedis<T>(name, redisBitOperate, redisKey, expectedElements, errorRate, hashFunction);
         }
     }
 }

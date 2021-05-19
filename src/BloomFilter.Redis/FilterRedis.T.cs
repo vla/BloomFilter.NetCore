@@ -14,36 +14,38 @@ namespace BloomFilter.Redis
     public class FilterRedis<T> : Filter<T>
     {
         private readonly IRedisBitOperate _redisBitOperate;
-        private readonly string _name;
+        private readonly string _redisKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterRedis{T}"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="redisBitOperate">The redis bit operate.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="redisKey">The redisKey.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int expectedElements, double errorRate, HashFunction hashFunction)
-            : base(expectedElements, errorRate, hashFunction)
+        public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+            : base(name, expectedElements, errorRate, hashFunction)
         {
             _redisBitOperate = redisBitOperate;
-            _name = name;
+            _redisKey = redisKey;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterRedis{T}"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="redisBitOperate">The redis bit operate.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="redisKey">The redisKey.</param>
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterRedis(IRedisBitOperate redisBitOperate, string name, int capacity, int hashes, HashFunction hashFunction)
-            : base(capacity, hashes, hashFunction)
+        public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, int capacity, int hashes, HashFunction hashFunction)
+            : base(name, capacity, hashes, hashFunction)
         {
             _redisBitOperate = redisBitOperate;
-            _name = name;
+            _redisKey = redisKey;
         }
 
         /// <summary>
@@ -54,14 +56,14 @@ namespace BloomFilter.Redis
         public override bool Add(byte[] element)
         {
             var positions = ComputeHash(element);
-            var results = _redisBitOperate.Set(_name, positions, true);
+            var results = _redisBitOperate.Set(_redisKey, positions, true);
             return results.Any(a => !a);
         }
 
         public override async Task<bool> AddAsync(byte[] element)
         {
             var positions = ComputeHash(element);
-            var results = await _redisBitOperate.SetAsync(_name, positions, true);
+            var results = await _redisBitOperate.SetAsync(_redisKey, positions, true);
             return results.Any(a => !a);
         }
 
@@ -75,7 +77,7 @@ namespace BloomFilter.Redis
 
             IList<bool> results = new List<bool>();
 
-            var processResults = _redisBitOperate.Set(_name, addHashs.ToArray(), true);
+            var processResults = _redisBitOperate.Set(_redisKey, addHashs.ToArray(), true);
             bool wasAdded = false;
             int processed = 0;
             foreach (var item in processResults)
@@ -102,7 +104,7 @@ namespace BloomFilter.Redis
 
             IList<bool> results = new List<bool>();
 
-            var processResults = await _redisBitOperate.SetAsync(_name, addHashs.ToArray(), true);
+            var processResults = await _redisBitOperate.SetAsync(_redisKey, addHashs.ToArray(), true);
             bool wasAdded = false;
             int processed = 0;
             foreach (var item in processResults)
@@ -128,7 +130,7 @@ namespace BloomFilter.Redis
         {
             var positions = ComputeHash(element);
 
-            var results = _redisBitOperate.Get(_name, positions);
+            var results = _redisBitOperate.Get(_redisKey, positions);
 
             return results.All(a => a);
         }
@@ -137,7 +139,7 @@ namespace BloomFilter.Redis
         {
             var positions = ComputeHash(element);
 
-            var results = await _redisBitOperate.GetAsync(_name, positions);
+            var results = await _redisBitOperate.GetAsync(_redisKey, positions);
 
             return results.All(a => a);
         }
@@ -152,7 +154,7 @@ namespace BloomFilter.Redis
 
             IList<bool> results = new List<bool>();
 
-            var processResults = _redisBitOperate.Get(_name, addHashs.ToArray());
+            var processResults = _redisBitOperate.Get(_redisKey, addHashs.ToArray());
             bool isPresent = true;
             int processed = 0;
             foreach (var item in processResults)
@@ -179,7 +181,7 @@ namespace BloomFilter.Redis
 
             IList<bool> results = new List<bool>();
 
-            var processResults = await _redisBitOperate.GetAsync(_name, addHashs.ToArray());
+            var processResults = await _redisBitOperate.GetAsync(_redisKey, addHashs.ToArray());
             bool isPresent = true;
             int processed = 0;
             foreach (var item in processResults)
@@ -211,12 +213,12 @@ namespace BloomFilter.Redis
         /// </summary>
         public override void Clear()
         {
-            _redisBitOperate.Clear(_name);
+            _redisBitOperate.Clear(_redisKey);
         }
 
         public override Task ClearAsync()
         {
-            return _redisBitOperate.ClearAsync(_name);
+            return _redisBitOperate.ClearAsync(_redisKey);
         }
 
         public override void Dispose()

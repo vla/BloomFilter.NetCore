@@ -3,18 +3,14 @@
     <AssemblyName>BloomFilter.Redis</AssemblyName>
     <AssemblyTitle>BloomFilter.Redis</AssemblyTitle>
     <PackageId>BloomFilter.Redis.NetCore</PackageId>
-    <TargetFrameworks>netstandard2.0;net45;net461;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462;net5.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'netstandard2.0'OR '$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+  <ItemGroup>
+	  <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
   </ItemGroup>
 
   <ItemGroup>

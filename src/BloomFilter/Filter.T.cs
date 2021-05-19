@@ -20,6 +20,7 @@ namespace BloomFilter
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter{T}"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
@@ -29,8 +30,8 @@ namespace BloomFilter
         /// errorRate
         /// </exception>
         /// <exception cref="ArgumentNullException">hashFunction</exception>
-        public Filter(int expectedElements, double errorRate, HashFunction hashFunction)
-            : base(expectedElements, errorRate, hashFunction)
+        public Filter(string name, int expectedElements, double errorRate, HashFunction hashFunction)
+            : base(name, expectedElements, errorRate, hashFunction)
         {
             CheckElementType();
         }
@@ -38,6 +39,7 @@ namespace BloomFilter
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter{T}"/> class.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
@@ -47,7 +49,7 @@ namespace BloomFilter
         /// hashes - hashes must be > 0
         /// </exception>
         /// <exception cref="ArgumentNullException">hashFunction</exception>
-        public Filter(int capacity, int hashes, HashFunction hashFunction) : base(capacity, hashes, hashFunction)
+        public Filter(string name, int capacity, int hashes, HashFunction hashFunction) : base(name, capacity, hashes, hashFunction)
         {
             CheckElementType();
         }
