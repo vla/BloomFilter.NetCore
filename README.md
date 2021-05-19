@@ -21,7 +21,7 @@ In Memory
 ```cs
     public class Demo
     {
-        static Filter<string> bf = FilterBuilder.Build<string>(10000000, 0.01);
+        static IBloomFilter bf = FilterBuilder.Build(10000000, 0.01);
         
         public void Sample()
         {
@@ -36,7 +36,7 @@ Use Redis
 ```cs
     public class Demo
     {
-        static Filter<string> bf = FilterRedisBuilder.Build<string>("localhost", "InstanceName", 5000000, 0.001);
+        static IBloomFilter bf = FilterRedisBuilder.Build("localhost", "InstanceName", 5000000, 0.001);
 
         public void Sample()
         {
