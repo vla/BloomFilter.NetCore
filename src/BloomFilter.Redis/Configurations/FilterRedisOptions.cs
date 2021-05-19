@@ -21,7 +21,6 @@ namespace BloomFilter.Redis.Configurations
         /// </summary>
         public int Database { get; set; } = 0;
 
-
         /// <summary>
         /// Gets or sets the username to be used to connect to the Redis server.
         /// </summary>
