@@ -222,9 +222,10 @@ namespace BloomFilterTest
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
             var len = 100;
             var list = new List<DateTime>(len);
+            var now = DateTime.Now;
             for (var i = 0; i < len; i++)
             {
-                list.Add(DateTime.Now);
+                list.Add(now.AddSeconds(i));
             }
 
             Assert.All(bf.Add(list), r => Assert.True(r));
