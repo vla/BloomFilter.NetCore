@@ -1,15 +1,14 @@
+using BloomFilter;
+using BloomFilter.HashAlgorithms;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using BloomFilter;
-using BloomFilter.HashAlgorithms;
 using Xunit;
 
 namespace BloomFilterTest
 {
     public class BloomFilterTest
     {
-
         [Theory]
         [InlineData(HashMethod.LCGWithFNV1)]
         [InlineData(HashMethod.LCGWithFNV1a)]
@@ -46,10 +45,7 @@ namespace BloomFilterTest
 
             Assert.All(bf.Contains(array), r => Assert.False(r));
             Assert.False(bf.All(array));
-
-
         }
-
 
         [Theory]
         [InlineData(HashMethod.LCGWithFNV1)]
@@ -91,26 +87,23 @@ namespace BloomFilterTest
 
             Assert.All(bf.Contains(list), r => Assert.False(r));
             Assert.False(bf.All(list));
-
-
         }
 
-        
         [Fact]
         public void Can_DataType_Exception_Constraint()
         {
             Assert.Throws<NotSupportedException>(() =>
             {
-#pragma warning disable CS0618 // 类型或成员已过时
+#pragma warning disable CS0618
                 FilterBuilder.Build<BloomFilterTest>(10000, 0.01);
-#pragma warning restore CS0618 // 类型或成员已过时
+#pragma warning restore CS0618
             });
 
             Assert.Throws<NotSupportedException>(() =>
             {
-#pragma warning disable CS0618 // 类型或成员已过时
+#pragma warning disable CS0618
                 FilterBuilder.Build<object>(10000, 0.01);
-#pragma warning restore CS0618 // 类型或成员已过时
+#pragma warning restore CS0618
             });
         }
 
@@ -124,11 +117,9 @@ namespace BloomFilterTest
             buildTest(FilterBuilder.Build(10000, 0.01));
             buildTest(FilterBuilder.Build(10000, 0.01, hashFun));
             buildTest(FilterBuilder.Build(10000, 0.01, HashMethod.Adler32));
-
-
         }
 
-        void buildTest(IBloomFilter bf)
+        private void buildTest(IBloomFilter bf)
         {
             var len = 20;
             var array = new string[len];
@@ -161,11 +152,6 @@ namespace BloomFilterTest
             Assert.True(bf.Add(data));
 
             Assert.True(bf.Contains(data));
-
-
         }
-
-
-
     }
 }

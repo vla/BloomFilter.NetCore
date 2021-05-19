@@ -36,8 +36,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static BloomFilterOptions UseInMemory(this BloomFilterOptions options,
             string name = BloomFilterConstValue.DefaultInMemoryName, Action<FilterMemoryOptions> setupActions = null)
         {
-            var filterMemoryOptions = new FilterMemoryOptions();
-            filterMemoryOptions.Name = name;
+            var filterMemoryOptions = new FilterMemoryOptions
+            {
+                Name = name
+            };
             setupActions?.Invoke(filterMemoryOptions);
             options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions));
             return options;
