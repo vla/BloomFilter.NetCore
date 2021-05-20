@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Uses the redis.
+        /// Uses the EasyCaching redis.
         /// </summary>
         /// <param name="options">Options.</param>
         /// <param name="name"></param>
@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Uses the redis.
+        /// Uses the EasyCaching redis.
         /// </summary>
         /// <param name="options">Options.</param>
         /// <param name="filterRedisOptions"></param>

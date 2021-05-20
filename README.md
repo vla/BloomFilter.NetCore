@@ -31,6 +31,19 @@ In Memory
     }
  
 ```
+Configurations
+```cs
+var services = new ServiceCollection();
+services.AddBloomFilter(setupAction =>
+{
+    setupAction.UseInMemory();
+});
+
+var provider = services.BuildServiceProvider();
+var bf = provider.GetService<IBloomFilter>();
+bf.Add("Value");
+Console.WriteLine(bf.Contains("Value"));
+```
 
 Use Redis
 ```cs
@@ -46,6 +59,98 @@ Use Redis
     }
 ```
 
+StackExchange.Redis
+```cs
+var services = new ServiceCollection();
+services.AddBloomFilter(setupAction =>
+{
+    setupAction.UseRedis(new FilterRedisOptions
+    {
+        Name = "Redis1",
+        RedisKey = "BloomFilter1",
+        Endpoints = new[] { "localhost" }.ToList()
+    });
+});
+
+var provider = services.BuildServiceProvider();
+var bf = provider.GetService<IBloomFilter>();
+bf.Add("Value");
+Console.WriteLine(bf.Contains("Value"));
+```
+
+CSRedisCore
+```cs
+var services = new ServiceCollection();
+services.AddBloomFilter(setupAction =>
+{
+    setupAction.UseCSRedis(new FilterCSRedisOptions
+    {
+        Name = "Redis1",
+        RedisKey = "CSRedis1",
+        ConnectionStrings = new[] { "localhost" }.ToList()
+    });
+});
+
+var provider = services.BuildServiceProvider();
+var bf = provider.GetService<IBloomFilter>();
+bf.Add("Value");
+Console.WriteLine(bf.Contains("Value"));
+```
+
+EasyCaching
+```cs
+var services = new ServiceCollection();
+
+services.AddEasyCaching(setupAction =>
+{
+    setupAction.UseCSRedis(configure =>
+    {
+        configure.DBConfig = new CSRedisDBOptions
+        {
+            ConnectionStrings = new System.Collections.Generic.List<string>
+            {
+                "127.0.0.1,defaultDatabase=0,poolsize=10"
+            }
+        };
+    }, "BloomFilter1");
+
+    setupAction.UseCSRedis(configure =>
+    {
+        configure.DBConfig = new CSRedisDBOptions
+        {
+            ConnectionStrings = new System.Collections.Generic.List<string>
+            {
+                "127.0.0.1,defaultDatabase=1,poolsize=10"
+            }
+        };
+    }, "BloomFilter2");
+});
+
+services.AddBloomFilter(setupAction =>
+{
+    setupAction.UseEasyCachingRedis(new FilterEasyCachingRedisOptions
+    {
+        Name = "BF1",
+        RedisKey = "EasyCaching1",
+        ProviderName = "BloomFilter1"
+    });
+
+    //BloomFilter2
+    setupAction.UseEasyCachingRedis(new FilterEasyCachingRedisOptions
+    {
+        Name = "BF2",
+        RedisKey = "EasyCaching1"
+    });
+});
+
+var provider = services.BuildServiceProvider();
+var bf = provider.GetService<IBloomFilter>();
+var bf1 = factory.Get("BF1");
+bf.Add("Value");
+Console.WriteLine(bf.Contains("Value"));
+bf1.Add("Value");
+Console.WriteLine(bf1.Contains("Value"));
+```
 
 
 Benchmark
