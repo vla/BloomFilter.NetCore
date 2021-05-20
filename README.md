@@ -12,6 +12,8 @@ Package  | NuGet         |
 -------- | :------------ |
 |**BloomFilter.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.NetCore)](https://www.nuget.org/packages/BloomFilter.NetCore)
 |**BloomFilter.Redis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.Redis.NetCore)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)
+|**BloomFilter.CSRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.CSRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)
+|**BloomFilter.EasyCaching.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.EasyCaching.NetCore)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)
 
 
 Usage
