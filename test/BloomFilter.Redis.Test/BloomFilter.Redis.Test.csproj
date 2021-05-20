@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EasyCaching.CSRedis" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -16,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BloomFilter.CSRedis\BloomFilter.CSRedis.csproj" />
+    <ProjectReference Include="..\..\src\BloomFilter.EasyCaching\BloomFilter.EasyCaching.csproj" />
     <ProjectReference Include="..\..\src\BloomFilter.Redis\BloomFilter.Redis.csproj" />
   </ItemGroup>
 </Project>

@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloomFilter.Redis.Test", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkTest", "test\BenchmarkTest\BenchmarkTest.csproj", "{CFB47A7F-580A-4F4B-940D-03D99EE70C41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloomFilter.CSRedis", "src\BloomFilter.CSRedis\BloomFilter.CSRedis.csproj", "{903B0A3A-1753-47CA-ADBC-B4379FF8F372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloomFilter.CSRedis", "src\BloomFilter.CSRedis\BloomFilter.CSRedis.csproj", "{903B0A3A-1753-47CA-ADBC-B4379FF8F372}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloomFilter.EasyCaching", "src\BloomFilter.EasyCaching\BloomFilter.EasyCaching.csproj", "{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{903B0A3A-1753-47CA-ADBC-B4379FF8F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903B0A3A-1753-47CA-ADBC-B4379FF8F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903B0A3A-1753-47CA-ADBC-B4379FF8F372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{C02DC47A-7258-4B59-AAB4-DFA208DE9B36} = {BFDF8E72-A7F7-4894-8782-74BB34438F99}
 		{CFB47A7F-580A-4F4B-940D-03D99EE70C41} = {BFDF8E72-A7F7-4894-8782-74BB34438F99}
 		{903B0A3A-1753-47CA-ADBC-B4379FF8F372} = {8D22B289-3A76-4399-BDA3-FD1B699B2F13}
+		{C4AFDCB8-077D-463A-9EF9-D2F8723F01F4} = {8D22B289-3A76-4399-BDA3-FD1B699B2F13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12D6ACDC-31C9-4A69-BE24-76E0F73E48A6}

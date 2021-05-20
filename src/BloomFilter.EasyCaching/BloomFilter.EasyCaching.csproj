@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>BloomFilter.EasyCaching</AssemblyName>
+		<AssemblyTitle>BloomFilter.EasyCaching</AssemblyTitle>
+		<PackageId>BloomFilter.EasyCaching.NetCore</PackageId>
+		<TargetFrameworks>netstandard2.0;net462;net5.0</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="EasyCaching.Core" Version="1.2.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<SignAssembly>False</SignAssembly>
+	</PropertyGroup>
+
+</Project>
