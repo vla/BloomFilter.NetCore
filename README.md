@@ -146,6 +146,7 @@ services.AddBloomFilter(setupAction =>
 });
 
 var provider = services.BuildServiceProvider();
+var factory = provider.GetService<IBloomFilterFactory>();
 var bf = provider.GetService<IBloomFilter>();
 var bf1 = factory.Get("BF1");
 bf.Add("Value");
