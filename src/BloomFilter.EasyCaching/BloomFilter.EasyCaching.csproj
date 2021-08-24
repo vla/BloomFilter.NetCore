@@ -9,7 +9,7 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="EasyCaching.Core" Version="1.2.0" />
+	  <PackageReference Include="EasyCaching.Core" Version="1.4.0" />
 	</ItemGroup>
 
 
