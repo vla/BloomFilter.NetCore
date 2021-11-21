@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>BloomFilter.Redis</AssemblyName>
-    <AssemblyTitle>BloomFilter.Redis</AssemblyTitle>
-    <PackageId>BloomFilter.Redis.NetCore</PackageId>
-    <TargetFrameworks>netstandard2.0;net462;net5.0</TargetFrameworks>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>BloomFilter.Redis</AssemblyName>
+		<AssemblyTitle>BloomFilter.Redis</AssemblyTitle>
+		<PackageId>BloomFilter.Redis.NetCore</PackageId>
+		<TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
+	</ItemGroup>
 
 </Project>
