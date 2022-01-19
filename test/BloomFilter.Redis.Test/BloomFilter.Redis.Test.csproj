@@ -20,4 +20,11 @@
     <ProjectReference Include="..\..\src\BloomFilter.EasyCaching\BloomFilter.EasyCaching.csproj" />
     <ProjectReference Include="..\..\src\BloomFilter.Redis\BloomFilter.Redis.csproj" />
   </ItemGroup>
+
+
+	<PropertyGroup>
+
+		<SignAssembly>False</SignAssembly>
+		<DelaySign>False</DelaySign>
+	</PropertyGroup>
 </Project>
