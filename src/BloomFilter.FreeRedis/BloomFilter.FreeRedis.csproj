@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>BloomFilter.FreeRedis</AssemblyName>
+		<AssemblyTitle>BloomFilter.FreeRedis</AssemblyTitle>
+		<PackageId>BloomFilter.FreeRedis.NetCore</PackageId>
+		<TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="FreeRedis" Version="0.5.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
+	</ItemGroup>
+
+</Project>

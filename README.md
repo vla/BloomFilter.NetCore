@@ -13,6 +13,7 @@ Package  | NuGet         |
 |**BloomFilter.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.NetCore)](https://www.nuget.org/packages/BloomFilter.NetCore)
 |**BloomFilter.Redis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.Redis.NetCore)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)
 |**BloomFilter.CSRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.CSRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)
+|**BloomFilter.FreeRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.FreeRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)
 |**BloomFilter.EasyCaching.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.EasyCaching.NetCore)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)
 
 
@@ -86,6 +87,25 @@ var services = new ServiceCollection();
 services.AddBloomFilter(setupAction =>
 {
     setupAction.UseCSRedis(new FilterCSRedisOptions
+    {
+        Name = "Redis1",
+        RedisKey = "CSRedis1",
+        ConnectionStrings = new[] { "localhost" }.ToList()
+    });
+});
+
+var provider = services.BuildServiceProvider();
+var bf = provider.GetService<IBloomFilter>();
+bf.Add("Value");
+Console.WriteLine(bf.Contains("Value"));
+```
+
+FreeRedis
+```cs
+var services = new ServiceCollection();
+services.AddBloomFilter(setupAction =>
+{
+    setupAction.UseFreeRedis(new FilterFreeRedisOptions
     {
         Name = "Redis1",
         RedisKey = "CSRedis1",
