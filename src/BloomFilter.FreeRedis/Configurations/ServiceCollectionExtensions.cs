@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setupActions"></param>
         public static BloomFilterOptions UseFreeRedis(this BloomFilterOptions options,
-            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterFreeRedisOptions> setupActions = null)
+            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterFreeRedisOptions>? setupActions = null)
         {
             var filterRedisOptions = new FilterFreeRedisOptions
             {

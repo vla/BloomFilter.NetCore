@@ -32,7 +32,7 @@ namespace BloomFilter.Redis.Configurations
                 }
                 else if (!string.IsNullOrWhiteSpace(_options.Configuration))
                 {
-                    redisBitOperate = new RedisBitOperate(_options.Configuration);
+                    redisBitOperate = new RedisBitOperate(_options.Configuration!);
                 }
                 else
                 {

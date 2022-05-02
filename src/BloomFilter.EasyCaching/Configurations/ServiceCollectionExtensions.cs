@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setupActions"></param>
         public static BloomFilterOptions UseEasyCachingRedis(this BloomFilterOptions options,
-            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterEasyCachingRedisOptions> setupActions = null)
+            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterEasyCachingRedisOptions>? setupActions = null)
         {
             var filterRedisOptions = new FilterEasyCachingRedisOptions
             {

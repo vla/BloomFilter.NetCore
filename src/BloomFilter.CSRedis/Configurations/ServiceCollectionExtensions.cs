@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setupActions"></param>
         public static BloomFilterOptions UseCSRedis(this BloomFilterOptions options,
-            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterCSRedisOptions> setupActions = null)
+            string name = BloomFilterConstValue.DefaultRedisName, Action<FilterCSRedisOptions>? setupActions = null)
         {
             var filterRedisOptions = new FilterCSRedisOptions
             {

@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setupActions"></param>
         public static BloomFilterOptions UseInMemory(this BloomFilterOptions options,
-            string name = BloomFilterConstValue.DefaultInMemoryName, Action<FilterMemoryOptions> setupActions = null)
+            string name = BloomFilterConstValue.DefaultInMemoryName, Action<FilterMemoryOptions>? setupActions = null)
         {
             var filterMemoryOptions = new FilterMemoryOptions
             {

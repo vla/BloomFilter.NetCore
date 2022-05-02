@@ -3,6 +3,7 @@ using CSRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Linq;
+using System;
 
 namespace BloomFilter.CSRedis.Configurations
 {
@@ -41,6 +42,11 @@ namespace BloomFilter.CSRedis.Configurations
                     return createFilter(_options.Client);
                 }
 
+                if (_options.ConnectionStrings == null || _options.ConnectionStrings.Count == 0)
+                {
+                    throw new ArgumentException($"{nameof(FilterCSRedisOptions.ConnectionStrings)} is Empty!");
+                }
+
                 if (_options.Sentinels != null && _options.Sentinels.Any())
                 {
                     var redisClient = new CSRedisClient(_options.ConnectionStrings[0], _options.Sentinels.ToArray(), _options.ReadOnly);
@@ -54,6 +60,11 @@ namespace BloomFilter.CSRedis.Configurations
                 }
                 else
                 {
+                    if (_options.NodeRule == null)
+                    {
+                        throw new ArgumentNullException(nameof(FilterCSRedisOptions.NodeRule));
+                    }
+
                     var redisClient = new CSRedisClient(_options.NodeRule, _options.ConnectionStrings.ToArray());
                     return createFilter(redisClient);
                 }

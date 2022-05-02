@@ -20,12 +20,12 @@ namespace BloomFilter.FreeRedis.Configurations
         /// <summary>
         /// Gets or sets the connection strings.
         /// </summary>
-        public List<string> ConnectionStrings { get; set; }
+        public List<string>? ConnectionStrings { get; set; }
 
         /// <summary>
         /// Gets or sets the sentinels settings.
         /// </summary>
-        public List<string> Sentinels { get; set; }
+        public List<string>? Sentinels { get; set; }
 
         /// <summary>
         /// Gets or sets the read write setting for sentinel mode.
@@ -35,6 +35,6 @@ namespace BloomFilter.FreeRedis.Configurations
         /// <summary>
         /// Shared CSRedisClient
         /// </summary>
-        public RedisClient Client { get; set; }
+        public RedisClient? Client { get; set; }
     }
 }

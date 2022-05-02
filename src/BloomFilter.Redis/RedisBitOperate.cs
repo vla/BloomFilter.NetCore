@@ -12,8 +12,8 @@ namespace BloomFilter.Redis
     /// <seealso cref="IRedisBitOperate" />
     public class RedisBitOperate : IRedisBitOperate
     {
-        private volatile IConnectionMultiplexer _connection;
-        private readonly ConfigurationOptions _configurationOptions;
+        private volatile IConnectionMultiplexer? _connection;
+        private readonly ConfigurationOptions? _configurationOptions;
         private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(initialCount: 1, maxCount: 1);
 
         //allow the release of connection

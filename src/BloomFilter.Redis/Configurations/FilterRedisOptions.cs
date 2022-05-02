@@ -24,12 +24,12 @@ namespace BloomFilter.Redis.Configurations
         /// <summary>
         /// Gets or sets the username to be used to connect to the Redis server.
         /// </summary>
-        public string Username { get; set; } = null;
+        public string? Username { get; set; }
 
         /// <summary>
         /// Gets or sets the password to be used to connect to the Redis server.
         /// </summary>
-        public string Password { get; set; } = null;
+        public string? Password { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to use SSL encryption.
@@ -40,7 +40,7 @@ namespace BloomFilter.Redis.Configurations
         /// Gets or sets the SSL Host.
         /// If set, it will enforce this particular host on the server's certificate.
         /// </summary>
-        public string SslHost { get; set; } = null;
+        public string? SslHost { get; set; }
 
         /// <summary>
         /// Gets or sets the timeout for any connect operations.
@@ -62,12 +62,12 @@ namespace BloomFilter.Redis.Configurations
         /// <summary>
         /// Gets or sets the string configuration.
         /// </summary>
-        public string Configuration { get; set; }
+        public string? Configuration { get; set; }
 
         /// <summary>
         /// Shared IConnectionMultiplexer
         /// </summary>
-        public IConnectionMultiplexer Connection { get; set; }
+        public IConnectionMultiplexer? Connection { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this FilterRedisOptions

@@ -2,6 +2,7 @@
 using FreeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 using System.Linq;
 
 namespace BloomFilter.FreeRedis.Configurations
@@ -39,6 +40,11 @@ namespace BloomFilter.FreeRedis.Configurations
                 if (_options.Client != null)
                 {
                     return createFilter(_options.Client);
+                }
+
+                if (_options.ConnectionStrings == null || _options.ConnectionStrings.Count == 0)
+                {
+                    throw new ArgumentException($"{nameof(FilterFreeRedisOptions.ConnectionStrings)} is Empty!");
                 }
 
                 if (_options.Sentinels != null && _options.Sentinels.Any())

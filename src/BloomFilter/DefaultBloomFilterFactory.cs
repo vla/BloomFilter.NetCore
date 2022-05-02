@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace BloomFilter
@@ -24,10 +25,14 @@ namespace BloomFilter
             return filter;
         }
 
-        public bool TryGet(string name, out IBloomFilter bloomFilter)
+        public bool TryGet(string name,
+#if NET5_0_OR_GREATER
+            [MaybeNullWhen(false)]
+#endif
+            out IBloomFilter bloomFilter)
         {
             bloomFilter = _bloomFilters.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-
+            var dict = new Dictionary<string, string>();
             return bloomFilter != null;
         }
     }

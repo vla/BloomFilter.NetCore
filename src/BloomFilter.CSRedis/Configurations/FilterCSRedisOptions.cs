@@ -20,17 +20,17 @@ namespace BloomFilter.CSRedis.Configurations
         /// <summary>
         /// Gets or sets the node rule.
         /// </summary>
-        public Func<string, string> NodeRule { get; set; } = null;
+        public Func<string, string>? NodeRule { get; set; }
 
         /// <summary>
         /// Gets or sets the connection strings.
         /// </summary>
-        public List<string> ConnectionStrings { get; set; }
+        public List<string>? ConnectionStrings { get; set; }
 
         /// <summary>
         /// Gets or sets the sentinels settings.
         /// </summary>
-        public List<string> Sentinels { get; set; }
+        public List<string>? Sentinels { get; set; }
 
         /// <summary>
         /// Gets or sets the read write setting for sentinel mode.
@@ -40,6 +40,6 @@ namespace BloomFilter.CSRedis.Configurations
         /// <summary>
         /// Shared CSRedisClient
         /// </summary>
-        public CSRedisClient Client { get; set; }
+        public CSRedisClient? Client { get; set; }
     }
 }

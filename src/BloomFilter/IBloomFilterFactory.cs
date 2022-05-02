@@ -1,4 +1,6 @@
-﻿namespace BloomFilter
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BloomFilter
 {
     /// <summary>
     /// BloomFilter Factory
@@ -18,6 +20,10 @@
         /// <param name="name">Name.</param>
         /// <param name="bloomFilter">The bloomFilter</param>
         /// <returns></returns>
-        bool TryGet(string name, out IBloomFilter bloomFilter);
+        bool TryGet(string name,
+#if NET5_0_OR_GREATER
+            [MaybeNullWhen(false)]
+#endif
+        out IBloomFilter bloomFilter);
     }
 }

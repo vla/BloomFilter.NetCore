@@ -18,6 +18,6 @@ namespace BloomFilter.CSRedis.Configurations
         /// <summary>
         /// The <see cref="IRedisCachingProvider"/> Name
         /// </summary>
-        public string ProviderName { get; set; }
+        public string? ProviderName { get; set; }
     }
 }

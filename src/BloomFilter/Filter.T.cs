@@ -49,7 +49,8 @@ namespace BloomFilter
         /// hashes - hashes must be > 0
         /// </exception>
         /// <exception cref="ArgumentNullException">hashFunction</exception>
-        public Filter(string name, int capacity, int hashes, HashFunction hashFunction) : base(name, capacity, hashes, hashFunction)
+        public Filter(string name, int capacity, int hashes, HashFunction hashFunction)
+            : base(name, capacity, hashes, hashFunction)
         {
             CheckElementType();
         }
@@ -171,9 +172,11 @@ namespace BloomFilter
         /// <returns></returns>
         protected virtual byte[] ToBytes(T element)
         {
-            if (isBytes) return element as byte[];
+            if (isBytes && element is byte[] bytes) return bytes;
 
-            return Encoding.UTF8.GetBytes(Convert.ToString(element, CultureInfo.InvariantCulture));
+            var str = Convert.ToString(element, CultureInfo.InvariantCulture);
+
+            return Encoding.UTF8.GetBytes(str!);
         }
 
         private IList<byte[]> ToBytes(IEnumerable<T> elements)
