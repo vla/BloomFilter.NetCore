@@ -9,7 +9,7 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="FreeRedis" Version="0.5.1" />
+		<PackageReference Include="FreeRedis" Version="0.5.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
