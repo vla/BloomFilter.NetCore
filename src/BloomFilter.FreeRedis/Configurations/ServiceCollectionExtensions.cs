@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="options">Options.</param>
         /// <param name="name"></param>
         /// <param name="setupActions"></param>
-        public static BloomFilterOptions UseCSRedis(this BloomFilterOptions options,
+        public static BloomFilterOptions UseFreeRedis(this BloomFilterOptions options,
             string name = BloomFilterConstValue.DefaultRedisName, Action<FilterFreeRedisOptions> setupActions = null)
         {
             var filterRedisOptions = new FilterFreeRedisOptions
@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="options">Options.</param>
         /// <param name="filterRedisOptions"></param>
-        public static BloomFilterOptions UseCSRedis(this BloomFilterOptions options, FilterFreeRedisOptions filterRedisOptions)
+        public static BloomFilterOptions UseFreeRedis(this BloomFilterOptions options, FilterFreeRedisOptions filterRedisOptions)
         {
             if (filterRedisOptions == null) throw new ArgumentNullException(nameof(filterRedisOptions));
             options.RegisterExtension(new FilterFreeRedisOptionsExtension(filterRedisOptions));

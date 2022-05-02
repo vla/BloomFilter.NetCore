@@ -108,7 +108,7 @@ services.AddBloomFilter(setupAction =>
     setupAction.UseFreeRedis(new FilterFreeRedisOptions
     {
         Name = "Redis1",
-        RedisKey = "CSRedis1",
+        RedisKey = "FreeRedis1",
         ConnectionStrings = new[] { "localhost" }.ToList()
     });
 });
