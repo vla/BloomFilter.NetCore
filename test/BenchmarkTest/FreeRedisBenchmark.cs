@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
+﻿using BenchmarkDotNet.Attributes;
 using BloomFilter;
-using BloomFilter.Redis;
+using BloomFilter.FreeRedis;
+using FreeRedis;
+using System.Threading.Tasks;
 
 namespace BenchmarkTest
 {
     [MemoryDiagnoser]
-    public class RedisBenchmark
+    public class FreeRedisBenchmark
     {
         private IBloomFilter filter;
         private byte[] data;
-
 
         [Params(64)]
         public int DataSize;
@@ -26,7 +22,14 @@ namespace BenchmarkTest
             var errRate = 0.01;
 
             data = Helper.GenerateBytes(DataSize);
-            filter = FilterRedisBuilder.Build("localhost", "RedisBloomFilterTest", n, errRate, HashMethod.Murmur3KirschMitzenmacher);
+            var client = new RedisClient("localhost");
+            filter = new FilterFreeRedis(
+                        BloomFilterConstValue.DefaultRedisName,
+                        client,
+                        "BloomFilter.Core",
+                        n,
+                        errRate,
+                        HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
             filter.Clear();
         }
 

@@ -11,6 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\BloomFilter.CSRedis\BloomFilter.CSRedis.csproj" />
+		<ProjectReference Include="..\..\src\BloomFilter.FreeRedis\BloomFilter.FreeRedis.csproj" />
 		<ProjectReference Include="..\..\src\BloomFilter.Redis\BloomFilter.Redis.csproj" />
 		<ProjectReference Include="..\..\src\BloomFilter\BloomFilter.csproj" />
 	</ItemGroup>
