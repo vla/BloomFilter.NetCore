@@ -14,7 +14,7 @@ namespace BloomFilter.Redis
     {
         private volatile IConnectionMultiplexer? _connection;
         private readonly ConfigurationOptions? _configurationOptions;
-        private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(initialCount: 1, maxCount: 1);
+        private readonly SemaphoreSlim _connectionLock = new(initialCount: 1, maxCount: 1);
 
         //allow the release of connection
         private bool allowRelease;
@@ -35,7 +35,7 @@ namespace BloomFilter.Redis
         /// <param name="configurationOptions">The <see cref="ConfigurationOptions"/> options.</param>
         public RedisBitOperate(ConfigurationOptions configurationOptions)
         {
-            _configurationOptions = configurationOptions;
+            _configurationOptions = configurationOptions ?? throw new ArgumentNullException(nameof(configurationOptions));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace BloomFilter.Redis
                 //Create a new connection instance
                 if (_connection == null)
                 {
-                    _connection = ConnectionMultiplexer.Connect(_configurationOptions);
+                    _connection = ConnectionMultiplexer.Connect(_configurationOptions!);
                     allowRelease = true;
                 }
                 else
@@ -218,7 +218,7 @@ namespace BloomFilter.Redis
 
                 if (_connection == null)
                 {
-                    _connection = await ConnectionMultiplexer.ConnectAsync(_configurationOptions);
+                    _connection = await ConnectionMultiplexer.ConnectAsync(_configurationOptions!);
                     allowRelease = true;
                 }
                 else

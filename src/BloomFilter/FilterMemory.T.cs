@@ -16,7 +16,7 @@ namespace BloomFilter
     {
         private readonly BitArray _hashBits;
 
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         private readonly static Task Empty = Task.FromResult(0);
 

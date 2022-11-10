@@ -1,9 +1,13 @@
 using BloomFilter.CSRedis.Configurations;
 using BloomFilter.EasyCaching;
 using CSRedis;
+using EasyCaching.Core.Serialization;
 using EasyCaching.CSRedis;
+using EasyCaching.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System.Linq;
+using System.Xml.Linq;
 using Xunit;
 
 namespace BloomFilter.Redis.Test
@@ -17,8 +21,11 @@ namespace BloomFilter.Redis.Test
 
             services.AddEasyCaching(setupAction =>
             {
+                setupAction.WithJson();
+
                 setupAction.UseCSRedis(configure =>
                 {
+                    configure.SerializerName = "json";
                     configure.DBConfig = new CSRedisDBOptions
                     {
                         ConnectionStrings = new System.Collections.Generic.List<string>
@@ -30,6 +37,7 @@ namespace BloomFilter.Redis.Test
 
                 setupAction.UseCSRedis(configure =>
                 {
+                    configure.SerializerName = "json";
                     configure.DBConfig = new CSRedisDBOptions
                     {
                         ConnectionStrings = new System.Collections.Generic.List<string>
@@ -53,7 +61,8 @@ namespace BloomFilter.Redis.Test
                 setupAction.UseEasyCachingRedis(new FilterEasyCachingRedisOptions
                 {
                     Name = "BF2",
-                    RedisKey = "EasyCaching1"
+                    RedisKey = "EasyCaching1",
+
                 });
             });
 
