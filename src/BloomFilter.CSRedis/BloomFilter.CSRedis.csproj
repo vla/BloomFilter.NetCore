@@ -11,7 +11,7 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="CSRedisCore" Version="3.8.669" />
+		<PackageReference Include="CSRedisCore" Version="3.8.670" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
