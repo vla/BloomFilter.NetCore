@@ -87,7 +87,7 @@ namespace BloomFilter.HashAlgorithms.Checksum
         /// </summary>
         public Crc32u()
         {
-            HashSizeValue = 32;
+            HashSizeValue = 64;
             Reset();
         }
 

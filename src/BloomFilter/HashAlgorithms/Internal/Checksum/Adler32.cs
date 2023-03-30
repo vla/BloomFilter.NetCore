@@ -16,7 +16,7 @@ namespace BloomFilter.HashAlgorithms.Checksum
         /// </summary>
         public Adler32()
         {
-            HashSizeValue = 32;
+            HashSizeValue = 64;
             Reset();
         }
 
