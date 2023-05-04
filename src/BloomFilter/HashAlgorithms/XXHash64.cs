@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashAlgorithms
 {
@@ -162,7 +161,6 @@ namespace BloomFilter.HashAlgorithms
             acc *= Prime64_1;
             return acc;
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong XXH_rotl64(ulong x, int r)

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashAlgorithms
 {
@@ -19,7 +18,6 @@ namespace BloomFilter.HashAlgorithms
             for (int i = 0; i < k; i++)
             {
                 positions[i] = (int)((hash1 + i * hash2) % m);
-                Debug.Assert(positions[i] > -1);
             }
             return positions;
         }

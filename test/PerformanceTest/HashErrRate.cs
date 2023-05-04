@@ -11,7 +11,7 @@ namespace PerformanceTest
         [Test("Bloom Filter Hash ErrRate")]
         public void ErrRateTest()
         {
-            var n = 100000;
+            var n = 500000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);
@@ -67,8 +67,8 @@ namespace PerformanceTest
             double errorRate = 100.0 * errRates / inserts;
             double totalErrorRate = 100.0 * totalErrRates / inserts;
 
-            Console.WriteLine($"{hashMethod} {bf} \r\n Speed:{sw.Elapsed.TotalMilliseconds}ms " +
-                $"ErrRate:{errorRate.ToString("F3")} Final ErrRate:{totalErrorRate.ToString("F3")}");
+            Console.WriteLine($"{hashMethod} {bf} \r\n Speed:{sw.Elapsed.TotalMilliseconds}ms Count:{inserts} " +
+                $"ErrRate:{errorRate:F3} ErrTotal:{errRates} Final ErrRate:{totalErrorRate:F3}");
         }
     }
 }

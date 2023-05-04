@@ -38,6 +38,7 @@ namespace BloomFilter
 
             { HashMethod.XXHash32,new XXHash32() },
             { HashMethod.XXHash64,new XXHash64() },
+
         };
 
         private const int IntMax = 2147483647;
