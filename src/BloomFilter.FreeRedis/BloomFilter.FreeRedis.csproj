@@ -3,7 +3,7 @@
 		<AssemblyName>BloomFilter.FreeRedis</AssemblyName>
 		<AssemblyTitle>BloomFilter.FreeRedis</AssemblyTitle>
 		<PackageId>BloomFilter.FreeRedis.NetCore</PackageId>
-		<TargetFrameworks>net462;netstandard2.0;net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;net6.0;net7.0</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Nullable>enable</Nullable>
