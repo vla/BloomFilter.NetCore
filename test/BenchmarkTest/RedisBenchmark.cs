@@ -9,6 +9,8 @@ using BloomFilter.Redis;
 
 namespace BenchmarkTest
 {
+    [RPlotExporter, RankColumn]
+    [MinColumn, MaxColumn]
     [MemoryDiagnoser]
     public class RedisBenchmark
     {

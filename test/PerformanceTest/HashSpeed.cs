@@ -32,6 +32,8 @@ namespace PerformanceTest
             HashPerformance(new Murmur2());
             HashPerformance(new Murmur3());
             HashPerformance(new Murmur3KirschMitzenmacher());
+            HashPerformance(new XXHash32());
+            HashPerformance(new XXHash64());
         }
 
         private void HashPerformance(HashFunction hashFunction)

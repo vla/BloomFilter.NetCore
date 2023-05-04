@@ -35,6 +35,9 @@ namespace BloomFilter
             { HashMethod.SHA256,new HashCryptoSHA256() },
             { HashMethod.SHA384,new HashCryptoSHA384() },
             { HashMethod.SHA512,new HashCryptoSHA512() },
+
+            { HashMethod.XXHash32,new XXHash32() },
+            { HashMethod.XXHash64,new XXHash64() },
         };
 
         private const int IntMax = 2147483647;

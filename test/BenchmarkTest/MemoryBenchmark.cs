@@ -8,6 +8,8 @@ using BloomFilter;
 
 namespace BenchmarkTest
 {
+    [RPlotExporter, RankColumn]
+    [MinColumn, MaxColumn]
     [MemoryDiagnoser]
     public class MemoryBenchmark
     {

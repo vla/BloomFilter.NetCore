@@ -26,6 +26,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Int32(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
@@ -64,6 +66,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Int16(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
@@ -102,6 +106,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Int64(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
@@ -140,6 +146,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Double(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
@@ -178,6 +186,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Float(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);
@@ -217,6 +227,8 @@ namespace BloomFilterTest
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void Date(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(100000, 0.01, hashMethod);

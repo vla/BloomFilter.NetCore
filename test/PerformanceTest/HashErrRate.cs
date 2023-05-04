@@ -11,7 +11,7 @@ namespace PerformanceTest
         [Test("Bloom Filter Hash ErrRate")]
         public void ErrRateTest()
         {
-            var n = 30000;
+            var n = 100000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);

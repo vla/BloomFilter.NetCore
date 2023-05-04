@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace BenchmarkTest
 {
+    [RPlotExporter, RankColumn]
+    [MinColumn, MaxColumn]
     [MemoryDiagnoser]
     public class FreeRedisBenchmark
     {

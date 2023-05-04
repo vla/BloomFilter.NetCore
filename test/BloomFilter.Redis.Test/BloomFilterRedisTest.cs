@@ -27,6 +27,8 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void NormalTest(HashMethod hashMethod)
         {
             var bf = FilterRedisBuilder.Build("localhost", "NormalTest", 10000, 0.01, hashMethod);
@@ -64,6 +66,8 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public async Task NormalTestAsync(HashMethod hashMethod)
         {
             var bf = FilterRedisBuilder.Build("localhost", "NormalTestAsync", 10000, 0.01, hashMethod);
@@ -102,6 +106,8 @@ namespace BloomFilter.Redis.Test
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
+        [InlineData(HashMethod.XXHash32)]
+        [InlineData(HashMethod.XXHash64)]
         public void BytesArrayTest(HashMethod hashMethod)
         {
             var bf = FilterRedisBuilder.Build("localhost", "BytesArrayTest", 10000, 0.01, hashMethod);
