@@ -141,14 +141,14 @@ public abstract class Filter : IBloomFilter
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public abstract bool Contains(byte[] element);
+    public abstract bool Contains(ReadOnlySpan<byte> element);
 
     /// <summary>
     /// Async Tests whether an element is present in the filter
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public abstract ValueTask<bool> ContainsAsync(byte[] element);
+    public abstract ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element);
 
     /// <summary>
     /// Tests whether an elements is present in the filter

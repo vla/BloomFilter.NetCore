@@ -47,14 +47,14 @@ public interface IBloomFilter : IDisposable
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    bool Contains(byte[] element);
+    bool Contains(ReadOnlySpan<byte> element);
 
     /// <summary>
     /// Async Tests whether an element is present in the filter
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    ValueTask<bool> ContainsAsync(byte[] element);
+    ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element);
 
     /// <summary>
     /// Tests whether an elements is present in the filter

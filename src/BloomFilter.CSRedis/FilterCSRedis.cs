@@ -114,15 +114,15 @@ namespace BloomFilter.CSRedis
             return results;
         }
 
-        public override bool Contains(byte[] element)
+        public override bool Contains(ReadOnlySpan<byte> element)
         {
             var positions = ComputeHash(element);
             return GetBit(positions).All(a => a);
         }
 
-        public override async ValueTask<bool> ContainsAsync(byte[] element)
+        public override async ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element)
         {
-            var positions = ComputeHash(element);
+            var positions = ComputeHash(element.Span);
             var results = await GetBitAsync(positions);
             return results.All(a => a);
         }

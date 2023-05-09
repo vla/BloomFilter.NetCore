@@ -59,6 +59,18 @@ public static class BloomFilterExtensions
 
     #endregion String
 
+    #region ReadOnlySpan<char>
+
+    public static bool Add(this IBloomFilter bloomFilter, ReadOnlySpan<char> data) => bloomFilter.Add(data.ToUtf8().Span);
+
+    public static ValueTask<bool> AddAsync(this IBloomFilter bloomFilter, ReadOnlyMemory<char> data) => bloomFilter.AddAsync(data.Span.ToUtf8());
+
+    public static bool Contains(this IBloomFilter bloomFilter, ReadOnlySpan<char> data) => bloomFilter.Contains(data.ToUtf8().Span);
+
+    public static ValueTask<bool> ContainsAsync(this IBloomFilter bloomFilter, ReadOnlyMemory<char> data) => bloomFilter.ContainsAsync(data.Span.ToUtf8());
+
+    #endregion String
+
     #region Double
 
     public static bool Add(this IBloomFilter bloomFilter, double data) => bloomFilter.Add(BitConverter.GetBytes(data));

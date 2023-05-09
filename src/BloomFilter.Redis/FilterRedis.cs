@@ -126,7 +126,7 @@ public class FilterRedis : Filter
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public override bool Contains(byte[] element)
+    public override bool Contains(ReadOnlySpan<byte> element)
     {
         var positions = ComputeHash(element);
 
@@ -135,9 +135,9 @@ public class FilterRedis : Filter
         return results.All(a => a);
     }
 
-    public override async ValueTask<bool> ContainsAsync(byte[] element)
+    public override async ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element)
     {
-        var positions = ComputeHash(element);
+        var positions = ComputeHash(element.Span);
 
         var results = await _redisBitOperate.GetAsync(_redisKey, positions);
 

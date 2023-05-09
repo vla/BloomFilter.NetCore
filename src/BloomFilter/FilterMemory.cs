@@ -151,7 +151,7 @@ public class FilterMemory : Filter
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public override bool Contains(byte[] element)
+    public override bool Contains(ReadOnlySpan<byte> element)
     {
         var positions = ComputeHash(element);
         lock (sync)
@@ -165,9 +165,9 @@ public class FilterMemory : Filter
         return true;
     }
 
-    public override ValueTask<bool> ContainsAsync(byte[] element)
+    public override ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element)
     {
-        return new ValueTask<bool>(Contains(element));
+        return new ValueTask<bool>(Contains(element.Span));
     }
 
     public override IList<bool> Contains(IEnumerable<byte[]> elements)
