@@ -18,15 +18,17 @@ namespace BloomFilterTest
         [InlineData(HashMethod.RNGModifiedFNV1)]
         [InlineData(HashMethod.CRC32)]
         [InlineData(HashMethod.Adler32)]
-        [InlineData(HashMethod.Murmur2)]
         [InlineData(HashMethod.Murmur3)]
-        [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
+        [InlineData(HashMethod.Murmur128BitsX64)]
+        [InlineData(HashMethod.Murmur128BitsX86)]
         [InlineData(HashMethod.SHA1)]
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
         [InlineData(HashMethod.XXHash32)]
         [InlineData(HashMethod.XXHash64)]
+        [InlineData(HashMethod.XXHash3)]
+        [InlineData(HashMethod.XXHash128)]
         public void NormalTest(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
@@ -58,15 +60,17 @@ namespace BloomFilterTest
         [InlineData(HashMethod.RNGModifiedFNV1)]
         [InlineData(HashMethod.CRC32)]
         [InlineData(HashMethod.Adler32)]
-        [InlineData(HashMethod.Murmur2)]
         [InlineData(HashMethod.Murmur3)]
-        [InlineData(HashMethod.Murmur3KirschMitzenmacher)]
+        [InlineData(HashMethod.Murmur128BitsX64)]
+        [InlineData(HashMethod.Murmur128BitsX86)]
         [InlineData(HashMethod.SHA1)]
         [InlineData(HashMethod.SHA256)]
         [InlineData(HashMethod.SHA384)]
         [InlineData(HashMethod.SHA512)]
         [InlineData(HashMethod.XXHash32)]
         [InlineData(HashMethod.XXHash64)]
+        [InlineData(HashMethod.XXHash3)]
+        [InlineData(HashMethod.XXHash128)]
         public void BytesArrayTest(HashMethod hashMethod)
         {
             var bf = FilterBuilder.Build(10000, 0.01, hashMethod);
@@ -96,7 +100,7 @@ namespace BloomFilterTest
         [Fact]
         public void BuildTest()
         {
-            var hashFun = new HashChecksumCrc32();
+            var hashFun = new Crc32();
             buildTest(FilterBuilder.Build(10000));
             buildTest(FilterBuilder.Build(10000, hashFun));
             buildTest(FilterBuilder.Build(10000, HashMethod.Adler32));
@@ -126,9 +130,9 @@ namespace BloomFilterTest
         }
 
         [Fact]
-        public void FixMurmur2Test()
+        public void FixMurmur3Test()
         {
-            var bf = FilterBuilder.Build(10000, 0.01, HashMethod.Murmur2);
+            var bf = FilterBuilder.Build(10000, 0.01, HashMethod.Murmur3);
 
             var rng = RandomNumberGenerator.Create();
 

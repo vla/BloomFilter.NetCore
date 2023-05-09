@@ -33,6 +33,11 @@ namespace PerformanceTest
             return buff;
         }
 
+        public static IList<byte[]> GenerateData(uint n)
+        {
+            return GenerateData((int)n);
+        }
+
         public static IList<byte[]> GenerateData(int n)
         {
             var random = new Random(Guid.NewGuid().GetHashCode());

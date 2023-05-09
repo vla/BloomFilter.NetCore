@@ -1,6 +1,7 @@
 ﻿using CSRedis;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace BloomFilter.CSRedis
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterCSRedis(string name, CSRedisClient client, string redisKey, int expectedElements, double errorRate, HashFunction hashFunction)
+        public FilterCSRedis(string name, CSRedisClient client, string redisKey, uint expectedElements, double errorRate, HashFunction hashFunction)
             : base(name, expectedElements, errorRate, hashFunction)
         {
             if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -40,7 +41,7 @@ namespace BloomFilter.CSRedis
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterCSRedis(string name, CSRedisClient client, string redisKey, int capacity, int hashes, HashFunction hashFunction)
+        public FilterCSRedis(string name, CSRedisClient client, string redisKey, uint capacity, uint hashes, HashFunction hashFunction)
             : base(name, capacity, hashes, hashFunction)
         {
             if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -48,22 +49,22 @@ namespace BloomFilter.CSRedis
             _redisKey = redisKey;
         }
 
-        public override bool Add(byte[] element)
+        public override bool Add(ReadOnlySpan<byte> data)
         {
-            var positions = ComputeHash(element);
+            var positions = ComputeHash(data);
             return SetBit(positions).Any(a => !a);
         }
 
-        public async override Task<bool> AddAsync(byte[] element)
+        public override async ValueTask<bool> AddAsync(ReadOnlyMemory<byte> data)
         {
-            var positions = ComputeHash(element);
+            var positions = ComputeHash(data.Span);
             var results = await SetBitAsync(positions);
             return results.Any(a => !a);
         }
 
         public override IList<bool> Add(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<int>();
+            var addHashs = new List<uint>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -87,9 +88,9 @@ namespace BloomFilter.CSRedis
             return results;
         }
 
-        public async override Task<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
+        public override async ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<int>();
+            var addHashs = new List<uint>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -119,7 +120,7 @@ namespace BloomFilter.CSRedis
             return GetBit(positions).All(a => a);
         }
 
-        public async override Task<bool> ContainsAsync(byte[] element)
+        public override async ValueTask<bool> ContainsAsync(byte[] element)
         {
             var positions = ComputeHash(element);
             var results = await GetBitAsync(positions);
@@ -128,7 +129,7 @@ namespace BloomFilter.CSRedis
 
         public override IList<bool> Contains(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<int>();
+            var addHashs = new List<uint>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -153,9 +154,9 @@ namespace BloomFilter.CSRedis
             return results;
         }
 
-        public async override Task<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
+        public override async ValueTask<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<int>();
+            var addHashs = new List<uint>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -185,7 +186,7 @@ namespace BloomFilter.CSRedis
             return Contains(elements).All(e => e);
         }
 
-        public async override Task<bool> AllAsync(IEnumerable<byte[]> elements)
+        public override async ValueTask<bool> AllAsync(IEnumerable<byte[]> elements)
         {
             return (await ContainsAsync(elements)).All(e => e);
         }
@@ -195,9 +196,9 @@ namespace BloomFilter.CSRedis
             _client.Del(_redisKey);
         }
 
-        public override Task ClearAsync()
+        public override async ValueTask ClearAsync()
         {
-            return _client.DelAsync(_redisKey);
+            await _client.DelAsync(_redisKey);
         }
 
         public override void Dispose()
@@ -205,50 +206,49 @@ namespace BloomFilter.CSRedis
             _client.Dispose();
         }
 
-        private IList<bool> SetBit(int[] positions)
+        private IList<bool> SetBit(uint[] positions)
         {
             var results = new bool[positions.Length];
 
             for (int i = 0; i < positions.Length; i++)
             {
-                var n = (uint)positions[i];
-                results[i] = _client.SetBit(_redisKey, n, true);
+                results[i] = _client.SetBit(_redisKey, positions[i], true);
             }
 
             return results;
         }
 
-        private async Task<IList<bool>> SetBitAsync(int[] positions)
+        private async Task<IList<bool>> SetBitAsync(uint[] positions)
         {
             var results = new bool[positions.Length];
 
             for (int i = 0; i < positions.Length; i++)
             {
-                results[i] = await _client.SetBitAsync(_redisKey, (uint)positions[i], true);
+                results[i] = await _client.SetBitAsync(_redisKey, positions[i], true);
             }
 
             return results;
         }
 
-        private IList<bool> GetBit(int[] positions)
+        private IList<bool> GetBit(uint[] positions)
         {
             var results = new bool[positions.Length];
 
             for (int i = 0; i < positions.Length; i++)
             {
-                results[i] = _client.GetBit(_redisKey, (uint)positions[i]);
+                results[i] = _client.GetBit(_redisKey, positions[i]);
             }
 
             return results;
         }
 
-        private async Task<IList<bool>> GetBitAsync(int[] positions)
+        private async Task<IList<bool>> GetBitAsync(uint[] positions)
         {
             var results = new bool[positions.Length];
 
             for (int i = 0; i < positions.Length; i++)
             {
-                results[i] = await _client.GetBitAsync(_redisKey, (uint)positions[i]);
+                results[i] = await _client.GetBitAsync(_redisKey, positions[i]);
             }
 
             return results;

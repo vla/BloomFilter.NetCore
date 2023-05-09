@@ -1,73 +1,56 @@
 ﻿using System;
 
-namespace BloomFilter.HashAlgorithms
+namespace BloomFilter.HashAlgorithms;
+
+/// <summary>
+/// Implements an Random With FNV1a hash algorithm.
+/// </summary>
+public class RNGWithFNV1a : RNGWithFNV1
 {
-    /// <summary>
-    /// Implements an Random With FNV1a hash algorithm.
-    /// </summary>
-    public class RNGWithFNV1a : RNGWithFNV1
+    public override uint Hash(ReadOnlySpan<byte> data)
     {
-        public override uint Hash(byte[] data)
+        return Internal.FNV1a.HashToUInt32(data);
+    }
+}
+
+/// <summary>
+/// Implements an Random With modified FNV hash. Provides better distribution than FNV1 but it's only 32 bit long.
+/// </summary>
+public class RNGModifiedFNV1 : RNGWithFNV1a
+{
+    public override uint Hash(ReadOnlySpan<byte> data)
+    {
+        return Internal.ModifiedFNV1.HashToUInt32(data);
+    }
+}
+
+/// <summary>
+/// Implements an Random With FNV1 hash algorithm.
+/// </summary>
+public class RNGWithFNV1 : HashFunction
+{
+    protected const uint Prime = 16777619;
+    protected const uint Init = 2166136261;
+
+    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    {
+        uint[] positions = new uint[k];
+
+        Random r = new((int)Hash(data));
+
+        for (int i = 0; i < k; i++)
         {
-            int end = data.Length;
-            uint hash = Init;
-            for (int i = 0; i < end; i++)
-            {
-                hash ^= data[i];
-                hash *= Prime;
-            }
-            return hash;
+#if NET6_0_OR_GREATER
+            positions[i] = (uint)r.NextInt64(m);
+#else
+            positions[i] = (uint)r.Next((int)m);
+#endif
         }
+        return positions;
     }
 
-    /// <summary>
-    /// Implements an Random With modified FNV hash. Provides better distribution than FNV1 but it's only 32 bit long.
-    /// </summary>
-    public class RNGModifiedFNV1 : RNGWithFNV1a
+    public virtual uint Hash(ReadOnlySpan<byte> data)
     {
-        public override uint Hash(byte[] data)
-        {
-            var hash = base.Hash(data);
-            hash += hash << 13;
-            hash ^= hash >> 7;
-            hash += hash << 3;
-            hash ^= hash >> 17;
-            hash += hash << 5;
-            return hash;
-        }
-    }
-
-    /// <summary>
-    /// Implements an Random With FNV1 hash algorithm.
-    /// </summary>
-    public class RNGWithFNV1 : HashFunction
-    {
-        protected const uint Prime = 16777619;
-        protected const uint Init = 2166136261;
-
-        public override int[] ComputeHash(byte[] data, int m, int k)
-        {
-            int[] positions = new int[k];
-
-            Random r = new Random((int)Hash(data));
-
-            for (int i = 0; i < k; i++)
-            {
-                positions[i] = r.Next(m);
-            }
-            return positions;
-        }
-
-        public virtual uint Hash(byte[] data)
-        {
-            int end = data.Length;
-            uint hash = Init;
-            for (int i = 0; i < end; i++)
-            {
-                hash *= Prime;
-                hash ^= data[i];
-            }
-            return hash;
-        }
+        return Internal.FNV1.HashToUInt32(data);
     }
 }

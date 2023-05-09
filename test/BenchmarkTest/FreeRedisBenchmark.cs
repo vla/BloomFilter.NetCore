@@ -11,16 +11,20 @@ namespace BenchmarkTest
     [MemoryDiagnoser]
     public class FreeRedisBenchmark
     {
+        private const int B = 64;
+        private const int KB = 1024;
+        private const int MB = 1024 * KB;
+
         private IBloomFilter filter;
         private byte[] data;
 
-        [Params(64)]
+        [Params(B, KB, MB)]
         public int DataSize;
 
         [GlobalSetup]
         public void Setup()
         {
-            var n = 1000000;
+            uint n = 1000000;
             var errRate = 0.01;
 
             data = Helper.GenerateBytes(DataSize);
@@ -31,7 +35,7 @@ namespace BenchmarkTest
                         "BloomFilter.Core",
                         n,
                         errRate,
-                        HashFunction.Functions[HashMethod.Murmur3KirschMitzenmacher]);
+                        HashFunction.Functions[HashMethod.Murmur3]);
             filter.Clear();
         }
 
@@ -42,9 +46,9 @@ namespace BenchmarkTest
         }
 
         [Benchmark]
-        public Task AddAsync()
+        public async ValueTask AddAsync()
         {
-            return filter.AddAsync(data);
+            await filter.AddAsync(data);
         }
     }
 }

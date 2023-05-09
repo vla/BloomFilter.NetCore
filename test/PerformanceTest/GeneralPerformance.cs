@@ -14,7 +14,7 @@ namespace PerformanceTest
         [Test("RedisPerformance")]
         public void RedisPerformance()
         {
-            var n = 30000;
+            uint n = 300000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);
@@ -40,7 +40,7 @@ namespace PerformanceTest
         [Test("RedisClusterPerformance")]
         public void RedisClusterPerformance()
         {
-            var n = 30000;
+            uint n = 300000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);
@@ -72,7 +72,7 @@ namespace PerformanceTest
         [Test("MemoryPerformance")]
         public void MemoryPerformance()
         {
-            var n = 30000;
+            uint n = 300000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);

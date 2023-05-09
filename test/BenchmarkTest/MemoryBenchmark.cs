@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
+﻿using BenchmarkDotNet.Attributes;
 using BloomFilter;
 
 namespace BenchmarkTest
@@ -13,22 +8,27 @@ namespace BenchmarkTest
     [MemoryDiagnoser]
     public class MemoryBenchmark
     {
+        private const int B = 64;
+        private const int KB = 1024;
+        private const int MB = 1024 * KB;
+
         private IBloomFilter filter;
         private byte[] data;
 
         [ParamsAllValues]
         public HashMethod Method;
 
-        [Params(64)]
+        [Params(B, KB, MB)]
         public int DataSize;
 
         [GlobalSetup]
         public void Setup()
         {
-            var n = 1000000;
+            data = Helper.GenerateBytes(DataSize);
+
+            uint n = 1000000;
             var errRate = 0.01;
 
-            data = Helper.GenerateBytes(DataSize);
             filter = FilterBuilder.Build(n, errRate, Method);
         }
 

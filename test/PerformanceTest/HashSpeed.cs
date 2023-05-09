@@ -11,9 +11,8 @@ namespace PerformanceTest
         [Test("HashPerformance")]
         public void Performance()
         {
-            HashPerformance(new HashChecksumCrc32());
-            HashPerformance(new HashChecksumCrc32u());
-            HashPerformance(new HashChecksumAdler32());
+            HashPerformance(new Crc32());
+            HashPerformance(new Adler32());
 
             HashPerformance(new HashCryptoSHA1());
             HashPerformance(new HashCryptoSHA256());
@@ -29,18 +28,21 @@ namespace PerformanceTest
             HashPerformance(new RNGModifiedFNV1());
 
 
-            HashPerformance(new Murmur2());
-            HashPerformance(new Murmur3());
-            HashPerformance(new Murmur3KirschMitzenmacher());
+            HashPerformance(new Murmur32BitsX86());
+            HashPerformance(new Murmur128BitsX64());
+            HashPerformance(new Murmur128BitsX86());
+
             HashPerformance(new XXHash32());
             HashPerformance(new XXHash64());
+            HashPerformance(new XXHash3());
+            HashPerformance(new XXHash128());
         }
 
         private void HashPerformance(HashFunction hashFunction)
         {
             string name = hashFunction.GetType().Name;
-            int m = 1000;
-            int k = 10;
+            uint m = 1000;
+            uint k = 10;
 
             int count = 100000;
 
