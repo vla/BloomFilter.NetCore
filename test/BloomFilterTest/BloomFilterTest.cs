@@ -94,24 +94,6 @@ namespace BloomFilterTest
         }
 
         [Fact]
-        public void Can_DataType_Exception_Constraint()
-        {
-            Assert.Throws<NotSupportedException>(() =>
-            {
-#pragma warning disable CS0618
-                FilterBuilder.Build<BloomFilterTest>(10000, 0.01);
-#pragma warning restore CS0618
-            });
-
-            Assert.Throws<NotSupportedException>(() =>
-            {
-#pragma warning disable CS0618
-                FilterBuilder.Build<object>(10000, 0.01);
-#pragma warning restore CS0618
-            });
-        }
-
-        [Fact]
         public void BuildTest()
         {
             var hashFun = new HashChecksumCrc32();

@@ -70,7 +70,7 @@ namespace BloomFilter
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Filter{T}"/> class.
+        /// Initializes a new instance of the <see cref="Filter"/> class.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="capacity">The capacity.</param>
