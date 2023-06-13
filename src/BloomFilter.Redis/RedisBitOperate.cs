@@ -58,12 +58,12 @@ public class RedisBitOperate : IRedisBitOperate
         await db.KeyDeleteAsync(redisKey).ConfigureAwait(false);
     }
 
-    public bool Get(string redisKey, uint position)
+    public bool Get(string redisKey, long position)
     {
         return Database().StringGetBit(redisKey, position);
     }
 
-    public bool[] Get(string redisKey, uint[] positions)
+    public bool[] Get(string redisKey, long[] positions)
     {
         var results = new Task<bool>[positions.Length];
 
@@ -81,13 +81,13 @@ public class RedisBitOperate : IRedisBitOperate
         return results.Select(r => r.Result).ToArray();
     }
 
-    public async Task<bool> GetAsync(string redisKey, uint position)
+    public async Task<bool> GetAsync(string redisKey, long position)
     {
         var db = await DatabaseAsync();
         return await db.StringGetBitAsync(redisKey, position).ConfigureAwait(false);
     }
 
-    public async Task<bool[]> GetAsync(string redisKey, uint[] positions)
+    public async Task<bool[]> GetAsync(string redisKey, long[] positions)
     {
         var results = new bool[positions.Length];
 
@@ -103,7 +103,7 @@ public class RedisBitOperate : IRedisBitOperate
         return results;
     }
 
-    public bool[] Set(string redisKey, uint[] positions, bool value)
+    public bool[] Set(string redisKey, long[] positions, bool value)
     {
         var results = new Task<bool>[positions.Length];
 
@@ -120,7 +120,7 @@ public class RedisBitOperate : IRedisBitOperate
         return results.Select(r => r.Result).ToArray();
     }
 
-    public async Task<bool[]> SetAsync(string redisKey, uint[] positions, bool value)
+    public async Task<bool[]> SetAsync(string redisKey, long[] positions, bool value)
     {
         var results = new bool[positions.Length];
 
@@ -134,12 +134,12 @@ public class RedisBitOperate : IRedisBitOperate
         return results;
     }
 
-    public bool Set(string redisKey, uint position, bool value)
+    public bool Set(string redisKey, long position, bool value)
     {
         return Database().StringSetBit(redisKey, position, value);
     }
 
-    public async Task<bool> SetAsync(string redisKey, uint position, bool value)
+    public async Task<bool> SetAsync(string redisKey, long position, bool value)
     {
         var db = await DatabaseAsync();
         return await db.StringSetBitAsync(redisKey, position, value).ConfigureAwait(false);

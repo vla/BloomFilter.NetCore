@@ -11,8 +11,8 @@ namespace PerformanceTest
         [Test("Bloom Filter Hash ErrRate")]
         public void ErrRateTest()
         {
-            uint n = 100000;
-            var errRate = 0.01;
+            long n = 100000;
+            double errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);
             var probeData = Helper.GenerateData(n * 3);
@@ -31,7 +31,7 @@ namespace PerformanceTest
             }
         }
 
-        private void ErrRateTest(HashMethod hashMethod, IList<byte[]> hashData, IList<byte[]> probeData, uint n, double p)
+        private void ErrRateTest(HashMethod hashMethod, IList<byte[]> hashData, IList<byte[]> probeData, long n, double p)
         {
 
             var bf = FilterBuilder.Build(n, p, hashMethod);

@@ -6,9 +6,9 @@ public partial class Crc32 : HashFunction
 {
     private const int seed32 = 89478583;
 
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
-        uint[] positions = new uint[k];
+        long[] positions = new long[k];
         int hashes = 0;
         int salt = 0;
 
@@ -25,7 +25,7 @@ public partial class Crc32 : HashFunction
             long hash = BinaryHelper.Rejection(crc, m);
             if (hash != -1)
             {
-                positions[hashes++] = (uint)hash;
+                positions[hashes++] = hash;
             }
         }
         return positions;

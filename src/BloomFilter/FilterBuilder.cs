@@ -11,7 +11,7 @@ public partial class FilterBuilder
     /// <param name="expectedElements">The expected elements.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return Build(expectedElements, 0.01, name);
     }
@@ -23,7 +23,7 @@ public partial class FilterBuilder
     /// <param name="hashMethod">The hash method.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return Build(expectedElements, 0.01, hashMethod, name);
     }
@@ -35,7 +35,7 @@ public partial class FilterBuilder
     /// <param name="hashFunction">The hash function.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return Build(expectedElements, 0.01, hashFunction, name);
     }
@@ -47,7 +47,7 @@ public partial class FilterBuilder
     /// <param name="errorRate">The error rate.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return Build(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
     }
@@ -60,7 +60,7 @@ public partial class FilterBuilder
     /// <param name="hashMethod">The hash method.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return new FilterMemory(name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
     }
@@ -73,7 +73,7 @@ public partial class FilterBuilder
     /// <param name="hashFunction">The hash function.</param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(uint expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return new FilterMemory(name, expectedElements, errorRate, hashFunction);
     }

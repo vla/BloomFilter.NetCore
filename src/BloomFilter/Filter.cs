@@ -23,17 +23,17 @@ public abstract class Filter : IBloomFilter
     /// <summary>
     /// the Capacity of the Bloom filter
     /// </summary>
-    public uint Capacity { get; }
+    public long Capacity { get; }
 
     /// <summary>
     /// number of hash functions
     /// </summary>
-    public uint Hashes { get; }
+    public int Hashes { get; }
 
     /// <summary>
     ///  the expected elements.
     /// </summary>
-    public uint ExpectedElements { get; }
+    public long ExpectedElements { get; }
 
     /// <summary>
     /// the number of expected elements
@@ -53,7 +53,7 @@ public abstract class Filter : IBloomFilter
     /// errorRate
     /// </exception>
     /// <exception cref="ArgumentNullException">hashFunction</exception>
-    public Filter(string name, uint expectedElements, double errorRate, HashFunction hashFunction)
+    public Filter(string name, long expectedElements, double errorRate, HashFunction hashFunction)
     {
         if (expectedElements < 1)
             throw new ArgumentOutOfRangeException("expectedElements", expectedElements, "expectedElements must be > 0");
@@ -82,7 +82,7 @@ public abstract class Filter : IBloomFilter
     /// hashes - hashes must be > 0
     /// </exception>
     /// <exception cref="ArgumentNullException">hashFunction</exception>
-    public Filter(string name, uint capacity, uint hashes, HashFunction hashFunction)
+    public Filter(string name, long capacity, int hashes, HashFunction hashFunction)
     {
         if (capacity < 1)
             throw new ArgumentOutOfRangeException("capacity", capacity, "capacity must be > 0");
@@ -183,7 +183,7 @@ public abstract class Filter : IBloomFilter
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public uint[] ComputeHash(ReadOnlySpan<byte> data)
+    public long[] ComputeHash(ReadOnlySpan<byte> data)
     {
         return Hash.ComputeHash(data, Capacity, Hashes);
     }
@@ -195,9 +195,9 @@ public abstract class Filter : IBloomFilter
     /// <param name="n">Expected number of elements inserted in the bloom filter</param>
     /// <param name="p">Tolerable false positive rate</param>
     /// <returns>the optimal siz of the bloom filter in bits</returns>
-    public static uint BestM(long n, double p)
+    public static long BestM(long n, double p)
     {
-        return (uint)Math.Ceiling(-1 * (n * Math.Log(p)) / Math.Pow(Math.Log(2), 2));
+        return (long)Math.Ceiling(-1 * (n * Math.Log(p)) / Math.Pow(Math.Log(2), 2));
     }
 
     /// <summary>
@@ -207,9 +207,9 @@ public abstract class Filter : IBloomFilter
     /// <param name="n">Expected number of elements inserted in the bloom filter</param>
     /// <param name="m">The size of the bloom filter in bits.</param>
     /// <returns>the optimal amount of hash functions hashes</returns>
-    public static uint BestK(long n, long m)
+    public static int BestK(long n, long m)
     {
-        return (uint)Math.Ceiling((Math.Log(2) * m) / n);
+        return (int)Math.Ceiling((Math.Log(2) * m) / n);
     }
 
     /// <summary>
@@ -218,9 +218,9 @@ public abstract class Filter : IBloomFilter
     /// <param name="k">number of hashes</param>
     /// <param name="m">The size of the bloom filter in bits.</param>
     /// <returns>mount of elements a Bloom filter for which the given configuration of size and hashes is optimal</returns>
-    public static uint BestN(long k, long m)
+    public static long BestN(int k, long m)
     {
-        return (uint)Math.Ceiling((Math.Log(2) * m) / k);
+        return (long)Math.Ceiling((Math.Log(2) * m) / k);
     }
 
     /// <summary>
@@ -230,9 +230,9 @@ public abstract class Filter : IBloomFilter
     /// <param name="m">The size of the bloom filter in bits.</param>
     /// <param name="insertedElements">number of elements inserted in the filter</param>
     /// <returns>The calculated false positive probability</returns>
-    public static double BestP(long k, long m, double insertedElements)
+    public static double BestP(int k, long m, double insertedElements)
     {
-        return Math.Pow((1 - Math.Exp(-k * insertedElements / (double)m)), k);
+        return Math.Pow((1 - Math.Exp(-k * insertedElements / m)), k);
     }
 
     public override string ToString()

@@ -22,7 +22,7 @@ public class FilterRedis : Filter
     /// <param name="expectedElements">The expected elements.</param>
     /// <param name="errorRate">The error rate.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, uint expectedElements, double errorRate, HashFunction hashFunction)
+    public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, long expectedElements, double errorRate, HashFunction hashFunction)
         : base(name, expectedElements, errorRate, hashFunction)
     {
         if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -39,7 +39,7 @@ public class FilterRedis : Filter
     /// <param name="capacity">The capacity.</param>
     /// <param name="hashes">The hashes.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, uint capacity, uint hashes, HashFunction hashFunction)
+    public FilterRedis(string name, IRedisBitOperate redisBitOperate, string redisKey, long capacity, int hashes, HashFunction hashFunction)
         : base(name, capacity, hashes, hashFunction)
     {
         if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -69,7 +69,7 @@ public class FilterRedis : Filter
 
     public override IList<bool> Add(IEnumerable<byte[]> elements)
     {
-        var addHashs = new List<uint>();
+        var addHashs = new List<long>();
         foreach (var element in elements)
         {
             addHashs.AddRange(ComputeHash(element));
@@ -96,7 +96,7 @@ public class FilterRedis : Filter
 
     public override async ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
     {
-        var addHashs = new List<uint>();
+        var addHashs = new List<long>();
         foreach (var element in elements)
         {
             addHashs.AddRange(ComputeHash(element));
@@ -146,7 +146,7 @@ public class FilterRedis : Filter
 
     public override IList<bool> Contains(IEnumerable<byte[]> elements)
     {
-        var addHashs = new List<uint>();
+        var addHashs = new List<long>();
         foreach (var element in elements)
         {
             addHashs.AddRange(ComputeHash(element));
@@ -173,7 +173,7 @@ public class FilterRedis : Filter
 
     public override async ValueTask<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
     {
-        var addHashs = new List<uint>();
+        var addHashs = new List<long>();
         foreach (var element in elements)
         {
             addHashs.AddRange(ComputeHash(element));

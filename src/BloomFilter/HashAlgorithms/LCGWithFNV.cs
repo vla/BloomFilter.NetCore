@@ -7,7 +7,7 @@ namespace BloomFilter.HashAlgorithms;
 /// </summary>
 public class LCGWithFNV1a : LCGWithFNV
 {
-    public override uint Hash(ReadOnlySpan<byte> data)
+    public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1a.HashToUInt32(data);
     }
@@ -18,7 +18,7 @@ public class LCGWithFNV1a : LCGWithFNV
 /// </summary>
 public class LCGModifiedFNV1 : LCGWithFNV1a
 {
-    public override uint Hash(ReadOnlySpan<byte> data)
+    public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.ModifiedFNV1.HashToUInt32(data);
     }
@@ -29,7 +29,7 @@ public class LCGModifiedFNV1 : LCGWithFNV1a
 /// </summary>
 public class LCGWithFNV : HashFunction
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long multiplier = 0x5DEECE66DL;
         long addend = 0xBL;
@@ -44,19 +44,19 @@ public class LCGWithFNV : HashFunction
             reduced = 42;
 
         // Calculate hashes numbers iteratively
-        uint[] positions = new uint[k];
+        long[] positions = new long[k];
         long seed = reduced;
         for (int i = 0; i < k; i++)
         {
             //http://en.wikipedia.org/wiki/Linear_congruential_generator
             // LCG formula: x_i+1 = (multiplier * x_i + addend) mod mask
             seed = (seed * multiplier + addend) & mask;
-            positions[i] = (uint)(BinaryHelper.RightMove(seed, (48 - 30)) % m);
+            positions[i] = BinaryHelper.RightMove(seed, (48 - 30)) % m;
         }
         return positions;
     }
 
-    public virtual uint Hash(ReadOnlySpan<byte> data)
+    public virtual long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1.HashToUInt32(data);
     }

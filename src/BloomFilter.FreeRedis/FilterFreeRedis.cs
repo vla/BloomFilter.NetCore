@@ -1,7 +1,6 @@
 ﻿using FreeRedis;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,12 +18,12 @@ namespace BloomFilter.FreeRedis
         /// Initializes a new instance of the <see cref="FilterFreeRedis"/> class.
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="client">The <see cref="FreeRedis"/>.</param>
+        /// <param name="client">The <see cref="RedisClient"/>.</param>
         /// <param name="redisKey">The redisKey.</param>
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterFreeRedis(string name, RedisClient client, string redisKey, uint expectedElements, double errorRate, HashFunction hashFunction)
+        public FilterFreeRedis(string name, RedisClient client, string redisKey, long expectedElements, double errorRate, HashFunction hashFunction)
             : base(name, expectedElements, errorRate, hashFunction)
         {
             if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -36,12 +35,12 @@ namespace BloomFilter.FreeRedis
         /// Initializes a new instance of the <see cref="FilterFreeRedis"/> class.
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="client">The <see cref="FreeRedis"/>.</param>
+        /// <param name="client">The <see cref="RedisClient"/>.</param>
         /// <param name="redisKey">The redisKey.</param>
         /// <param name="capacity">The capacity.</param>
         /// <param name="hashes">The hashes.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterFreeRedis(string name, RedisClient client, string redisKey, uint capacity, uint hashes, HashFunction hashFunction)
+        public FilterFreeRedis(string name, RedisClient client, string redisKey, long capacity, int hashes, HashFunction hashFunction)
             : base(name, capacity, hashes, hashFunction)
         {
             if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
@@ -64,7 +63,7 @@ namespace BloomFilter.FreeRedis
 
         public override IList<bool> Add(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -90,7 +89,7 @@ namespace BloomFilter.FreeRedis
 
         public override async ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -129,7 +128,7 @@ namespace BloomFilter.FreeRedis
 
         public override IList<bool> Contains(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -156,7 +155,7 @@ namespace BloomFilter.FreeRedis
 
         public override async ValueTask<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -206,7 +205,7 @@ namespace BloomFilter.FreeRedis
             _client.Dispose();
         }
 
-        private IList<bool> SetBit(uint[] positions)
+        private IList<bool> SetBit(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -218,7 +217,7 @@ namespace BloomFilter.FreeRedis
             return results.ToList();
         }
 
-        private async ValueTask<IList<bool>> SetBitAsync(uint[] positions)
+        private async ValueTask<IList<bool>> SetBitAsync(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -230,7 +229,7 @@ namespace BloomFilter.FreeRedis
             return results.ToList();
         }
 
-        private IList<bool> GetBit(uint[] positions)
+        private IList<bool> GetBit(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -242,7 +241,7 @@ namespace BloomFilter.FreeRedis
             return results.ToList();
         }
 
-        private async ValueTask<IList<bool>> GetBitAsync(uint[] positions)
+        private async ValueTask<IList<bool>> GetBitAsync(long[] positions)
         {
             var results = new bool[positions.Length];
 

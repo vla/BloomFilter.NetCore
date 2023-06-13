@@ -4,9 +4,9 @@ namespace BloomFilter.HashAlgorithms;
 
 public class XXHash3 : HashFunction
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
-        uint[] positions = new uint[k];
+        long[] positions = new long[k];
 
         var hash = Internal.XxHash3.HashToUInt64(data, 0);
 
@@ -15,7 +15,7 @@ public class XXHash3 : HashFunction
 
         for (int i = 0; i < k; i++)
         {
-            positions[i] = (uint)((hash1 + i * hash2) % m);
+            positions[i] = ((hash1 + i * hash2) % m);
         }
         return positions;
     }

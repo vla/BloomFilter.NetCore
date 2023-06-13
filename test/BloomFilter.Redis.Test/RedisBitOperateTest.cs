@@ -104,7 +104,7 @@ namespace BloomFilter.Redis.Test
             string key = "RB:Batch";
             operate.Clear(key);
 
-            var positions = new uint[] { 5, 6, 7, 8, 9, 10, 11, 12 };
+            var positions = new long[] { 5, 6, 7, 8, 9, 10, 11, 12 };
 
             var results = operate.Set(key, positions, true);
             Assert.False(results.All(r => r));
@@ -129,7 +129,7 @@ namespace BloomFilter.Redis.Test
             string key = "RB:BatchAsync";
             await operate.ClearAsync(key);
 
-            var positions = new uint[] { 5, 6, 7, 8, 9, 10, 11, 12 };
+            var positions = new long[] { 5, 6, 7, 8, 9, 10, 11, 12 };
 
             var results = await operate.SetAsync(key, positions, true);
             Assert.False(results.All(r => r));

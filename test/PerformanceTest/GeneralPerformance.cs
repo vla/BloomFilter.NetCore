@@ -1,5 +1,7 @@
 ﻿using BloomFilter;
+using BloomFilter.FreeRedis;
 using BloomFilter.Redis;
+using FreeRedis;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -14,12 +16,14 @@ namespace PerformanceTest
         [Test("RedisPerformance")]
         public void RedisPerformance()
         {
-            uint n = 300000;
+            uint n = 30000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);
 
-            var warm_up = FilterRedisBuilder.Build("localhost", "RedisPerformance", n, errRate);
+            var redisClient = new RedisClient("localhost");
+
+            var warm_up = new FilterFreeRedis("RedisClient", redisClient, "RedisPerformance", n, errRate, HashFunction.Functions[HashMethod.Murmur3]);
             warm_up.Clear();
             Console.WriteLine($"=================== warm_up Performance =================== ");
             Performance(hashData, warm_up);
@@ -29,7 +33,8 @@ namespace PerformanceTest
             {
                 if (Enum.TryParse<HashMethod>(name, out var hm))
                 {
-                    var bf = FilterRedisBuilder.Build("localhost", "RedisPerformance", n, errRate, hm);
+                    redisClient = new RedisClient("localhost");
+                    var bf = new FilterFreeRedis("RedisClient", redisClient, "RedisPerformance", n, errRate, HashFunction.Functions[hm]);
                     bf.Clear();
                     Console.WriteLine($"=================== {name} Performance =================== ");
                     Performance(hashData, bf);
@@ -40,7 +45,7 @@ namespace PerformanceTest
         [Test("RedisClusterPerformance")]
         public void RedisClusterPerformance()
         {
-            uint n = 300000;
+            uint n = 30000;
             var errRate = 0.01;
 
             var hashData = Helper.GenerateData(n);

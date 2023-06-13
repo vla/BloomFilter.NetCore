@@ -33,9 +33,9 @@ internal class BinaryHelper
     /// <param name="random">The random.</param>
     /// <param name="m">integer output range.</param>
     /// <returns></returns>
-    public static long Rejection(long random, uint m)
+    public static long Rejection(long random, long m)
     {
-        var intMax = uint.MaxValue;
+        var intMax = (long)uint.MaxValue;
         random = Math.Abs(random);
         if (random > (intMax - intMax % m) || random == uint.MinValue)
             return -1;

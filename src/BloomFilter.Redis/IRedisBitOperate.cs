@@ -8,21 +8,21 @@ namespace BloomFilter.Redis;
 /// </summary>
 public interface IRedisBitOperate : IDisposable
 {
-    bool[] Set(string redisKey, uint[] positions, bool value);
+    bool[] Set(string redisKey, long[] positions, bool value);
 
-    Task<bool[]> SetAsync(string redisKey, uint[] positions, bool value);
+    Task<bool[]> SetAsync(string redisKey, long[] positions, bool value);
 
-    bool Set(string redisKey, uint position, bool value);
+    bool Set(string redisKey, long position, bool value);
 
-    Task<bool> SetAsync(string redisKey, uint position, bool value);
+    Task<bool> SetAsync(string redisKey, long position, bool value);
 
-    bool Get(string redisKey, uint position);
+    bool Get(string redisKey, long position);
 
-    Task<bool> GetAsync(string redisKey, uint position);
+    Task<bool> GetAsync(string redisKey, long position);
 
-    bool[] Get(string redisKey, uint[] positions);
+    bool[] Get(string redisKey, long[] positions);
 
-    Task<bool[]> GetAsync(string redisKey, uint[] positions);
+    Task<bool[]> GetAsync(string redisKey, long[] positions);
 
     void Clear(string redisKey);
 

@@ -23,8 +23,25 @@ namespace BloomFilter.EasyCaching
         /// <param name="expectedElements">The expected elements.</param>
         /// <param name="errorRate">The error rate.</param>
         /// <param name="hashFunction">The hash function.</param>
-        public FilterEasyCachingRedis(string name, IRedisCachingProvider provider, string redisKey, uint expectedElements, double errorRate, HashFunction hashFunction)
+        public FilterEasyCachingRedis(string name, IRedisCachingProvider provider, string redisKey, long expectedElements, double errorRate, HashFunction hashFunction)
             : base(name, expectedElements, errorRate, hashFunction)
+        {
+            if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _redisKey = redisKey;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilterEasyCachingRedis"/> class.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="provider">The <see cref="IRedisCachingProvider"/>.</param>
+        /// <param name="redisKey">The redisKey.</param>
+        /// <param name="capacity">The capacity.</param>
+        /// <param name="hashes">The hashes.</param>
+        /// <param name="hashFunction">The hash function.</param>
+        public FilterEasyCachingRedis(string name, IRedisCachingProvider provider, string redisKey, long capacity, int hashes, HashFunction hashFunction)
+            : base(name, capacity, hashes, hashFunction)
         {
             if (string.IsNullOrWhiteSpace(redisKey)) throw new ArgumentException(nameof(redisKey));
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
@@ -46,7 +63,7 @@ namespace BloomFilter.EasyCaching
 
         public override IList<bool> Add(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -72,7 +89,7 @@ namespace BloomFilter.EasyCaching
 
         public override async ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -111,7 +128,7 @@ namespace BloomFilter.EasyCaching
 
         public override IList<bool> Contains(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -138,7 +155,7 @@ namespace BloomFilter.EasyCaching
 
         public override async ValueTask<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
         {
-            var addHashs = new List<uint>();
+            var addHashs = new List<long>();
             foreach (var element in elements)
             {
                 addHashs.AddRange(ComputeHash(element));
@@ -187,7 +204,7 @@ namespace BloomFilter.EasyCaching
         {
         }
 
-        private IList<bool> SetBit(uint[] positions)
+        private IList<bool> SetBit(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -201,7 +218,7 @@ namespace BloomFilter.EasyCaching
             return results;
         }
 
-        private async ValueTask<IList<bool>> SetBitAsync(uint[] positions)
+        private async ValueTask<IList<bool>> SetBitAsync(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -215,7 +232,7 @@ namespace BloomFilter.EasyCaching
             return results;
         }
 
-        private IList<bool> GetBit(uint[] positions)
+        private IList<bool> GetBit(long[] positions)
         {
             var results = new bool[positions.Length];
 
@@ -229,7 +246,7 @@ namespace BloomFilter.EasyCaching
             return results;
         }
 
-        private async ValueTask<IList<bool>> GetBitAsync(uint[] positions)
+        private async ValueTask<IList<bool>> GetBitAsync(long[] positions)
         {
             var results = new bool[positions.Length];
 

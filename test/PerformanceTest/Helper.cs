@@ -33,7 +33,7 @@ namespace PerformanceTest
             return buff;
         }
 
-        public static IList<byte[]> GenerateData(uint n)
+        public static IList<byte[]> GenerateData(long n)
         {
             return GenerateData((int)n);
         }

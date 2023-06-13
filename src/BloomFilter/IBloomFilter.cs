@@ -99,5 +99,5 @@ public interface IBloomFilter : IDisposable
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    uint[] ComputeHash(ReadOnlySpan<byte> data);
+    long[] ComputeHash(ReadOnlySpan<byte> data);
 }

@@ -50,5 +50,5 @@ public abstract class HashFunction
     /// <returns>
     /// int array of hashes hash values
     /// </returns>
-    public abstract uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k);
+    public abstract long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k);
 }

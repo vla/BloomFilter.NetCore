@@ -6,7 +6,7 @@ namespace BloomFilter.HashAlgorithms;
 
 public class HashCryptoSHA1 : HashCrypto
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA1.Create();
         return ComputeHash(hashAlgorithm, data, m, k);
@@ -15,7 +15,7 @@ public class HashCryptoSHA1 : HashCrypto
 
 public class HashCryptoSHA256 : HashCrypto
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA256.Create();
         return ComputeHash(hashAlgorithm, data, m, k);
@@ -24,7 +24,7 @@ public class HashCryptoSHA256 : HashCrypto
 
 public class HashCryptoSHA384 : HashCrypto
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA384.Create();
         return ComputeHash(hashAlgorithm, data, m, k);
@@ -33,7 +33,7 @@ public class HashCryptoSHA384 : HashCrypto
 
 public class HashCryptoSHA512 : HashCrypto
 {
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA512.Create();
         return ComputeHash(hashAlgorithm, data, m, k);
@@ -42,9 +42,9 @@ public class HashCryptoSHA512 : HashCrypto
 
 public abstract class HashCrypto : HashFunction
 {
-    protected uint[] ComputeHash(HashAlgorithm hashAlgorithm, ReadOnlySpan<byte> data, uint m, uint k)
+    protected long[] ComputeHash(HashAlgorithm hashAlgorithm, ReadOnlySpan<byte> data, long m, int k)
     {
-        uint[] positions = new uint[k];
+        long[] positions = new long[k];
 
         int computedHashes = 0;
 
@@ -66,7 +66,7 @@ public abstract class HashCrypto : HashFunction
 #endif
             BitArray hashed = new(digest);
 
-            int filterSize = 32 - (int)BinaryHelper.NumberOfLeadingZeros(m);
+            int filterSize = 32 - (int)BinaryHelper.NumberOfLeadingZeros((uint)m);
 
             for (int split = 0; split < (hashAlgorithm.HashSize / filterSize) && computedHashes < k; split++)
             {

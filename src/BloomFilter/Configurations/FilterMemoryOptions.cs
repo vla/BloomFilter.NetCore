@@ -10,7 +10,7 @@ public class FilterMemoryOptions
     /// <summary>
     /// The expected elements
     /// </summary>
-    public uint ExpectedElements { get; set; } = 1000000;
+    public long ExpectedElements { get; set; } = 1000000;
 
     /// <summary>
     /// The error rate

@@ -41,8 +41,8 @@ namespace PerformanceTest
         private void HashPerformance(HashFunction hashFunction)
         {
             string name = hashFunction.GetType().Name;
-            uint m = 1000;
-            uint k = 10;
+            long m = 1000;
+            int k = 10;
 
             int count = 100000;
 

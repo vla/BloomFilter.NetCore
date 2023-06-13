@@ -7,7 +7,7 @@ namespace BloomFilter.HashAlgorithms;
 /// </summary>
 public class RNGWithFNV1a : RNGWithFNV1
 {
-    public override uint Hash(ReadOnlySpan<byte> data)
+    public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1a.HashToUInt32(data);
     }
@@ -18,7 +18,7 @@ public class RNGWithFNV1a : RNGWithFNV1
 /// </summary>
 public class RNGModifiedFNV1 : RNGWithFNV1a
 {
-    public override uint Hash(ReadOnlySpan<byte> data)
+    public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.ModifiedFNV1.HashToUInt32(data);
     }
@@ -29,27 +29,27 @@ public class RNGModifiedFNV1 : RNGWithFNV1a
 /// </summary>
 public class RNGWithFNV1 : HashFunction
 {
-    protected const uint Prime = 16777619;
-    protected const uint Init = 2166136261;
+    protected const long Prime = 16777619;
+    protected const long Init = 2166136261;
 
-    public override uint[] ComputeHash(ReadOnlySpan<byte> data, uint m, uint k)
+    public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
-        uint[] positions = new uint[k];
+        long[] positions = new long[k];
 
         Random r = new((int)Hash(data));
 
         for (int i = 0; i < k; i++)
         {
 #if NET6_0_OR_GREATER
-            positions[i] = (uint)r.NextInt64(m);
+            positions[i] = r.NextInt64(m);
 #else
-            positions[i] = (uint)r.Next((int)m);
+            positions[i] = r.Next((int)m);
 #endif
         }
         return positions;
     }
 
-    public virtual uint Hash(ReadOnlySpan<byte> data)
+    public virtual long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1.HashToUInt32(data);
     }

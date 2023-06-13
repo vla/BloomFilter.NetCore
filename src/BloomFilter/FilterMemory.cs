@@ -29,7 +29,7 @@ public class FilterMemory : Filter
     /// <param name="expectedElements">The expected elements.</param>
     /// <param name="errorRate">The error rate.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(string name, uint expectedElements, double errorRate, HashFunction hashFunction)
+    public FilterMemory(string name, long expectedElements, double errorRate, HashFunction hashFunction)
         : base(name, expectedElements, errorRate, hashFunction)
     {
         if (Capacity > MaxInt)
@@ -50,7 +50,7 @@ public class FilterMemory : Filter
     /// <param name="size">The size.</param>
     /// <param name="hashes">The hashes.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(string name, uint size, uint hashes, HashFunction hashFunction)
+    public FilterMemory(string name, long size, int hashes, HashFunction hashFunction)
         : base(name, size, hashes, hashFunction)
     {
         if (Capacity > MaxInt)
@@ -99,7 +99,7 @@ public class FilterMemory : Filter
 
     public override IList<bool> Add(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<uint>();
+        var hashes = new List<long>();
         foreach (var element in elements)
         {
             hashes.AddRange(ComputeHash(element));
@@ -172,7 +172,7 @@ public class FilterMemory : Filter
 
     public override IList<bool> Contains(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<uint>();
+        var hashes = new List<long>();
         foreach (var element in elements)
         {
             hashes.AddRange(ComputeHash(element));
@@ -239,7 +239,7 @@ public class FilterMemory : Filter
         return Empty;
     }
 
-    private void Set(uint index)
+    private void Set(long index)
     {
         if (_hashBits2 is not null && index > MaxInt)
         {
@@ -251,7 +251,7 @@ public class FilterMemory : Filter
         }
     }
 
-    public bool Get(uint index)
+    public bool Get(long index)
     {
         if (_hashBits2 is not null && index > MaxInt)
         {
