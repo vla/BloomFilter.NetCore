@@ -200,9 +200,8 @@ AMD Ryzen 7 5800X, 1 CPU, 16 logical and 8 physical cores
 .NET SDK=7.0.203
   [Host]     : .NET 7.0.5 (7.0.523.17405), X64 RyuJIT AVX2
   DefaultJob : .NET 7.0.5 (7.0.523.17405), X64 RyuJIT AVX2
-
-
 ```
+
 | Method | DataSize |           Method |            Mean |        Error |       StdDev |             Min |             Max | Rank |   Gen0 | Allocated |
 |------- |--------- |----------------- |----------------:|-------------:|-------------:|----------------:|----------------:|-----:|-------:|----------:|
 |    **Add** |       **64** |      **LCGWithFNV1** |        **82.11 ns** |     **0.171 ns** |     **0.151 ns** |        **81.88 ns** |        **82.41 ns** |    **8** | **0.0033** |      **56 B** |
@@ -272,43 +271,45 @@ Count:100000 Capacity:958506 Hashes:7 ExpectedElements:100000 ErrorRate:0.01
 
 ``` ini
 LCGWithFNV1
- Speed:69.7668ms ErrRate:93.967% ErrTotal:93967 Final ErrRate:100.000%
+ Speed:69.1082ms ErrRate:93.942% ErrTotal:93942 Final ErrRate:100.000%
 LCGWithFNV1a
- Speed:101.6993ms ErrRate:93.906% ErrTotal:93906 Final ErrRate:100.000%
+ Speed:82.353ms ErrRate:93.928% ErrTotal:93928 Final ErrRate:100.000%
 LCGModifiedFNV1
- Speed:58.1464ms ErrRate:93.942% ErrTotal:93942 Final ErrRate:100.000%
+ Speed:58.9601ms ErrRate:93.926% ErrTotal:93926 Final ErrRate:100.000%
 RNGWithFNV1
- Speed:209.1069ms ErrRate:0.171% ErrTotal:171 Final ErrRate:0.957%
+ Speed:218.8725ms ErrRate:0.156% ErrTotal:156 Final ErrRate:1.034%
 RNGWithFNV1a
- Speed:210.2195ms ErrRate:0.174% ErrTotal:174 Final ErrRate:0.989%
+ Speed:219.4473ms ErrRate:0.153% ErrTotal:153 Final ErrRate:1.071%
 RNGModifiedFNV1
- Speed:210.888ms ErrRate:0.177% ErrTotal:177 Final ErrRate:1.033%
+ Speed:221.0097ms ErrRate:0.167% ErrTotal:167 Final ErrRate:1.063%
 CRC32
- Speed:75.1132ms ErrRate:0.182% ErrTotal:182 Final ErrRate:0.997%
+ Speed:74.8524ms ErrRate:0.183% ErrTotal:183 Final ErrRate:1.018%
+CRC64
+ Speed:22.3531ms ErrRate:0.173% ErrTotal:173 Final ErrRate:0.925%
 Adler32
- Speed:53.8629ms ErrRate:10.246% ErrTotal:10246 Final ErrRate:23.316%
+ Speed:86.8095ms ErrRate:10.085% ErrTotal:10085 Final ErrRate:23.404%
 Murmur3
- Speed:40.8874ms ErrRate:0.156% ErrTotal:156 Final ErrRate:1.054%
+ Speed:42.2731ms ErrRate:0.156% ErrTotal:156 Final ErrRate:0.973%
 Murmur32BitsX86
- Speed:40.9386ms ErrRate:0.156% ErrTotal:156 Final ErrRate:1.054%
+ Speed:42.6358ms ErrRate:0.156% ErrTotal:156 Final ErrRate:0.973%
 Murmur128BitsX64
- Speed:31.3446ms ErrRate:0.168% ErrTotal:168 Final ErrRate:0.982%
+ Speed:32.2329ms ErrRate:0.160% ErrTotal:160 Final ErrRate:1.021%
 Murmur128BitsX86
- Speed:36.43ms ErrRate:0.150% ErrTotal:150 Final ErrRate:0.993%
+ Speed:36.654ms ErrRate:0.169% ErrTotal:169 Final ErrRate:1.038%
 SHA1
- Speed:293.0176ms ErrRate:0.184% ErrTotal:184 Final ErrRate:1.013%
+ Speed:274.6806ms ErrRate:0.175% ErrTotal:175 Final ErrRate:0.952%
 SHA256
- Speed:200.2562ms ErrRate:0.183% ErrTotal:183 Final ErrRate:0.972%
+ Speed:209.7873ms ErrRate:0.170% ErrTotal:170 Final ErrRate:0.984%
 SHA384
- Speed:299.5489ms ErrRate:0.171% ErrTotal:171 Final ErrRate:0.947%
+ Speed:315.9428ms ErrRate:0.165% ErrTotal:165 Final ErrRate:0.988%
 SHA512
- Speed:305.8543ms ErrRate:0.159% ErrTotal:159 Final ErrRate:1.055%
+ Speed:322.2861ms ErrRate:0.171% ErrTotal:171 Final ErrRate:0.998%
 XXHash32
- Speed:37.8243ms ErrRate:0.146% ErrTotal:146 Final ErrRate:1.022%
+ Speed:41.2861ms ErrRate:0.163% ErrTotal:163 Final ErrRate:1.035%
 XXHash64
- Speed:21.5273ms ErrRate:0.200% ErrTotal:200 Final ErrRate:0.989%
+ Speed:23.5383ms ErrRate:0.149% ErrTotal:149 Final ErrRate:1.054%
 XXHash3
- Speed:17.5158ms ErrRate:0.149% ErrTotal:149 Final ErrRate:0.964%
+ Speed:19.8399ms ErrRate:0.157% ErrTotal:157 Final ErrRate:0.966%
 XXHash128
- Speed:19.129ms ErrRate:0.183% ErrTotal:183 Final ErrRate:1.002%
+ Speed:19.7745ms ErrRate:0.155% ErrTotal:155 Final ErrRate:1.027%
 ```
