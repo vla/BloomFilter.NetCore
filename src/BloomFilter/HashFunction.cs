@@ -23,6 +23,7 @@ public abstract class HashFunction
         { HashMethod.RNGModifiedFNV1,new RNGModifiedFNV1() },
 
         { HashMethod.CRC32,new Crc32() },
+        { HashMethod.CRC64,new Crc64() },
         { HashMethod.Adler32,new Adler32() },
 
         { HashMethod.Murmur3,new Murmur32BitsX86() },

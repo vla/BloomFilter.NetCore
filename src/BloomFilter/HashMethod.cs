@@ -12,6 +12,7 @@ public enum HashMethod
     RNGWithFNV1a,
     RNGModifiedFNV1,
     CRC32,
+    CRC64,
     Adler32,
     Murmur3,
     Murmur32BitsX86,
