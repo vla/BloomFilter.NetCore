@@ -3,13 +3,13 @@
   <PropertyGroup>
     <Version>$(Ver)</Version>
     <PackageVersion>$(Ver)</PackageVersion>
-    <Copyright>2019 v.la, Inc.</Copyright>
+    <Copyright>2019-2023 v.la</Copyright>
     <Authors>v.la@live.cn</Authors>
-    <Description>Library Bloom filters in C# with optional Redis-backing</Description>
-    <Product>Bloom filters</Product>
+    <Description>A bloom filter implementation</Description>
+    <Product>bloom filter</Product>
 
     <PackageOutputPath>$(MSBuildThisFileDirectory)/artifacts</PackageOutputPath>
-    <PackageTags>Common Lib;Framework</PackageTags>
+    <PackageTags>Bloom;Filter;bloom-filter</PackageTags>
     <LangVersion>latest</LangVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>icon.png</PackageIcon>

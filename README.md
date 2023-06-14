@@ -1,6 +1,11 @@
 # BloomFilter.NetCore
 
-Library  Bloom filters in C#
+The Bloom filter is a probabilistic set data structure which is very small. This is achieved by allowing false positives with some probability p. It has an add and contains operation which both are very fast (time complexity O(1)).
+
+There are 2 types of Bloom filters in the Bloom filter library:
+
+* Regular Bloom filter, a regular in-memory Bloom filter (FilterMemory)
+* Redis Bloom Filter, a Redis-backed Bloom filter which can be concurrently used by different applications (FilterRedis | FilterFreeRedis | FilterCSRedis)
 
 ## Packages & Status
 
@@ -11,6 +16,15 @@ Package  | NuGet         |
 |**BloomFilter.CSRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.CSRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)
 |**BloomFilter.FreeRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.FreeRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)
 |**BloomFilter.EasyCaching.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.EasyCaching.NetCore)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)
+
+## Features
+
+* Configuration of all parameters: Bit-Array size m, number of hash functions k
+* Automatic configuration given the tolerable false positive rate p and expected elements n
+* Choice among different hash functions: the better (i.e. uniformly distributed) the hash function, the more accurate the Bloom filter but the better the hash function usually the slower it is -> choose from about 10-20 optimized hash functions, e.g. CRC, MD5, SHA, Murmur, LCGs, xxHash etc. or use a custom one
+* Generation of the Bloom filter is always fast
+* Implementation of [rejection sampling](http://en.wikipedia.org/wiki/Rejection_sampling) and chaining of hash values taking into account the [avalanche effect](http://en.wikipedia.org/wiki/Avalanche_effect) (higher hash quality)
+* Concurrency: the Bloom filter can be accessed by many clients simultaneously without multi-user anomalies and performance degradation
 
 ## Usage
 
