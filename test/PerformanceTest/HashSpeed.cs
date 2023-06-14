@@ -12,6 +12,7 @@ namespace PerformanceTest
         public void Performance()
         {
             HashPerformance(new Crc32());
+            HashPerformance(new Crc64());
             HashPerformance(new Adler32());
 
             HashPerformance(new HashCryptoSHA1());

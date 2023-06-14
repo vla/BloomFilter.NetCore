@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BloomFilterTest
 {
-    class Utilitiy
+    static class Utilitiy
     {
         private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private const string Base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -29,6 +29,16 @@ namespace BloomFilterTest
             var buff = new byte[size];
             Rng.GetBytes(buff);
             return buff;
+        }
+
+        public static byte[] ToUtf8Bytes(this string s)
+        {
+            return Encoding.UTF8.GetBytes(s);
+        }
+
+        public static byte[] FromHex(this string s)
+        {
+            return Convert.FromHexString(s);
         }
 
     }
