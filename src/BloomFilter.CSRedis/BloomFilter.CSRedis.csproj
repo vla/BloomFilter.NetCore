@@ -3,7 +3,7 @@
 		<AssemblyName>BloomFilter.CSRedis</AssemblyName>
 		<AssemblyTitle>BloomFilter.CSRedis</AssemblyTitle>
 		<PackageId>BloomFilter.CSRedis.NetCore</PackageId>
-		<TargetFrameworks>net462;netstandard2.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Nullable>enable</Nullable>
@@ -11,7 +11,7 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="CSRedisCore" Version="3.8.670" />
+		<PackageReference Include="CSRedisCore" Version="3.8.802" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\BloomFilter\BloomFilter.csproj" />
