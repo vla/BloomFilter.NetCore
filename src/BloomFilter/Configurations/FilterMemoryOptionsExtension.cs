@@ -21,6 +21,28 @@ public class FilterMemoryOptionsExtension : IBloomFilterOptionsExtension
         services.TryAddSingleton<IBloomFilterFactory, DefaultBloomFilterFactory>();
         services.AddSingleton<IBloomFilter, FilterMemory>(x =>
         {
+            if (_options.Bits is not null)
+            {
+                return new FilterMemory(
+                    _options.Bits,
+                    _options.BitsMore,
+                    _options.Name,
+                    _options.ExpectedElements,
+                    _options.ErrorRate,
+                    HashFunction.Functions[_options.Method]);
+            }
+
+            if (_options.Bytes is not null)
+            {
+                return new FilterMemory(
+                    _options.Bytes,
+                    _options.BytesMore,
+                    _options.Name,
+                    _options.ExpectedElements,
+                    _options.ErrorRate,
+                    HashFunction.Functions[_options.Method]);
+            }
+
             return new FilterMemory(
                 _options.Name,
                 _options.ExpectedElements,

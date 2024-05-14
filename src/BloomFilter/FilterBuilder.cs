@@ -1,4 +1,6 @@
-﻿namespace BloomFilter;
+﻿using System.Collections;
+
+namespace BloomFilter;
 
 /// <summary>
 /// BloomFilter Builder
@@ -43,6 +45,60 @@ public partial class FilterBuilder
     /// <summary>
     /// Creates a BloomFilter for the specified expected element
     /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return Build(bits, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, byte[] more, long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return Build(bits, more, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return Build(bits, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, BitArray more, long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return Build(bits, more, expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
     /// <param name="expectedElements">The expected elements.</param>
     /// <param name="errorRate">The error rate.</param>
     /// <param name="name"></param>
@@ -50,6 +106,64 @@ public partial class FilterBuilder
     public static IBloomFilter Build(long expectedElements, double errorRate, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return Build(expectedElements, errorRate, HashFunction.Functions[HashMethod.Murmur3], name);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashMethod">The hash method.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashMethod">The hash method.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, byte[]? more, long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, more, name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashMethod">The hash method.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashMethod">The hash method.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, BitArray? more, long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, more, name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
     }
 
     /// <summary>
@@ -63,6 +177,65 @@ public partial class FilterBuilder
     public static IBloomFilter Build(long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
     {
         return new FilterMemory(name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+    }
+
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashFunction">The hash function.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, name, expectedElements, errorRate, hashFunction);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashFunction">The hash function.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(byte[] bits, byte[] more, long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, more, name, expectedElements, errorRate, hashFunction);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashFunction">The hash function.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, name, expectedElements, errorRate, hashFunction);
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="bits">Sets the bit value</param>
+    /// <param name="more">Sets more the bit value</param>
+    /// <param name="expectedElements">The expected elements.</param>
+    /// <param name="errorRate">The error rate.</param>
+    /// <param name="hashFunction">The hash function.</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(BitArray bits, BitArray more, long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    {
+        return new FilterMemory(bits, more, name, expectedElements, errorRate, hashFunction);
     }
 
     /// <summary>

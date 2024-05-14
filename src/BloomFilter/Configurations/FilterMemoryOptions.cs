@@ -1,4 +1,6 @@
-﻿namespace BloomFilter.Configurations;
+﻿using System.Collections;
+
+namespace BloomFilter.Configurations;
 
 public class FilterMemoryOptions
 {
@@ -21,4 +23,24 @@ public class FilterMemoryOptions
     /// The Hash Method
     /// </summary>
     public HashMethod Method { get; set; } = HashMethod.Murmur3;
+
+    /// <summary>
+    /// Sets the bit value
+    /// </summary>
+    public BitArray Bits { get; set; } = default!;
+
+    /// <summary>
+    /// Sets more the bit value
+    /// </summary>
+    public BitArray? BitsMore { get; set; }
+
+    /// <summary>
+    /// Sets the bit value
+    /// </summary>
+    public byte[] Bytes { get; set; } = default!;
+
+    /// <summary>
+    /// Sets more the bit value
+    /// </summary>
+    public byte[]? BytesMore { get; set; }
 }
