@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using Xunit;
+using BloomFilter.Configurations;
 
 namespace BloomFilterTest
 {
@@ -14,7 +15,12 @@ namespace BloomFilterTest
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var bf2 = (FilterMemory)FilterBuilder.Build(bits1, 10000, 0.01);
+                var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+                {
+                    Bytes = bits1,
+                    ExpectedElements = 10000,
+                    ErrorRate = 0.01
+                });
             });
         }
 
@@ -25,7 +31,12 @@ namespace BloomFilterTest
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var bf2 = (FilterMemory)FilterBuilder.Build(bits1, 10000, 0.01);
+                var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+                {
+                    Bits = bits1,
+                    ExpectedElements = 10000,
+                    ErrorRate = 0.01
+                });
             });
         }
 
@@ -38,7 +49,14 @@ namespace BloomFilterTest
 
             bf.Export(out byte[] bits, out byte[] more);
 
-            var bf2 = (FilterMemory)FilterBuilder.Build(bits, more, 10000, 0.01);
+            var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+            {
+                Bytes = bits,
+                BytesMore = more,
+                ExpectedElements = 10000,
+                ErrorRate = 0.01
+            });
+
 
             Assert.True(bf2.Contains("Export_And_Import"));
         }
@@ -53,7 +71,14 @@ namespace BloomFilterTest
 
             bf.Export(out BitArray bits, out BitArray more);
 
-            var bf2 = (FilterMemory)FilterBuilder.Build(bits, more, 10000, 0.01);
+            var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+            {
+                Bits = bits,
+                BitsMore = more,
+                ExpectedElements = 10000,
+                ErrorRate = 0.01
+            });
+
 
             Assert.True(bf2.Contains("Export_And_Import"));
         }

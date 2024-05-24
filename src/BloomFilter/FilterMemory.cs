@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using BloomFilter.Configurations;
 
 namespace BloomFilter;
 
@@ -26,59 +27,30 @@ public class FilterMemory : Filter
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterMemory"/> class.
     /// </summary>
-    /// <param name="bits">Sets the bit value</param>
-    /// <param name="name"></param>
-    /// <param name="expectedElements">The expected elements.</param>
-    /// <param name="errorRate">The error rate.</param>
-    /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(BitArray bits, string name, long expectedElements, double errorRate, HashFunction hashFunction)
-        : base(name, expectedElements, errorRate, hashFunction)
+    /// <param name="options"><see cref="FilterMemoryOptions"/></param>
+    public FilterMemory(FilterMemoryOptions options)
+        : base(options.Name, options.ExpectedElements, options.ErrorRate, HashFunction.Functions[options.Method])
     {
-        Import(bits, null);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterMemory"/> class.
-    /// </summary>
-    /// <param name="bits1">Sets the bit value</param>
-    /// <param name="more">Sets more the bit value</param>
-    /// <param name="name"></param>
-    /// <param name="expectedElements">The expected elements.</param>
-    /// <param name="errorRate">The error rate.</param>
-    /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(BitArray bits1, BitArray? more, string name, long expectedElements, double errorRate, HashFunction hashFunction)
-        : base(name, expectedElements, errorRate, hashFunction)
-    {
-        Import(bits1, more);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterMemory"/> class.
-    /// </summary>
-    /// <param name="bits">Sets the bit value</param>
-    /// <param name="name"></param>
-    /// <param name="expectedElements">The expected elements.</param>
-    /// <param name="errorRate">The error rate.</param>
-    /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(byte[] bits, string name, long expectedElements, double errorRate, HashFunction hashFunction)
-        : base(name, expectedElements, errorRate, hashFunction)
-    {
-        Import(bits, null);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FilterMemory"/> class.
-    /// </summary>
-    /// <param name="bits">Sets the bit value</param>
-    /// <param name="more">Sets more the bit value</param>
-    /// <param name="name"></param>
-    /// <param name="expectedElements">The expected elements.</param>
-    /// <param name="errorRate">The error rate.</param>
-    /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(byte[] bits, byte[]? more, string name, long expectedElements, double errorRate, HashFunction hashFunction)
-        : base(name, expectedElements, errorRate, hashFunction)
-    {
-        Import(bits, more);
+        if (options.Bits is not null)
+        {
+            Import(options.Bits, options.BitsMore);
+        }
+        else if (options.Bytes is not null)
+        {
+            Import(options.Bytes, options.BytesMore);
+        }
+        else
+        {
+            if (Capacity > MaxInt)
+            {
+                _hashBits1 = new BitArray(MaxInt);
+                _hashBits2 = new BitArray((int)(Capacity - MaxInt));
+            }
+            else
+            {
+                _hashBits1 = new BitArray((int)Capacity);
+            }
+        }
     }
 
     /// <summary>
