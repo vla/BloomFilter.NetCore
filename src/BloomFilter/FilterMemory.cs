@@ -34,7 +34,7 @@ public class FilterMemory : Filter
         }
         else if (options.BucketBytes is not null)
         {
-            Import(options.Bytes, options.BytesMore);
+            Import(options.BucketBytes);
         }
         else if (options.Bits is not null)
         {
@@ -124,9 +124,9 @@ public class FilterMemory : Filter
         if (buckets.Length == 0)
             throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(buckets));
 
-        if (Capacity != buckets.Sum(s => (long)s.Length))
+        if (Capacity > buckets.Sum(s => (long)s.Length))
         {
-            throw new ArgumentOutOfRangeException($"The length must {Capacity}", nameof(buckets));
+            throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(buckets));
         }
 
         lock (sync)
