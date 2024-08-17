@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BloomFilter.Configurations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using BloomFilter.Configurations;
 
 namespace BloomFilter;
 
@@ -13,12 +13,8 @@ namespace BloomFilter;
 /// </summary>
 public class FilterMemory : Filter
 {
-    private const int MaxInt = 2147483647;
-
-    //MAX 512MB (50 billion)
-    private BitArray _hashBits1;
-
-    private BitArray? _hashBits2;
+    //The upper limit per bucket is 2147483647
+    private BitArray[] _buckets;
 
     private readonly object sync = new();
 
@@ -31,25 +27,40 @@ public class FilterMemory : Filter
     public FilterMemory(FilterMemoryOptions options)
         : base(options.Name, options.ExpectedElements, options.ErrorRate, HashFunction.Functions[options.Method])
     {
-        if (options.Bits is not null)
+
+        if (options.Buckets is not null)
         {
-            Import(options.Bits, options.BitsMore);
+            Import(options.Buckets);
         }
-        else if (options.Bytes is not null)
+        else if (options.BucketBytes is not null)
         {
             Import(options.Bytes, options.BytesMore);
         }
-        else
+        else if (options.Bits is not null)
         {
-            if (Capacity > MaxInt)
+            if (options.BitsMore is not null)
             {
-                _hashBits1 = new BitArray(MaxInt);
-                _hashBits2 = new BitArray((int)(Capacity - MaxInt));
+                Import([options.Bits, options.BitsMore]);
             }
             else
             {
-                _hashBits1 = new BitArray((int)Capacity);
+                Import([options.Bits]);
             }
+        }
+        else if (options.Bytes is not null)
+        {
+            if (options.BytesMore is not null)
+            {
+                Import([options.Bytes, options.BytesMore]);
+            }
+            else
+            {
+                Import([options.Bytes]);
+            }
+        }
+        else
+        {
+            Init();
         }
     }
 
@@ -63,15 +74,7 @@ public class FilterMemory : Filter
     public FilterMemory(string name, long expectedElements, double errorRate, HashFunction hashFunction)
         : base(name, expectedElements, errorRate, hashFunction)
     {
-        if (Capacity > MaxInt)
-        {
-            _hashBits1 = new BitArray(MaxInt);
-            _hashBits2 = new BitArray((int)(Capacity - MaxInt));
-        }
-        else
-        {
-            _hashBits1 = new BitArray((int)Capacity);
-        }
+        Init();
     }
 
     /// <summary>
@@ -84,14 +87,56 @@ public class FilterMemory : Filter
     public FilterMemory(string name, long size, int hashes, HashFunction hashFunction)
         : base(name, size, hashes, hashFunction)
     {
-        if (Capacity > MaxInt)
+        Init();
+    }
+
+    [MemberNotNull(nameof(_buckets))]
+    private void Init()
+    {
+        var bits = new List<BitArray>();
+        var m = Capacity;
+        while (m > 0)
         {
-            _hashBits1 = new BitArray(MaxInt);
-            _hashBits2 = new BitArray((int)(Capacity - MaxInt));
+            if (m > MaxInt)
+            {
+                bits.Add(new BitArray(MaxInt));
+                m -= MaxInt;
+            }
+            else
+            {
+                bits.Add(new BitArray((int)m));
+                break;
+            }
         }
-        else
+        _buckets = bits.ToArray();
+    }
+
+    /// <summary>
+    /// Importing bitmap
+    /// </summary>
+    /// <param name="buckets">Sets the multiple bitmap</param>
+    [MemberNotNull(nameof(_buckets))]
+    public void Import(BitArray[] buckets)
+    {
+        if (buckets is null)
+            throw new ArgumentNullException(nameof(buckets));
+
+        if (buckets.Length == 0)
+            throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(buckets));
+
+        if (Capacity != buckets.Sum(s => (long)s.Length))
         {
-            _hashBits1 = new BitArray((int)Capacity);
+            throw new ArgumentOutOfRangeException($"The length must {Capacity}", nameof(buckets));
+        }
+
+        lock (sync)
+        {
+            _buckets = new BitArray[buckets.Length];
+
+            for (int i = 0; i < buckets.Length; i++)
+            {
+                _buckets[i] = new BitArray(buckets[i]);
+            }
         }
     }
 
@@ -100,43 +145,34 @@ public class FilterMemory : Filter
     /// </summary>
     /// <param name="bits">Sets the bit value</param>
     /// <param name="bits2">Sets the bit value</param>
-    [MemberNotNull(nameof(_hashBits1))]
+    [Obsolete("Use Import(BitArray[])")]
+    [MemberNotNull(nameof(_buckets))]
     public void Import(BitArray bits, BitArray? bits2 = null)
     {
-        if (Capacity > MaxInt)
+        if (bits2 is null)
         {
-            if (bits.Length != MaxInt)
-            {
-                throw new ArgumentOutOfRangeException($"The length must {MaxInt}", nameof(bits));
-            }
-
-            if (bits2 is null)
-            {
-                throw new ArgumentNullException(nameof(bits2));
-            }
-
-            if ((int)(Capacity - MaxInt) != bits2.Length)
-            {
-                throw new ArgumentOutOfRangeException($"The length must {Capacity - MaxInt}", nameof(bits2));
-            }
+            Import([bits]);
         }
         else
         {
-            if (bits.Length != Capacity)
-            {
-                throw new ArgumentOutOfRangeException($"The length must {Capacity}", nameof(bits));
-            }
+            Import([bits, bits2]);
         }
+    }
 
-        lock (sync)
-        {
-            _hashBits1 = new BitArray(bits);
+    /// <summary>
+    /// Importing bitmap
+    /// </summary>
+    /// <param name="bucketBytes">Sets the multiple bitmaps</param>
+    [MemberNotNull(nameof(_buckets))]
+    public void Import(IList<byte[]> bucketBytes)
+    {
+        if (bucketBytes is null)
+            throw new ArgumentNullException(nameof(bucketBytes));
 
-            if (Capacity > MaxInt && bits2 is not null)
-            {
-                _hashBits2 = new BitArray(bits2);
-            }
-        }
+        if (bucketBytes.Count == 0)
+            throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(bucketBytes));
+
+        Import(bucketBytes.Select(s => new BitArray(s)).ToArray());
     }
 
     /// <summary>
@@ -144,64 +180,29 @@ public class FilterMemory : Filter
     /// </summary>
     /// <param name="bits">Sets the bit value</param>
     /// <param name="more">Sets more the bit value</param>
-    [MemberNotNull(nameof(_hashBits1))]
+    [MemberNotNull(nameof(_buckets))]
+    [Obsolete("Use Import(IList<byte[]>)")]
     public void Import(byte[] bits, byte[]? more = null)
     {
-        if (Capacity > MaxInt)
+        if (more is null)
         {
-            if (bits.Length * 8 < MaxInt)
-            {
-                throw new ArgumentOutOfRangeException($"The length must be greater than or equal to {MaxInt / 8 + 1}", nameof(bits));
-            }
-
-            if (more is null)
-            {
-                throw new ArgumentNullException(nameof(more));
-            }
-
-            if ((int)(Capacity - MaxInt) > more.Length * 8)
-            {
-                throw new ArgumentOutOfRangeException($"The length must be greater than or equal to {(Capacity - MaxInt) / 8 + 1}", nameof(more));
-            }
+            Import([bits]);
         }
         else
         {
-            if (bits.Length * 8 < Capacity)
-            {
-                throw new ArgumentOutOfRangeException($"The length must be greater than or equal to {Capacity / 8 + 1}", nameof(bits));
-            }
-        }
-
-        lock (sync)
-        {
-            _hashBits1 = new BitArray(bits);
-
-            if (Capacity > MaxInt && more is not null)
-            {
-                _hashBits2 = new BitArray(more);
-            }
+            Import([bits, more]);
         }
     }
+
 
     /// <summary>
     /// Exporting bitmap
     /// </summary>
-    /// <param name="bits">Gets the bit value</param>
-    /// <param name="more">Gets more the bit value</param>
-    public void Export(out BitArray bits, out BitArray? more)
+    public BitArray[] Export()
     {
         lock (sync)
         {
-            bits = new BitArray(_hashBits1);
-
-            if (_hashBits2 is not null)
-            {
-                more = new BitArray(_hashBits2);
-            }
-            else
-            {
-                more = null;
-            }
+            return _buckets.Select(s => new BitArray(s)).ToArray();
         }
     }
 
@@ -210,26 +211,60 @@ public class FilterMemory : Filter
     /// </summary>
     /// <param name="bits">Gets the bit value</param>
     /// <param name="more">Gets more the bit value</param>
-    public void Export(out byte[] bits, out byte[]? more)
+    [Obsolete("Use Export()")]
+    public void Export(out BitArray bits, out BitArray? more)
+    {
+        more = null;
+
+        lock (sync)
+        {
+            bits = new BitArray(_buckets[0]);
+
+            if (_buckets.Length > 1)
+            {
+                more = new BitArray(_buckets[1]);
+            }
+        }
+    }
+
+
+
+    /// <summary>
+    /// Exporting bitmap
+    /// </summary>
+    public IList<byte[]> ExportToBytes()
     {
         int Mod(int len) => len % 8 > 0 ? 1 : 0;
 
-        bits = new byte[_hashBits1.Length / 8 + Mod(_hashBits1.Length)];
+        var result = new List<byte[]>();
 
         lock (sync)
         {
-            _hashBits1.CopyTo(bits, 0);
-
-            if (_hashBits2 is not null)
+            foreach (var bucket in _buckets)
             {
-                more = new byte[_hashBits2.Length / 8 + Mod(_hashBits2.Length)];
+                var bits = new byte[bucket.Length / 8 + Mod(bucket.Length)];
+                bucket.CopyTo(bits, 0);
+                result.Add(bits);
+            }
+        }
 
-                _hashBits2.CopyTo(more, 0);
-            }
-            else
-            {
-                more = null;
-            }
+        return result;
+    }
+
+    /// <summary>
+    /// Exporting bitmap
+    /// </summary>
+    /// <param name="bits">Gets the bit value</param>
+    /// <param name="more">Gets more the bit value</param>
+    [Obsolete("Use ExportToBytes()")]
+    public void Export(out byte[] bits, out byte[]? more)
+    {
+        more = null;
+        var result = ExportToBytes();
+        bits = result[0];
+        if (result.Count > 1)
+        {
+            more = result[1];
         }
     }
 
@@ -397,8 +432,10 @@ public class FilterMemory : Filter
     {
         lock (sync)
         {
-            _hashBits1.SetAll(false);
-            _hashBits2?.SetAll(false);
+            foreach (var item in _buckets)
+            {
+                item.SetAll(false);
+            }
         }
     }
 
@@ -410,26 +447,16 @@ public class FilterMemory : Filter
 
     private void Set(long index)
     {
-        if (_hashBits2 is not null && index > MaxInt)
-        {
-            _hashBits2.Set((int)(index - MaxInt), true);
-        }
-        else
-        {
-            _hashBits1.Set((int)index, true);
-        }
+        int idx = LogMaxInt(index, out int mod);
+
+        _buckets[idx].Set(mod, true);
     }
 
     public bool Get(long index)
     {
-        if (_hashBits2 is not null && index > MaxInt)
-        {
-            return _hashBits2.Get((int)(index - MaxInt));
-        }
-        else
-        {
-            return _hashBits1.Get((int)index);
-        }
+        int idx = LogMaxInt(index, out int mod);
+
+        return _buckets[idx].Get(mod);
     }
 
     public override void Dispose()

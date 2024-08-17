@@ -10,6 +10,9 @@ namespace BloomFilter;
 /// <seealso cref="IBloomFilter" />
 public abstract class Filter : IBloomFilter
 {
+    //256MB
+    protected const int MaxInt = 2147483647;
+
     /// <summary>
     /// Gets the name specified by BloomFilter.
     /// </summary>
@@ -238,6 +241,18 @@ public abstract class Filter : IBloomFilter
     public override string ToString()
     {
         return $"Capacity:{Capacity},Hashes:{Hashes},ExpectedElements:{ExpectedElements},ErrorRate:{ErrorRate}";
+    }
+
+    protected static int LogMaxInt(long number, out int mod)
+    {
+        int result = 0;
+        while (number > MaxInt)
+        {
+            number -= MaxInt;
+            result++;
+        }
+        mod = (int)number;
+        return result;
     }
 
     /// <summary>

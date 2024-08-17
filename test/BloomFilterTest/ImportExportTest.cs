@@ -61,6 +61,26 @@ namespace BloomFilterTest
             Assert.True(bf2.Contains("Export_And_Import"));
         }
 
+        [Fact]
+        public void ExportToBytes_And_Import()
+        {
+            var bf = (FilterMemory)FilterBuilder.Build(10000, 0.01);
+
+            bf.Add("ExportToBytes_And_Import");
+
+            var bucketBytes = bf.ExportToBytes();
+
+            var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+            {
+                BucketBytes = bucketBytes,
+                ExpectedElements = 10000,
+                ErrorRate = 0.01
+            });
+
+
+            Assert.True(bf2.Contains("ExportToBytes_And_Import"));
+        }
+
 
         [Fact]
         public void BitArray_Export_And_Import()
@@ -81,6 +101,26 @@ namespace BloomFilterTest
 
 
             Assert.True(bf2.Contains("Export_And_Import"));
+        }
+
+        [Fact]
+        public void Export_BitArray_And_Import()
+        {
+            var bf = (FilterMemory)FilterBuilder.Build(10000, 0.01);
+
+            bf.Add("Export_BitArray_And_Import");
+
+            var buckets = bf.Export();
+
+            var bf2 = (FilterMemory)FilterBuilder.Build(new FilterMemoryOptions
+            {
+                Buckets = buckets,
+                ExpectedElements = 10000,
+                ErrorRate = 0.01
+            });
+
+
+            Assert.True(bf2.Contains("Export_BitArray_And_Import"));
         }
 
     }
