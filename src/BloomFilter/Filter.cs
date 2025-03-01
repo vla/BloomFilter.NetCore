@@ -245,14 +245,8 @@ public abstract class Filter : IBloomFilter
 
     protected static int LogMaxInt(long number, out int mod)
     {
-        int result = 0;
-        while (number > MaxInt)
-        {
-            number -= MaxInt;
-            result++;
-        }
-        mod = (int)number;
-        return result;
+        mod = (int)(number % MaxInt);
+        return (int)(number / MaxInt);
     }
 
     /// <summary>
