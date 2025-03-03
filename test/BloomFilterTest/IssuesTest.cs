@@ -19,6 +19,7 @@ namespace BloomFilterTest
         [InlineData(2147483647)]
         [InlineData(2147483641)]
         [InlineData(2147483649)]
+        [InlineData(2147483630)]
         public void Issues_16(long expectedElements)
         {
             double errorRate = 0.0000001;

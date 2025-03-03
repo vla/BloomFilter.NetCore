@@ -145,27 +145,5 @@ namespace BloomFilterTest
 
             Assert.True(bf.Contains(data));
         }
-
-        [Fact]
-        public void Breaking_MaxInt()
-        {
-            var bf = FilterBuilder.Build(800000000, 0.01, HashMethod.Murmur3);
-
-            var rng = RandomNumberGenerator.Create();
-
-            var len = 1000;
-            var list = new List<byte[]>(len);
-            for (int i = 0; i < len; i++)
-            {
-                var data = new byte[1024];
-                rng.GetBytes(data);
-                list.Add(data);
-            }
-
-            Assert.All(bf.Add(list), r => Assert.True(r));
-            Assert.All(bf.Contains(list), r => Assert.True(r));
-
-            Assert.True(bf.All(list));
-        }
     }
 }
