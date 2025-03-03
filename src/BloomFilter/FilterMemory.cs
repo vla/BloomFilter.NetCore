@@ -13,7 +13,7 @@ namespace BloomFilter;
 /// </summary>
 public class FilterMemory : Filter
 {
-    //The upper limit per bucket is 2147483647
+    //The upper limit per bucket is 2147483640
     private BitArray[] _buckets;
 
     private readonly object sync = new();
@@ -455,7 +455,6 @@ public class FilterMemory : Filter
     public bool Get(long index)
     {
         int idx = LogMaxInt(index, out int mod);
-
         return _buckets[idx].Get(mod);
     }
 

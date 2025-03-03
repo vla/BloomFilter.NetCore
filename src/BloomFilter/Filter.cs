@@ -11,7 +11,7 @@ namespace BloomFilter;
 public abstract class Filter : IBloomFilter
 {
     //256MB
-    protected const int MaxInt = 2147483647;
+    protected const int MaxInt = 2147483640;
 
     /// <summary>
     /// Gets the name specified by BloomFilter.
