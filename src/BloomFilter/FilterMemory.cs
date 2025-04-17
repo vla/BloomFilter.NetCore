@@ -27,7 +27,6 @@ public class FilterMemory : Filter
     public FilterMemory(FilterMemoryOptions options)
         : base(options.Name, options.ExpectedElements, options.ErrorRate, HashFunction.Functions[options.Method])
     {
-
         if (options.Buckets is not null)
         {
             Import(options.Buckets);
@@ -35,28 +34,6 @@ public class FilterMemory : Filter
         else if (options.BucketBytes is not null)
         {
             Import(options.BucketBytes);
-        }
-        else if (options.Bits is not null)
-        {
-            if (options.BitsMore is not null)
-            {
-                Import([options.Bits, options.BitsMore]);
-            }
-            else
-            {
-                Import([options.Bits]);
-            }
-        }
-        else if (options.Bytes is not null)
-        {
-            if (options.BytesMore is not null)
-            {
-                Import([options.Bytes, options.BytesMore]);
-            }
-            else
-            {
-                Import([options.Bytes]);
-            }
         }
         else
         {
@@ -143,25 +120,6 @@ public class FilterMemory : Filter
     /// <summary>
     /// Importing bitmap
     /// </summary>
-    /// <param name="bits">Sets the bit value</param>
-    /// <param name="bits2">Sets the bit value</param>
-    [Obsolete("Use Import(BitArray[])")]
-    [MemberNotNull(nameof(_buckets))]
-    public void Import(BitArray bits, BitArray? bits2 = null)
-    {
-        if (bits2 is null)
-        {
-            Import([bits]);
-        }
-        else
-        {
-            Import([bits, bits2]);
-        }
-    }
-
-    /// <summary>
-    /// Importing bitmap
-    /// </summary>
     /// <param name="bucketBytes">Sets the multiple bitmaps</param>
     [MemberNotNull(nameof(_buckets))]
     public void Import(IList<byte[]> bucketBytes)
@@ -176,26 +134,6 @@ public class FilterMemory : Filter
     }
 
     /// <summary>
-    /// Importing bitmap
-    /// </summary>
-    /// <param name="bits">Sets the bit value</param>
-    /// <param name="more">Sets more the bit value</param>
-    [MemberNotNull(nameof(_buckets))]
-    [Obsolete("Use Import(IList<byte[]>)")]
-    public void Import(byte[] bits, byte[]? more = null)
-    {
-        if (more is null)
-        {
-            Import([bits]);
-        }
-        else
-        {
-            Import([bits, more]);
-        }
-    }
-
-
-    /// <summary>
     /// Exporting bitmap
     /// </summary>
     public BitArray[] Export()
@@ -205,29 +143,6 @@ public class FilterMemory : Filter
             return _buckets.Select(s => new BitArray(s)).ToArray();
         }
     }
-
-    /// <summary>
-    /// Exporting bitmap
-    /// </summary>
-    /// <param name="bits">Gets the bit value</param>
-    /// <param name="more">Gets more the bit value</param>
-    [Obsolete("Use Export()")]
-    public void Export(out BitArray bits, out BitArray? more)
-    {
-        more = null;
-
-        lock (sync)
-        {
-            bits = new BitArray(_buckets[0]);
-
-            if (_buckets.Length > 1)
-            {
-                more = new BitArray(_buckets[1]);
-            }
-        }
-    }
-
-
 
     /// <summary>
     /// Exporting bitmap
@@ -249,23 +164,6 @@ public class FilterMemory : Filter
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Exporting bitmap
-    /// </summary>
-    /// <param name="bits">Gets the bit value</param>
-    /// <param name="more">Gets more the bit value</param>
-    [Obsolete("Use ExportToBytes()")]
-    public void Export(out byte[] bits, out byte[]? more)
-    {
-        more = null;
-        var result = ExportToBytes();
-        bits = result[0];
-        if (result.Count > 1)
-        {
-            more = result[1];
-        }
     }
 
     /// <summary>

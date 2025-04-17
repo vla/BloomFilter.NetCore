@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace BloomFilter.Configurations;
@@ -27,33 +26,9 @@ public class FilterMemoryOptions
     public HashMethod Method { get; set; } = HashMethod.Murmur3;
 
     /// <summary>
-    /// Sets the bit value
-    /// </summary>
-    [Obsolete("Use Buckets")]
-    public BitArray Bits { get; set; } = default!;
-
-    /// <summary>
-    /// Sets more the bit value
-    /// </summary>
-    [Obsolete("Use Buckets")]
-    public BitArray? BitsMore { get; set; }
-
-    /// <summary>
     /// Multiple bitmap
     /// </summary>
     public BitArray[]? Buckets { get; set; }
-
-    /// <summary>
-    /// Sets the bit value
-    /// </summary>
-    [Obsolete("Use BucketBytes")]
-    public byte[] Bytes { get; set; } = default!;
-
-    /// <summary>
-    /// Sets more the bit value
-    /// </summary>
-    [Obsolete("Use BucketBytes")]
-    public byte[]? BytesMore { get; set; }
 
     /// <summary>
     /// Multiple bitmap from bytes
