@@ -6,6 +6,8 @@ namespace BloomFilter.HashAlgorithms;
 
 public class HashCryptoSHA1 : HashCrypto
 {
+    public override HashMethod Method => HashMethod.SHA1;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA1.Create();
@@ -15,6 +17,8 @@ public class HashCryptoSHA1 : HashCrypto
 
 public class HashCryptoSHA256 : HashCrypto
 {
+    public override HashMethod Method => HashMethod.SHA256;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA256.Create();
@@ -24,6 +28,8 @@ public class HashCryptoSHA256 : HashCrypto
 
 public class HashCryptoSHA384 : HashCrypto
 {
+    public override HashMethod Method => HashMethod.SHA384;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA384.Create();
@@ -33,6 +39,8 @@ public class HashCryptoSHA384 : HashCrypto
 
 public class HashCryptoSHA512 : HashCrypto
 {
+    public override HashMethod Method => HashMethod.SHA512;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         using var hashAlgorithm = SHA512.Create();

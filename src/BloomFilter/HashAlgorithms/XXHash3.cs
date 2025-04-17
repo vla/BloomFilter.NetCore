@@ -4,6 +4,8 @@ namespace BloomFilter.HashAlgorithms;
 
 public class XXHash3 : HashFunction
 {
+    public override HashMethod Method => HashMethod.XXHash3;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long[] positions = new long[k];

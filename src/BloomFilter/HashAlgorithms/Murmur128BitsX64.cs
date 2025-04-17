@@ -4,6 +4,8 @@ namespace BloomFilter.HashAlgorithms;
 
 public class Murmur128BitsX64 : HashFunction
 {
+    public override HashMethod Method => HashMethod.Murmur128BitsX64;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long[] positions = new long[k];

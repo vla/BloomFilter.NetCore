@@ -5,6 +5,8 @@ namespace BloomFilter.HashAlgorithms;
 
 public class XXHash128 : HashFunction
 {
+    public override HashMethod Method => HashMethod.XXHash128;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long[] positions = new long[k];

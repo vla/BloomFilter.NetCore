@@ -4,6 +4,7 @@ namespace BloomFilter.HashAlgorithms;
 
 public partial class Crc64 : HashFunction
 {
+    public override HashMethod Method => HashMethod.CRC64;
 
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {

@@ -43,6 +43,11 @@ public abstract class HashFunction
     };
 
     /// <summary>
+    /// Hash Method
+    /// </summary>
+    public abstract HashMethod Method { get; }
+
+    /// <summary>
     /// Hashes the specified value.
     /// </summary>
     /// <param name="data">The data.</param>

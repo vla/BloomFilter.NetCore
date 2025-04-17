@@ -1,0 +1,8 @@
+{
+  "parallelAlgorithm": "aggressive",
+  "parallelizeAssembly": true,
+  "parallelizeTestCollections": true,
+  "stopOnFail": true,
+  "showLiveOutput": true,
+  "maxParallelThreads": "0.5x"
+}

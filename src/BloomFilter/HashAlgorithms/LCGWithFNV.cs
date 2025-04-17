@@ -7,6 +7,8 @@ namespace BloomFilter.HashAlgorithms;
 /// </summary>
 public class LCGWithFNV1a : LCGWithFNV
 {
+    public override HashMethod Method => HashMethod.LCGWithFNV1a;
+
     public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1a.HashToUInt32(data);
@@ -18,6 +20,8 @@ public class LCGWithFNV1a : LCGWithFNV
 /// </summary>
 public class LCGModifiedFNV1 : LCGWithFNV1a
 {
+    public override HashMethod Method => HashMethod.LCGModifiedFNV1;
+
     public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.ModifiedFNV1.HashToUInt32(data);
@@ -29,6 +33,8 @@ public class LCGModifiedFNV1 : LCGWithFNV1a
 /// </summary>
 public class LCGWithFNV : HashFunction
 {
+    public override HashMethod Method => HashMethod.LCGWithFNV1;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long multiplier = 0x5DEECE66DL;

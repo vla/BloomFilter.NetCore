@@ -14,7 +14,18 @@ public partial class FilterBuilder
     /// <returns></returns>
     public static IBloomFilter Build(FilterMemoryOptions options)
     {
-        return new FilterMemory(options);
+        return new FilterMemory(options, new DefaultFilterMemorySerializer());
+    }
+
+    /// <summary>
+    /// Creates a BloomFilter for the specified expected element
+    /// </summary>
+    /// <param name="options"><see cref="FilterMemoryOptions"/></param>
+    /// <param name="filterMemorySerializer"><see cref="IFilterMemorySerializer"/></param>
+    /// <returns></returns>
+    public static IBloomFilter Build(FilterMemoryOptions options, IFilterMemorySerializer filterMemorySerializer)
+    {
+        return new FilterMemory(options, filterMemorySerializer);
     }
 
     /// <summary>
@@ -71,10 +82,11 @@ public partial class FilterBuilder
     /// <param name="errorRate">The error rate.</param>
     /// <param name="hashMethod">The hash method.</param>
     /// <param name="name"></param>
+    /// <param name="filterMemorySerializer"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, double errorRate, HashMethod hashMethod, string name = BloomFilterConstValue.DefaultInMemoryName, IFilterMemorySerializer? filterMemorySerializer = null)
     {
-        return new FilterMemory(name, expectedElements, errorRate, HashFunction.Functions[hashMethod]);
+        return new FilterMemory(name, expectedElements, errorRate, HashFunction.Functions[hashMethod], filterMemorySerializer ?? new DefaultFilterMemorySerializer());
     }
 
     /// <summary>
@@ -84,9 +96,10 @@ public partial class FilterBuilder
     /// <param name="errorRate">The error rate.</param>
     /// <param name="hashFunction">The hash function.</param>
     /// <param name="name"></param>
+    /// <param name="filterMemorySerializer"></param>
     /// <returns></returns>
-    public static IBloomFilter Build(long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName)
+    public static IBloomFilter Build(long expectedElements, double errorRate, HashFunction hashFunction, string name = BloomFilterConstValue.DefaultInMemoryName, IFilterMemorySerializer? filterMemorySerializer = null)
     {
-        return new FilterMemory(name, expectedElements, errorRate, hashFunction);
+        return new FilterMemory(name, expectedElements, errorRate, hashFunction, filterMemorySerializer ?? new DefaultFilterMemorySerializer());
     }
 }

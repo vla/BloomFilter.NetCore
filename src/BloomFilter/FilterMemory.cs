@@ -1,10 +1,11 @@
-﻿using BloomFilter.Configurations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BloomFilter.Configurations;
 
 namespace BloomFilter;
 
@@ -16,7 +17,8 @@ public class FilterMemory : Filter
     //The upper limit per bucket is 2147483640
     private BitArray[] _buckets;
 
-    private readonly object sync = new();
+    private readonly AsyncLock _mutex = new();
+    private readonly IFilterMemorySerializer _filterMemorySerializer;
 
     private static readonly ValueTask Empty = new();
 
@@ -24,9 +26,12 @@ public class FilterMemory : Filter
     /// Initializes a new instance of the <see cref="FilterMemory"/> class.
     /// </summary>
     /// <param name="options"><see cref="FilterMemoryOptions"/></param>
-    public FilterMemory(FilterMemoryOptions options)
+    /// <param name="filterMemorySerializer"></param>
+    public FilterMemory(FilterMemoryOptions options, IFilterMemorySerializer filterMemorySerializer)
         : base(options.Name, options.ExpectedElements, options.ErrorRate, HashFunction.Functions[options.Method])
     {
+        _filterMemorySerializer = filterMemorySerializer;
+
         if (options.Buckets is not null)
         {
             Import(options.Buckets);
@@ -48,9 +53,12 @@ public class FilterMemory : Filter
     /// <param name="expectedElements">The expected elements.</param>
     /// <param name="errorRate">The error rate.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(string name, long expectedElements, double errorRate, HashFunction hashFunction)
+    /// <param name="filterMemorySerializer"></param>
+    public FilterMemory(string name, long expectedElements, double errorRate, HashFunction hashFunction, IFilterMemorySerializer filterMemorySerializer)
         : base(name, expectedElements, errorRate, hashFunction)
     {
+        _filterMemorySerializer = filterMemorySerializer;
+
         Init();
     }
 
@@ -61,9 +69,11 @@ public class FilterMemory : Filter
     /// <param name="size">The size.</param>
     /// <param name="hashes">The hashes.</param>
     /// <param name="hashFunction">The hash function.</param>
-    public FilterMemory(string name, long size, int hashes, HashFunction hashFunction)
+    /// <param name="filterMemorySerializer"></param>
+    public FilterMemory(string name, long size, int hashes, HashFunction hashFunction, IFilterMemorySerializer filterMemorySerializer)
         : base(name, size, hashes, hashFunction)
     {
+        _filterMemorySerializer = filterMemorySerializer;
         Init();
     }
 
@@ -89,6 +99,58 @@ public class FilterMemory : Filter
     }
 
     /// <summary>
+    /// Serialize to a stream
+    /// </summary>
+    /// <param name="param"></param>
+    /// <param name="stream"></param>
+    /// <returns></returns>
+    public async ValueTask SerializeAsync(Stream stream)
+    {
+        using var _ = await _mutex.AcquireAsync();
+
+        await _filterMemorySerializer.SerializeAsync(new FilterMemorySerializerParam
+        {
+            Name = Name,
+            Method = Hash.Method,
+            ExpectedElements = ExpectedElements,
+            ErrorRate = ErrorRate,
+            Buckets = _buckets.Select(s => new BitArray(s)).ToArray()
+        }, stream);
+    }
+
+    /// <summary>
+    /// Deserialize from the stream
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <returns></returns>
+    public async ValueTask DeserializeAsync(Stream stream)
+    {
+        using var _ = await _mutex.AcquireAsync();
+
+        var param = await _filterMemorySerializer.DeserializeAsync(stream);
+
+        if (param.Buckets is null)
+            throw new ArgumentNullException(nameof(FilterMemorySerializerParam.Buckets));
+
+        if (param.Buckets.Length == 0)
+            throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(FilterMemorySerializerParam.Buckets));
+
+        if (Capacity > param.Buckets.Sum(s => (long)s.Length))
+        {
+            throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(FilterMemorySerializerParam.Buckets));
+        }
+
+        SetFilterParam(param.ExpectedElements, param.ErrorRate, param.Method);
+
+        _buckets = new BitArray[param.Buckets.Length];
+
+        for (int i = 0; i < param.Buckets.Length; i++)
+        {
+            _buckets[i] = new BitArray(param.Buckets[i]);
+        }
+    }
+
+    /// <summary>
     /// Importing bitmap
     /// </summary>
     /// <param name="buckets">Sets the multiple bitmap</param>
@@ -106,14 +168,13 @@ public class FilterMemory : Filter
             throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(buckets));
         }
 
-        lock (sync)
-        {
-            _buckets = new BitArray[buckets.Length];
+        using var _ = _mutex.Acquire();
 
-            for (int i = 0; i < buckets.Length; i++)
-            {
-                _buckets[i] = new BitArray(buckets[i]);
-            }
+        _buckets = new BitArray[buckets.Length];
+
+        for (int i = 0; i < buckets.Length; i++)
+        {
+            _buckets[i] = new BitArray(buckets[i]);
         }
     }
 
@@ -138,10 +199,8 @@ public class FilterMemory : Filter
     /// </summary>
     public BitArray[] Export()
     {
-        lock (sync)
-        {
-            return _buckets.Select(s => new BitArray(s)).ToArray();
-        }
+        using var _ = _mutex.Acquire();
+        return _buckets.Select(s => new BitArray(s)).ToArray();
     }
 
     /// <summary>
@@ -153,7 +212,7 @@ public class FilterMemory : Filter
 
         var result = new List<byte[]>();
 
-        lock (sync)
+        using (var _ = _mutex.Acquire())
         {
             foreach (var bucket in _buckets)
             {
@@ -175,7 +234,7 @@ public class FilterMemory : Filter
     {
         bool added = false;
         var positions = ComputeHash(data);
-        lock (sync)
+        using (var _ = _mutex.Acquire())
         {
             foreach (var position in positions)
             {
@@ -208,7 +267,7 @@ public class FilterMemory : Filter
         }
 
         var processResults = new bool[hashes.Count];
-        lock (sync)
+        using (var _ = _mutex.Acquire())
         {
             for (var i = 0; i < hashes.Count; i++)
             {
@@ -256,7 +315,7 @@ public class FilterMemory : Filter
     public override bool Contains(ReadOnlySpan<byte> element)
     {
         var positions = ComputeHash(element);
-        lock (sync)
+        using (var _ = _mutex.Acquire())
         {
             foreach (var position in positions)
             {
@@ -281,7 +340,7 @@ public class FilterMemory : Filter
         }
 
         var processResults = new bool[hashes.Count];
-        lock (sync)
+        using (var _ = _mutex.Acquire())
         {
             for (var i = 0; i < hashes.Count; i++)
             {
@@ -328,12 +387,10 @@ public class FilterMemory : Filter
     /// </summary>
     public override void Clear()
     {
-        lock (sync)
+        using var _ = _mutex.Acquire();
+        foreach (var item in _buckets)
         {
-            foreach (var item in _buckets)
-            {
-                item.SetAll(false);
-            }
+            item.SetAll(false);
         }
     }
 

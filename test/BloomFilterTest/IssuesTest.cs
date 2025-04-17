@@ -12,6 +12,7 @@ namespace BloomFilterTest
 {
     public class IssuesTest
     {
+        //Make sure your local memory is large enough
         [Theory]
         [InlineData(100_000_000)]
         [InlineData(1024 * 1024 * 1024)]

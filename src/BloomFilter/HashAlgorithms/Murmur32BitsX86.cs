@@ -8,6 +8,8 @@ namespace BloomFilter.HashAlgorithms;
 /// </summary>
 public class Murmur32BitsX86 : HashFunction
 {
+    public override HashMethod Method => HashMethod.Murmur32BitsX86;
+
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
         long[] positions = new long[k];

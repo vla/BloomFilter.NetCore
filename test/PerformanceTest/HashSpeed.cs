@@ -47,7 +47,7 @@ namespace PerformanceTest
 
             int count = 100000;
 
-            var bf = new FilterMemory(BloomFilterConstValue.DefaultInMemoryName, m, k, hashFunction);
+            var bf = new FilterMemory(BloomFilterConstValue.DefaultInMemoryName, m, k, hashFunction, new DefaultFilterMemorySerializer());
 
             var array = new List<byte[]>();
 

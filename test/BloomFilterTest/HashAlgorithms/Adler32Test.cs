@@ -7,7 +7,7 @@ namespace BloomFilterTest.HashAlgorithms
 {
     public class Adler32Test
     {
-
+        ////Make sure your local memory is large enough
         [Theory]
         [InlineData(1024, 3838443024)]
         [InlineData(1024 * 1024, 1185183625)]

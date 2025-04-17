@@ -1,6 +1,6 @@
-﻿using BloomFilter;
+﻿using System;
+using BloomFilter;
 using BloomFilter.Configurations;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -54,6 +54,38 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (filterMemoryOptions == null) throw new ArgumentNullException(nameof(filterMemoryOptions));
             options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions));
+            return options;
+        }
+
+        /// <summary>
+        /// Uses the in-memory.
+        /// </summary>
+        /// <param name="options">Options.</param>
+        /// <param name="name"></param>
+        /// <param name="setupActions"></param>
+        public static BloomFilterOptions UseInMemoryWithSerializer<TSerializer>(this BloomFilterOptions options,
+            string name = BloomFilterConstValue.DefaultInMemoryName, Action<FilterMemoryOptions>? setupActions = null)
+            where TSerializer : IFilterMemorySerializer
+        {
+            var filterMemoryOptions = new FilterMemoryOptions
+            {
+                Name = name
+            };
+            setupActions?.Invoke(filterMemoryOptions);
+            options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions, typeof(TSerializer)));
+            return options;
+        }
+
+        /// <summary>
+        /// Uses the in-memory.
+        /// </summary>
+        /// <param name="options">Options.</param>
+        /// <param name="filterMemoryOptions"></param>
+        public static BloomFilterOptions UseInMemoryWithSerializer<TSerializer>(this BloomFilterOptions options, FilterMemoryOptions filterMemoryOptions)
+              where TSerializer : IFilterMemorySerializer
+        {
+            if (filterMemoryOptions == null) throw new ArgumentNullException(nameof(filterMemoryOptions));
+            options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions, typeof(TSerializer)));
             return options;
         }
     }

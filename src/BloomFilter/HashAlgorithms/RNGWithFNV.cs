@@ -7,6 +7,8 @@ namespace BloomFilter.HashAlgorithms;
 /// </summary>
 public class RNGWithFNV1a : RNGWithFNV1
 {
+    public override HashMethod Method => HashMethod.RNGWithFNV1a;
+
     public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.FNV1a.HashToUInt32(data);
@@ -18,6 +20,8 @@ public class RNGWithFNV1a : RNGWithFNV1
 /// </summary>
 public class RNGModifiedFNV1 : RNGWithFNV1a
 {
+    public override HashMethod Method => HashMethod.RNGModifiedFNV1;
+
     public override long Hash(ReadOnlySpan<byte> data)
     {
         return Internal.ModifiedFNV1.HashToUInt32(data);
@@ -29,6 +33,8 @@ public class RNGModifiedFNV1 : RNGWithFNV1a
 /// </summary>
 public class RNGWithFNV1 : HashFunction
 {
+    public override HashMethod Method => HashMethod.RNGWithFNV1;
+
     protected const long Prime = 16777619;
     protected const long Init = 2166136261;
 

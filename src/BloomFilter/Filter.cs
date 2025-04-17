@@ -21,27 +21,27 @@ public abstract class Filter : IBloomFilter
     /// <summary>
     /// <see cref="HashFunction"/>
     /// </summary>
-    public HashFunction Hash { get; }
+    public HashFunction Hash { get; private set; }
 
     /// <summary>
     /// the Capacity of the Bloom filter
     /// </summary>
-    public long Capacity { get; }
+    public long Capacity { get; private set; }
 
     /// <summary>
     /// number of hash functions
     /// </summary>
-    public int Hashes { get; }
+    public int Hashes { get; private set; }
 
     /// <summary>
     ///  the expected elements.
     /// </summary>
-    public long ExpectedElements { get; }
+    public long ExpectedElements { get; private set; }
 
     /// <summary>
     /// the number of expected elements
     /// </summary>
-    public double ErrorRate { get; }
+    public double ErrorRate { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Filter"/> class.
@@ -99,6 +99,21 @@ public abstract class Filter : IBloomFilter
 
         ExpectedElements = BestN(hashes, capacity);
         ErrorRate = BestP(hashes, capacity, ExpectedElements);
+    }
+
+    protected void SetFilterParam(long expectedElements, double errorRate, HashMethod method)
+    {
+        if (expectedElements < 1)
+            throw new ArgumentOutOfRangeException("expectedElements", expectedElements, "expectedElements must be > 0");
+        if (errorRate >= 1 || errorRate <= 0)
+            throw new ArgumentOutOfRangeException("errorRate", errorRate, string.Format("errorRate must be between 0 and 1, exclusive. Was {0}", errorRate));
+
+        ExpectedElements = expectedElements;
+        ErrorRate = errorRate;
+        Hash = HashFunction.Functions[method];
+
+        Capacity = BestM(expectedElements, errorRate);
+        Hashes = BestK(expectedElements, Capacity);
     }
 
     /// <summary>
