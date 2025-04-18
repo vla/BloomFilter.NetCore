@@ -11,11 +11,11 @@ There are 2 types of Bloom filters in the Bloom filter library:
 
 Package  | NuGet         |
 -------- | :------------ |
-|**BloomFilter.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.NetCore)](https://www.nuget.org/packages/BloomFilter.NetCore)
-|**BloomFilter.Redis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.Redis.NetCore)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)
-|**BloomFilter.CSRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.CSRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)
-|**BloomFilter.FreeRedis.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.FreeRedis.NetCore)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)
-|**BloomFilter.EasyCaching.NetCore**|[![NuGet package](https://buildstats.info/nuget/BloomFilter.EasyCaching.NetCore)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)
+|**BloomFilter.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.NetCore)
+|**BloomFilter.Redis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.Redis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)
+|**BloomFilter.CSRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.CSRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)
+|**BloomFilter.FreeRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.FreeRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)
+|**BloomFilter.EasyCaching.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.EasyCaching.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)
 
 ## Features
 
