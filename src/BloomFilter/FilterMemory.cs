@@ -135,12 +135,12 @@ public class FilterMemory : Filter
         if (param.Buckets.Length == 0)
             throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(FilterMemorySerializerParam.Buckets));
 
+        SetFilterParam(param.ExpectedElements, param.ErrorRate, param.Method);
+
         if (Capacity > param.Buckets.Sum(s => (long)s.Length))
         {
             throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(FilterMemorySerializerParam.Buckets));
         }
-
-        SetFilterParam(param.ExpectedElements, param.ErrorRate, param.Method);
 
         _buckets = new BitArray[param.Buckets.Length];
 
