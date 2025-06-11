@@ -89,7 +89,7 @@ public abstract class Filter : IBloomFilter
     {
         if (capacity < 1)
             throw new ArgumentOutOfRangeException("capacity", capacity, "capacity must be > 0");
-        if (capacity < 1)
+        if (hashes < 1)
             throw new ArgumentOutOfRangeException("hashes", hashes, "hashes must be > 0");
 
         Name = name;
