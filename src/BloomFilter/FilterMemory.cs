@@ -101,7 +101,6 @@ public class FilterMemory : Filter
     /// <summary>
     /// Serialize to a stream
     /// </summary>
-    /// <param name="param"></param>
     /// <param name="stream"></param>
     /// <returns></returns>
     public async ValueTask SerializeAsync(Stream stream)
