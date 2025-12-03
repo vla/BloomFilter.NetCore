@@ -3,198 +3,196 @@
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-6.0%20|%207.0%20|%208.0%20|%209.0%20|%2010.0-blue.svg)](https://dotnet.microsoft.com/)
 
-A high-performance, feature-complete Bloom filter library for .NET, supporting both in-memory and distributed Redis backends.
+一个高性能、功能完整的 .NET 布隆过滤器实现库，支持内存存储和多种 Redis 分布式后端。
 
-[中文文档](README.zh-CN.md)
+## 目录
 
-## Table of Contents
+- [项目概述](#项目概述)
+- [主要特性](#主要特性)
+- [包和状态](#包和状态)
+- [整体架构](#整体架构)
+- [核心功能](#核心功能)
+- [安装](#安装)
+- [快速开始](#快速开始)
+- [使用示例](#使用示例)
+  - [内存模式](#内存模式)
+  - [依赖注入配置](#依赖注入配置)
+  - [Redis 分布式模式](#redis-分布式模式)
+- [哈希算法](#哈希算法)
+- [性能基准测试](#性能基准测试)
+- [高级用法](#高级用法)
+- [API 参考](#api-参考)
+- [贡献指南](#贡献指南)
+- [许可证](#许可证)
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Packages & Status](#packages--status)
-- [Architecture](#architecture)
-- [Core Functionality](#core-functionality)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage Examples](#usage-examples)
-  - [In-Memory Mode](#in-memory-mode)
-  - [Dependency Injection](#dependency-injection)
-  - [Redis Distributed Mode](#redis-distributed-mode)
-- [Hash Algorithms](#hash-algorithms)
-- [Performance Benchmarks](#performance-benchmarks)
-- [Advanced Usage](#advanced-usage)
-- [API Reference](#api-reference)
-- [Contributing](#contributing)
-- [License](#license)
+## 项目概述
 
-## Overview
+BloomFilter.NetCore 是一个企业级的布隆过滤器库，专为 .NET 生态系统设计。布隆过滤器是一种空间效率极高的概率型数据结构,用于测试一个元素是否属于一个集合。它的核心特点是:
 
-BloomFilter.NetCore is an enterprise-grade Bloom filter library designed for the .NET ecosystem. A Bloom filter is a space-efficient probabilistic data structure used to test whether an element is a member of a set. Its core characteristics are:
+- **空间高效**: 相比传统的 HashSet,占用空间极小
+- **时间复杂度 O(1)**: 添加和查询操作都是常数时间
+- **允许一定误报率**: 可能返回假阳性(false positive),但绝不会出现假阴性(false negative)
 
-- **Space Efficient**: Extremely small memory footprint compared to traditional HashSets
-- **O(1) Time Complexity**: Both add and query operations execute in constant time
-- **Probabilistic**: May return false positives but never false negatives
+本项目提供了两大类实现:
 
-This project provides two major implementation types:
+1. **内存布隆过滤器 (FilterMemory)**: 基于 BitArray 的内存实现,适用于单进程场景
+2. **分布式布隆过滤器 (FilterRedis 系列)**: 基于 Redis 的分布式实现,支持多应用程序并发访问
 
-1. **In-Memory Bloom Filter (FilterMemory)**: BitArray-based in-memory implementation, suitable for single-process scenarios
-2. **Distributed Bloom Filter (FilterRedis series)**: Redis-backed distributed implementation, supports concurrent access from multiple applications
+### 主要用途
 
-### Primary Use Cases
+- **缓存穿透防护**: 防止恶意查询不存在的数据导致缓存击穿
+- **去重场景**: URL 去重、邮箱去重、用户 ID 去重等
+- **推荐系统**: 判断用户是否已看过某个内容
+- **爬虫系统**: 判断 URL 是否已被爬取
+- **分布式系统**: 多服务实例间共享状态判断
+- **大数据场景**: 海量数据的存在性判断
 
-- **Cache Penetration Protection**: Prevent malicious queries for non-existent data from bypassing cache
-- **Deduplication**: URL deduplication, email deduplication, user ID deduplication, etc.
-- **Recommendation Systems**: Check if a user has seen specific content
-- **Web Crawlers**: Check if URLs have been crawled
-- **Distributed Systems**: Share state checks across multiple service instances
-- **Big Data**: Existence checks for massive datasets
+## 主要特性
 
-## Key Features
+### 🎯 灵活配置
 
-### 🎯 Flexible Configuration
+- **参数完全可配置**: 位数组大小 (m)、哈希函数数量 (k)
+- **自动参数计算**: 根据容忍的误报率 (p) 和预期元素数量 (n) 自动计算最优参数
+- **20+ 种哈希算法**: 支持 CRC、MD5、SHA、Murmur、LCGs、xxHash 等或自定义算法
 
-- **Fully Configurable Parameters**: Bit array size (m), number of hash functions (k)
-- **Automatic Parameter Calculation**: Automatically calculate optimal parameters based on tolerable false positive rate (p) and expected element count (n)
-- **20+ Hash Algorithms**: Support for CRC, MD5, SHA, Murmur, LCGs, xxHash, or custom algorithms
+### ⚡ 高性能
 
-### ⚡ High Performance
+- **快速生成**: 布隆过滤器的生成和操作都极快
+- **优化实现**: 使用 Span<T>、ReadOnlyMemory<T> 等零拷贝技术
+- **不安全代码优化**: 在性能关键路径使用 unsafe 代码块
+- **拒绝采样**: 实现了拒绝采样和哈希链,考虑雪崩效应以提高哈希质量
 
-- **Fast Generation**: Bloom filter generation and operations are extremely fast
-- **Optimized Implementation**: Uses Span<T>, ReadOnlyMemory<T> for zero-copy operations
-- **Unsafe Code Optimization**: Uses unsafe code blocks in performance-critical paths
-- **Rejection Sampling**: Implements rejection sampling and hash chaining, considering avalanche effect for improved hash quality
+### 🔒 并发安全
 
-### 🔒 Concurrency Safe
+- **线程安全**: 使用 AsyncLock 机制确保多线程并发访问安全
+- **异步支持**: 全面的 async/await 支持,所有操作都有异步版本
+- **分布式锁**: Redis 实现支持跨应用程序的并发访问
 
-- **Thread-Safe**: Uses AsyncLock mechanism for safe multi-threaded concurrent access
-- **Async Support**: Comprehensive async/await support with async versions of all operations
-- **Distributed Locking**: Redis implementations support concurrent access across applications
+### 🌐 多后端支持
 
-### 🌐 Multiple Backend Support
+- **StackExchange.Redis**: 官方推荐的 Redis 客户端
+- **CSRedisCore**: 高性能的 Redis 客户端
+- **FreeRedis**: 轻量级 Redis 客户端
+- **EasyCaching**: 支持 EasyCaching 抽象层,可切换多种缓存提供程序
 
-- **StackExchange.Redis**: Officially recommended Redis client
-- **CSRedisCore**: High-performance Redis client
-- **FreeRedis**: Lightweight Redis client
-- **EasyCaching**: Supports EasyCaching abstraction layer, switchable cache providers
+### 📦 现代 .NET 支持
 
-### 📦 Modern .NET Support
+- **多框架支持**: net462, netstandard2.0, net6.0, net7.0, net8.0, net9.0, net10.0
+- **依赖注入**: 原生支持 Microsoft.Extensions.DependencyInjection
+- **可空引用类型**: 启用可空引用类型,提高代码安全性
 
-- **Multi-Framework Support**: net462, netstandard2.0, net6.0, net7.0, net8.0, net9.0, net10.0
-- **Dependency Injection**: Native support for Microsoft.Extensions.DependencyInjection
-- **Nullable Reference Types**: Enabled for improved code safety
+## 包和状态
 
-## Packages & Status
+| 包名 | NuGet | 说明 |
+|------|-------|------|
+|**BloomFilter.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.NetCore)| 核心包,提供内存布隆过滤器 |
+|**BloomFilter.Redis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.Redis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)| StackExchange.Redis 实现 |
+|**BloomFilter.CSRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.CSRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)| CSRedisCore 实现 |
+|**BloomFilter.FreeRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.FreeRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)| FreeRedis 实现 |
+|**BloomFilter.EasyCaching.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.EasyCaching.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)| EasyCaching 集成 |
 
-| Package | NuGet | Description |
-|---------|-------|-------------|
-|**BloomFilter.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.NetCore)| Core package with in-memory Bloom filter |
-|**BloomFilter.Redis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.Redis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.Redis.NetCore)| StackExchange.Redis implementation |
-|**BloomFilter.CSRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.CSRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.CSRedis.NetCore)| CSRedisCore implementation |
-|**BloomFilter.FreeRedis.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.FreeRedis.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.FreeRedis.NetCore)| FreeRedis implementation |
-|**BloomFilter.EasyCaching.NetCore**|[![nuget](https://img.shields.io/nuget/v/BloomFilter.EasyCaching.NetCore.svg?style=flat-square)](https://www.nuget.org/packages/BloomFilter.EasyCaching.NetCore)| EasyCaching integration |
+## 整体架构
 
-## Architecture
-
-### Core Interface Layer
+### 核心接口层
 
 ```
-IBloomFilter (Interface)
-    ├── Add / AddAsync           - Add elements
-    ├── Contains / ContainsAsync - Check elements
-    ├── All / AllAsync           - Batch check
-    ├── Clear / ClearAsync       - Clear filter
-    └── ComputeHash              - Compute hash values
+IBloomFilter (接口)
+    ├── Add / AddAsync           - 添加元素
+    ├── Contains / ContainsAsync - 检查元素
+    ├── All / AllAsync           - 批量检查
+    ├── Clear / ClearAsync       - 清空过滤器
+    └── ComputeHash              - 计算哈希值
 ```
 
-### Implementation Hierarchy
+### 实现层次结构
 
 ```
-Filter (Abstract Base Class)
-    ├── FilterMemory (In-Memory)
-    │   └── Uses BitArray storage
+Filter (抽象基类)
+    ├── FilterMemory (内存实现)
+    │   └── 使用 BitArray 存储
     │
-    └── Redis Series (Distributed)
+    └── Redis 系列 (分布式实现)
         ├── FilterRedis (StackExchange.Redis)
         ├── FilterCSRedis (CSRedisCore)
         ├── FilterFreeRedis (FreeRedis)
         └── FilterEasyCachingRedis (EasyCaching)
 ```
 
-### Configuration System
+### 配置系统
 
 ```
 BloomFilterOptions
-    ├── FilterMemoryOptions      - In-memory mode configuration
-    ├── FilterRedisOptions       - StackExchange.Redis configuration
-    ├── FilterCSRedisOptions     - CSRedisCore configuration
-    ├── FilterFreeRedisOptions   - FreeRedis configuration
-    └── FilterEasyCachingOptions - EasyCaching configuration
+    ├── FilterMemoryOptions      - 内存模式配置
+    ├── FilterRedisOptions       - StackExchange.Redis 配置
+    ├── FilterCSRedisOptions     - CSRedisCore 配置
+    ├── FilterFreeRedisOptions   - FreeRedis 配置
+    └── FilterEasyCachingOptions - EasyCaching 配置
 ```
 
-## Core Functionality
+## 核心功能
 
-### Mathematical Model
+### 数学模型
 
-BloomFilter.NetCore implements the complete Bloom filter mathematical model:
+BloomFilter.NetCore 实现了完整的布隆过滤器数学模型:
 
-#### 1. Optimal Bit Array Size (m)
+#### 1. 最优位数组大小 (m)
 
-Given expected element count `n` and false positive rate `p`, calculate optimal bit array size:
+给定预期元素数 `n` 和误报率 `p`,计算最优的位数组大小:
 
 ```
 m = -(n * ln(p)) / (ln(2)^2)
 ```
 
-#### 2. Optimal Number of Hash Functions (k)
+#### 2. 最优哈希函数数量 (k)
 
-Given element count `n` and bit array size `m`, calculate optimal number of hash functions:
+给定元素数 `n` 和位数组大小 `m`,计算最优的哈希函数数量:
 
 ```
 k = (m / n) * ln(2)
 ```
 
-#### 3. Actual False Positive Rate (p)
+#### 3. 实际误报率 (p)
 
-Given inserted element count, number of hash functions, and bit array size, calculate actual false positive rate:
+给定已插入元素数、哈希函数数量和位数组大小,计算实际误报率:
 
 ```
 p = (1 - e^(-k*n/m))^k
 ```
 
-These calculations are provided by static methods in the `Filter` base class:
+这些计算由 `Filter` 基类提供的静态方法实现:
 
 ```csharp
-// Calculate optimal bit array size
+// 计算最优位数组大小
 long m = Filter.BestM(expectedElements, errorRate);
 
-// Calculate optimal number of hash functions
+// 计算最优哈希函数数量
 int k = Filter.BestK(expectedElements, capacity);
 
-// Calculate optimal element count
+// 计算最优元素数量
 long n = Filter.BestN(hashes, capacity);
 
-// Calculate actual false positive rate
+// 计算实际误报率
 double p = Filter.BestP(hashes, capacity, insertedElements);
 ```
 
-### Storage Mechanisms
+### 存储机制
 
-#### In-Memory Storage
+#### 内存存储
 
-- **BitArray**: Uses .NET's BitArray as underlying storage
-- **Bucketing Strategy**: Automatically splits into multiple BitArrays when capacity exceeds 2GB (MaxInt = 2,147,483,640)
-- **Serialization Support**: Supports serialization/deserialization for persistence or transfer
+- **BitArray**: 使用 .NET 的 BitArray 作为底层存储
+- **分桶策略**: 当容量超过 2GB (MaxInt = 2,147,483,640) 时,自动分成多个 BitArray
+- **序列化支持**: 支持序列化/反序列化以持久化或传输过滤器状态
 
-#### Redis Storage
+#### Redis 存储
 
-- **SETBIT/GETBIT**: Uses Redis bit operation commands
-- **Distributed Access**: Multiple application instances can concurrently access the same filter
-- **Persistence**: Leverages Redis persistence mechanisms for data safety
+- **SETBIT/GETBIT**: 使用 Redis 的位操作命令
+- **分布式访问**: 多个应用实例可以并发访问同一个过滤器
+- **持久化**: 利用 Redis 的持久化机制保证数据安全
 
-### Concurrency Control
+### 并发控制
 
 ```csharp
-// AsyncLock ensures thread safety
+// AsyncLock 确保线程安全
 public class AsyncLock
 {
     private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -207,17 +205,17 @@ public class AsyncLock
 }
 ```
 
-## Installation
+## 安装
 
-### Install via NuGet
+### 通过 NuGet 安装
 
-**In-Memory Mode (Core Package):**
+**内存模式 (核心包):**
 
 ```bash
 dotnet add package BloomFilter.NetCore
 ```
 
-**Redis Distributed Mode (Choose One):**
+**Redis 分布式模式 (选择一个):**
 
 ```bash
 # StackExchange.Redis
@@ -233,38 +231,38 @@ dotnet add package BloomFilter.FreeRedis.NetCore
 dotnet add package BloomFilter.EasyCaching.NetCore
 ```
 
-## Quick Start
+## 快速开始
 
-### Simplest Example
+### 最简单的示例
 
 ```csharp
 using BloomFilter;
 
-// Create a Bloom filter: expect 10 million elements, 1% false positive rate
+// 创建一个布隆过滤器:预期 1000 万元素,1% 误报率
 var bf = FilterBuilder.Build(10_000_000, 0.01);
 
-// Add elements
+// 添加元素
 bf.Add("user:123");
 bf.Add("user:456");
 
-// Check element existence
+// 检查元素是否存在
 Console.WriteLine(bf.Contains("user:123")); // True
-Console.WriteLine(bf.Contains("user:789")); // False (very small probability of True)
+Console.WriteLine(bf.Contains("user:789")); // False (可能极小概率为 True)
 
-// Clear filter
+// 清空过滤器
 bf.Clear();
 ```
 
-### Async Operations
+### 异步操作
 
 ```csharp
-// Async add
+// 异步添加
 await bf.AddAsync(Encoding.UTF8.GetBytes("user:123"));
 
-// Async check
+// 异步检查
 bool exists = await bf.ContainsAsync(Encoding.UTF8.GetBytes("user:123"));
 
-// Batch async operations
+// 批量异步操作
 var users = new[] {
     Encoding.UTF8.GetBytes("user:1"),
     Encoding.UTF8.GetBytes("user:2"),
@@ -275,48 +273,48 @@ await bf.AddAsync(users);
 var results = await bf.ContainsAsync(users);
 ```
 
-## Usage Examples
+## 使用示例
 
-### In-Memory Mode
+### 内存模式
 
-#### Basic Usage
+#### 基本用法
 
 ```csharp
 using BloomFilter;
 
 public class UserService
 {
-    // Static shared Bloom filter
+    // 静态共享的布隆过滤器
     private static readonly IBloomFilter _bloomFilter =
         FilterBuilder.Build(10_000_000, 0.01);
 
     public void AddUser(string userId)
     {
-        // Add user ID
+        // 添加用户 ID
         _bloomFilter.Add(userId);
     }
 
     public bool MayExistUser(string userId)
     {
-        // Check if user may exist
+        // 检查用户是否可能存在
         return _bloomFilter.Contains(userId);
     }
 }
 ```
 
-#### Custom Configuration
+#### 自定义配置
 
 ```csharp
 using BloomFilter;
 
-// Method 1: Specify hash algorithm
+// 方式 1: 指定哈希算法
 var bf1 = FilterBuilder.Build(
     expectedElements: 1_000_000,
     errorRate: 0.001,
     hashMethod: HashMethod.Murmur3
 );
 
-// Method 2: Use custom hash function
+// 方式 2: 使用自定义哈希函数
 var hashFunction = new Murmur128BitsX64();
 var bf2 = FilterBuilder.Build(
     expectedElements: 1_000_000,
@@ -324,14 +322,14 @@ var bf2 = FilterBuilder.Build(
     hashFunction: hashFunction
 );
 
-// Method 3: Manually specify parameters (advanced usage)
+// 方式 3: 手动指定参数 (高级用法)
 var bf3 = FilterBuilder.Build(
-    capacity: 9585059,      // Bit array size
-    hashes: 10,             // Number of hash functions
+    capacity: 9585059,      // 位数组大小
+    hashes: 10,             // 哈希函数数量
     hashMethod: HashMethod.XXHash3
 );
 
-// Method 4: Use configuration object
+// 方式 4: 使用配置对象
 var options = new FilterMemoryOptions
 {
     Name = "MyFilter",
@@ -342,9 +340,9 @@ var options = new FilterMemoryOptions
 var bf4 = FilterBuilder.Build(options);
 ```
 
-### Dependency Injection
+### 依赖注入配置
 
-#### ASP.NET Core Integration
+#### ASP.NET Core 集成
 
 ```csharp
 using BloomFilter;
@@ -354,7 +352,7 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        // Register Bloom filter service
+        // 注册布隆过滤器服务
         services.AddBloomFilter(setupAction =>
         {
             setupAction.UseInMemory(options =>
@@ -370,7 +368,7 @@ public class Startup
     }
 }
 
-// Use in controller or service
+// 在控制器或服务中使用
 public class UserController : ControllerBase
 {
     private readonly IBloomFilter _bloomFilter;
@@ -385,24 +383,24 @@ public class UserController : ControllerBase
     {
         if (_bloomFilter.Contains(userId))
         {
-            // User may exist, continue to query database
-            return Ok("User may exist");
+            // 用户可能存在,继续查询数据库
+            return Ok("用户可能存在");
         }
         else
         {
-            // User definitely doesn't exist, no need to query database
-            return NotFound("User doesn't exist");
+            // 用户一定不存在,无需查询数据库
+            return NotFound("用户不存在");
         }
     }
 }
 ```
 
-#### Multiple Filter Instances
+#### 多个过滤器实例
 
 ```csharp
 services.AddBloomFilter(setupAction =>
 {
-    // User filter
+    // 用户过滤器
     setupAction.UseInMemory(options =>
     {
         options.Name = "UserFilter";
@@ -410,7 +408,7 @@ services.AddBloomFilter(setupAction =>
         options.ErrorRate = 0.01;
     });
 
-    // Email filter
+    // 邮箱过滤器
     setupAction.UseInMemory(options =>
     {
         options.Name = "EmailFilter";
@@ -419,7 +417,7 @@ services.AddBloomFilter(setupAction =>
     });
 });
 
-// Use factory to get specific filter
+// 使用工厂获取指定过滤器
 public class MyService
 {
     private readonly IBloomFilter _userFilter;
@@ -433,14 +431,14 @@ public class MyService
 }
 ```
 
-### Redis Distributed Mode
+### Redis 分布式模式
 
 #### StackExchange.Redis
 
 ```csharp
 using BloomFilter;
 
-// Method 1: Direct build
+// 方式 1: 直接构建
 var bf = FilterRedisBuilder.Build(
     redisHost: "localhost:6379",
     name: "DistributedFilter",
@@ -451,7 +449,7 @@ var bf = FilterRedisBuilder.Build(
 bf.Add("item:123");
 Console.WriteLine(bf.Contains("item:123")); // True
 
-// Method 2: Dependency injection
+// 方式 2: 依赖注入
 services.AddBloomFilter(setupAction =>
 {
     setupAction.UseRedis(new FilterRedisOptions
@@ -466,7 +464,7 @@ services.AddBloomFilter(setupAction =>
     });
 });
 
-// Method 3: Advanced configuration (master-slave, sentinel, cluster)
+// 方式 3: 高级配置 (主从、哨兵、集群)
 services.AddBloomFilter(setupAction =>
 {
     setupAction.UseRedis(new FilterRedisOptions
@@ -524,9 +522,9 @@ services.AddBloomFilter(setupAction =>
 });
 ```
 
-#### EasyCaching Integration
+#### EasyCaching 集成
 
-EasyCaching provides a unified caching abstraction layer, allowing you to easily switch underlying cache implementations:
+EasyCaching 提供了统一的缓存抽象层,允许您轻松切换底层缓存实现:
 
 ```csharp
 using EasyCaching.Core.Configurations;
@@ -534,17 +532,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
 
-// 1. Configure EasyCaching
+// 1. 配置 EasyCaching
 services.AddEasyCaching(options =>
 {
-    // Configure Redis provider
+    // 配置 Redis 提供程序
     options.UseRedis(config =>
     {
         config.DBConfig.Endpoints.Add(new ServerEndPoint("127.0.0.1", 6379));
         config.DBConfig.Database = 0;
     }, "redis-provider-1");
 
-    // Can configure multiple providers
+    // 可以配置多个提供程序
     options.UseRedis(config =>
     {
         config.DBConfig.Endpoints.Add(new ServerEndPoint("127.0.0.1", 6379));
@@ -552,10 +550,10 @@ services.AddEasyCaching(options =>
     }, "redis-provider-2");
 });
 
-// 2. Configure BloomFilter
+// 2. 配置 BloomFilter
 services.AddBloomFilter(setupAction =>
 {
-    // Use first Redis provider
+    // 使用第一个 Redis 提供程序
     setupAction.UseEasyCachingRedis(new FilterEasyCachingRedisOptions
     {
         Name = "BF1",
@@ -565,7 +563,7 @@ services.AddBloomFilter(setupAction =>
         ErrorRate = 0.01
     });
 
-    // Use second Redis provider
+    // 使用第二个 Redis 提供程序
     setupAction.UseEasyCachingRedis(new FilterEasyCachingRedisOptions
     {
         Name = "BF2",
@@ -578,11 +576,11 @@ services.AddBloomFilter(setupAction =>
 
 var provider = services.BuildServiceProvider();
 
-// Use default filter
+// 使用默认过滤器
 var bf = provider.GetService<IBloomFilter>();
 bf.Add("value1");
 
-// Use named filter
+// 使用指定名称的过滤器
 var factory = provider.GetService<IBloomFilterFactory>();
 var bf1 = factory.Get("BF1");
 var bf2 = factory.Get("BF2");
@@ -591,9 +589,9 @@ bf1.Add("item1");
 bf2.Add("item2");
 ```
 
-### Real-World Application Scenarios
+### 实际应用场景
 
-#### 1. Cache Penetration Protection
+#### 1. 防止缓存穿透
 
 ```csharp
 public class ProductService
@@ -614,21 +612,21 @@ public class ProductService
 
     public async Task<Product> GetProductAsync(string productId)
     {
-        // First layer: Bloom filter
+        // 第一层防护: 布隆过滤器
         if (!_bloomFilter.Contains(productId))
         {
-            // Product definitely doesn't exist, return null directly
+            // 商品一定不存在,直接返回 null
             return null;
         }
 
-        // Second layer: Cache
+        // 第二层: 缓存
         var cached = await _cache.GetAsync<Product>(productId);
         if (cached != null)
         {
             return cached;
         }
 
-        // Third layer: Database
+        // 第三层: 数据库
         var product = await _repository.GetByIdAsync(productId);
         if (product != null)
         {
@@ -640,19 +638,19 @@ public class ProductService
 
     public async Task CreateProductAsync(Product product)
     {
-        // Save to database
+        // 保存到数据库
         await _repository.SaveAsync(product);
 
-        // Add to Bloom filter
+        // 添加到布隆过滤器
         _bloomFilter.Add(product.Id);
 
-        // Update cache
+        // 更新缓存
         await _cache.SetAsync(product.Id, product);
     }
 }
 ```
 
-#### 2. URL Deduplication (Web Crawler)
+#### 2. URL 去重 (爬虫系统)
 
 ```csharp
 public class WebCrawler
@@ -674,22 +672,22 @@ public class WebCrawler
         {
             var url = _urlQueue.Dequeue();
 
-            // Check if already visited
+            // 检查是否已访问
             if (_visitedUrls.Contains(url))
             {
-                continue; // Skip already visited URLs
+                continue; // 跳过已访问的 URL
             }
 
-            // Mark as visited
+            // 标记为已访问
             _visitedUrls.Add(url);
 
-            // Download page
+            // 抓取页面
             var page = await DownloadPageAsync(url);
 
-            // Process page
+            // 处理页面
             await ProcessPageAsync(page);
 
-            // Extract new URLs
+            // 提取新的 URL
             var newUrls = ExtractUrls(page);
             foreach (var newUrl in newUrls)
             {
@@ -703,10 +701,10 @@ public class WebCrawler
 }
 ```
 
-#### 3. Distributed Deduplication (Multiple Instances)
+#### 3. 分布式去重 (多实例)
 
 ```csharp
-// Configure distributed Bloom filter
+// 配置分布式布隆过滤器
 services.AddBloomFilter(setupAction =>
 {
     setupAction.UseRedis(new FilterRedisOptions
@@ -719,57 +717,57 @@ services.AddBloomFilter(setupAction =>
     });
 });
 
-// Use across multiple service instances
+// 在多个服务实例中使用
 public class MessageProcessor
 {
     private readonly IBloomFilter _bloomFilter;
 
     public async Task ProcessMessageAsync(Message message)
     {
-        // All instances share the same Redis Bloom filter
+        // 所有实例共享同一个 Redis 布隆过滤器
         if (await _bloomFilter.ContainsAsync(message.Id))
         {
-            // Message already processed by another instance
+            // 消息已被其他实例处理
             return;
         }
 
-        // Mark as processed
+        // 标记为已处理
         await _bloomFilter.AddAsync(message.Id);
 
-        // Process message
+        // 处理消息
         await HandleMessageAsync(message);
     }
 }
 ```
 
-## Hash Algorithms
+## 哈希算法
 
-BloomFilter.NetCore supports 20+ hash algorithms, choose based on performance and accuracy requirements:
+BloomFilter.NetCore 支持 20+ 种哈希算法,可根据性能和准确性需求选择:
 
-### Algorithm Categories
+### 算法分类
 
-| Category | Algorithms | Characteristics | Use Cases |
-|----------|-----------|-----------------|-----------|
-| **LCG-based** | LCGWithFNV1<br>LCGWithFNV1a<br>LCGModifiedFNV1 | Extremely fast, lower quality | Extremely high performance requirements, can tolerate high false positive rates |
-| **RNG-based** | RNGWithFNV1<br>RNGWithFNV1a<br>RNGModifiedFNV1 | High quality, slower | Scenarios requiring high accuracy |
-| **Checksum** | CRC32<br>CRC64<br>Adler32 | Balanced performance and quality | General scenarios |
-| **Murmur Family** | Murmur3<br>Murmur32BitsX86<br>Murmur128BitsX64<br>Murmur128BitsX86 | **Recommended**, good performance, high quality | Recommended for production |
-| **Cryptographic** | SHA1<br>SHA256<br>SHA384<br>SHA512 | Highest quality, slowest | Scenarios requiring extreme security |
-| **XXHash Family** | XXHash32<br>XXHash64<br>XXHash3<br>XXHash128 | **Fastest**, excellent quality | First choice for high performance |
+| 类别 | 算法 | 特点 | 适用场景 |
+|------|------|------|----------|
+| **LCG 类** | LCGWithFNV1<br>LCGWithFNV1a<br>LCGModifiedFNV1 | 极快,但质量较低 | 性能要求极高,可容忍高误报率 |
+| **RNG 类** | RNGWithFNV1<br>RNGWithFNV1a<br>RNGModifiedFNV1 | 质量高,但较慢 | 对准确性要求高的场景 |
+| **校验和** | CRC32<br>CRC64<br>Adler32 | 平衡性能和质量 | 通用场景 |
+| **Murmur 系列** | Murmur3<br>Murmur32BitsX86<br>Murmur128BitsX64<br>Murmur128BitsX86 | **推荐**,性能好,质量高 | 生产环境推荐 |
+| **加密哈希** | SHA1<br>SHA256<br>SHA384<br>SHA512 | 质量最高,但最慢 | 安全性要求极高的场景 |
+| **XXHash 系列** | XXHash32<br>XXHash64<br>XXHash3<br>XXHash128 | **最快**,质量优秀 | 高性能场景首选 |
 
-### Selection Recommendations
+### 选择建议
 
 ```csharp
-// Recommended: Default Murmur3 for production (balanced performance and quality)
+// 推荐: 生产环境默认选择 Murmur3 (平衡性能和质量)
 var bf1 = FilterBuilder.Build(10_000_000, 0.01, HashMethod.Murmur3);
 
-// High Performance: Choose XXHash3 for extreme performance requirements
+// 高性能: 对性能要求极高,选择 XXHash3
 var bf2 = FilterBuilder.Build(10_000_000, 0.01, HashMethod.XXHash3);
 
-// High Precision: Choose SHA256 + lower errorRate for minimal false positive rate
+// 高精度: 对误报率要求极低,选择 SHA256 + 更低的 errorRate
 var bf3 = FilterBuilder.Build(10_000_000, 0.0001, HashMethod.SHA256);
 
-// Distributed: Recommend XXHash64 for Redis (fast and good cross-language support)
+// 分布式: Redis 场景推荐 XXHash64 (速度快且跨语言支持好)
 var bf4 = FilterRedisBuilder.Build(
     "localhost:6379",
     "MyFilter",
@@ -779,9 +777,9 @@ var bf4 = FilterRedisBuilder.Build(
 );
 ```
 
-## Performance Benchmarks
+## 性能基准测试
 
-### Test Environment
+### 测试环境
 
 ```
 BenchmarkDotNet=v0.13.5
@@ -791,27 +789,27 @@ CPU: AMD Ryzen 7 5800X, 1 CPU, 16 logical cores, 8 physical cores
 Runtime: .NET 7.0.7 (7.0.723.27404), X64 RyuJIT AVX2
 ```
 
-### Performance Rankings (64-byte data)
+### 性能排名 (64 字节数据)
 
-| Rank | Algorithm | Mean Time | Relative Speed |
-|------|-----------|-----------|----------------|
-| 🥇 1 | XXHash3 | 33.14 ns | Baseline (Fastest) |
+| 排名 | 算法 | 平均时间 | 相对速度 |
+|------|------|----------|----------|
+| 🥇 1 | XXHash3 | 33.14 ns | 基准 (最快) |
 | 🥈 2 | XXHash128 | 36.01 ns | 1.09x |
 | 🥉 3 | CRC64 | 38.83 ns | 1.17x |
 | 4 | XXHash64 | 50.62 ns | 1.53x |
 | 5 | Murmur3 | 70.98 ns | 2.14x |
 | ... | ... | ... | ... |
-| 28 | SHA512 | 1,368.20 ns | 41.28x (Slowest) |
+| 28 | SHA512 | 1,368.20 ns | 41.28x (最慢) |
 
-### Complete Performance Data
+### 完整性能数据
 
 <details>
-<summary>Click to expand full benchmark results</summary>
+<summary>点击展开完整基准测试结果</summary>
 
-#### 64-byte Data
+#### 64 字节数据
 
-| Algorithm | Mean Time | Error | StdDev | Allocated |
-|-----------|-----------|-------|--------|-----------|
+| 算法 | 平均时间 | 误差 | 标准差 | 内存分配 |
+|------|---------|------|--------|---------|
 | XXHash3 | 33.14 ns | 0.295 ns | 0.276 ns | 80 B |
 | XXHash128 | 36.01 ns | 0.673 ns | 0.749 ns | 80 B |
 | CRC64 | 38.83 ns | 0.399 ns | 0.333 ns | 80 B |
@@ -829,10 +827,10 @@ Runtime: .NET 7.0.7 (7.0.723.27404), X64 RyuJIT AVX2
 | SHA384 | 1,173.67 ns | 5.050 ns | 3.942 ns | 456 B |
 | SHA512 | 1,368.20 ns | 10.967 ns | 9.722 ns | 504 B |
 
-#### 1 MB Data
+#### 1 MB 数据
 
-| Algorithm | Mean Time |
-|-----------|-----------|
+| 算法 | 平均时间 |
+|------|---------|
 | XXHash3 | 30,258.92 ns (~30 μs) |
 | XXHash128 | 33,778.68 ns (~34 μs) |
 | CRC64 | 56,321.74 ns (~56 μs) |
@@ -843,76 +841,76 @@ Runtime: .NET 7.0.7 (7.0.723.27404), X64 RyuJIT AVX2
 
 </details>
 
-### Performance Recommendations
+### 性能建议
 
-1. **General Scenarios**: Use `Murmur3` (default), balanced performance and quality
-2. **Extreme Performance**: Use `XXHash3`, 2x faster than Murmur3
-3. **Large Data**: Use `XXHash128` or `Murmur128BitsX64`, 128-bit output reduces collisions
-4. **Avoid**: LCG series (poor quality), SHA series (too slow)
+1. **通用场景**: 使用 `Murmur3` (默认),性能和质量平衡
+2. **极限性能**: 使用 `XXHash3`,比 Murmur3 快 2 倍
+3. **大数据**: 使用 `XXHash128` 或 `Murmur128BitsX64`,128 位输出减少碰撞
+4. **避免使用**: LCG 系列 (质量差)、SHA 系列 (太慢)
 
-## Advanced Usage
+## 高级用法
 
-### Serialization and Deserialization
+### 序列化和反序列化
 
 ```csharp
-// Export Bloom filter state
+// 导出布隆过滤器状态
 var bf = FilterBuilder.Build(1_000_000, 0.01);
 bf.Add("item1");
 bf.Add("item2");
 
-// Get internal state (for persistence)
+// 获取内部状态 (用于持久化)
 var memory = (FilterMemory)bf;
 var buckets = memory.Buckets; // BitArray[]
 var bucketBytes = memory.BucketBytes; // byte[][]
 
-// Restore Bloom filter from state
+// 从状态恢复布隆过滤器
 var options = new FilterMemoryOptions
 {
     Name = "RestoredFilter",
     ExpectedElements = 1_000_000,
     ErrorRate = 0.01,
-    Buckets = buckets // Or use BucketBytes
+    Buckets = buckets // 或使用 BucketBytes
 };
 var restoredBf = FilterBuilder.Build(options);
 
 Console.WriteLine(restoredBf.Contains("item1")); // True
 ```
 
-### Batch Operations
+### 批量操作
 
 ```csharp
-// Batch add
+// 批量添加
 var items = Enumerable.Range(1, 10000)
     .Select(i => Encoding.UTF8.GetBytes($"user:{i}"))
     .ToArray();
 
 var addResults = bf.Add(items);
-Console.WriteLine($"Successfully added: {addResults.Count(r => r)} elements");
+Console.WriteLine($"成功添加: {addResults.Count(r => r)} 个元素");
 
-// Batch check
+// 批量检查
 var checkResults = bf.Contains(items);
-Console.WriteLine($"Exist: {checkResults.Count(r => r)} elements");
+Console.WriteLine($"存在: {checkResults.Count(r => r)} 个元素");
 
-// Check if all elements exist
+// 检查所有元素是否都存在
 bool allExist = bf.All(items);
 
-// Async batch operations
+// 异步批量操作
 var asyncAddResults = await bf.AddAsync(items);
 var asyncCheckResults = await bf.ContainsAsync(items);
 bool asyncAllExist = await bf.AllAsync(items);
 ```
 
-### Custom Hash Function
+### 自定义哈希函数
 
 ```csharp
 using BloomFilter.HashAlgorithms;
 
-// Implement custom hash algorithm
+// 实现自定义哈希算法
 public class MyCustomHash : HashFunction
 {
     public override long ComputeHash(ReadOnlySpan<byte> data)
     {
-        // Custom hash logic
+        // 自定义哈希逻辑
         long hash = 0;
         foreach (var b in data)
         {
@@ -922,23 +920,23 @@ public class MyCustomHash : HashFunction
     }
 }
 
-// Use custom hash
+// 使用自定义哈希
 var customHash = new MyCustomHash();
 var bf = FilterBuilder.Build(1_000_000, 0.01, customHash);
 ```
 
-### Calculate Actual False Positive Rate
+### 计算实际误报率
 
 ```csharp
 var bf = FilterBuilder.Build(100_000, 0.01);
 
-// Add 50,000 elements
+// 添加 50,000 个元素
 for (int i = 0; i < 50_000; i++)
 {
     bf.Add($"item:{i}");
 }
 
-// Calculate theoretical false positive rate
+// 计算理论误报率
 var filter = (Filter)bf;
 double theoreticalErrorRate = Filter.BestP(
     filter.Hashes,
@@ -946,9 +944,9 @@ double theoreticalErrorRate = Filter.BestP(
     50_000
 );
 
-Console.WriteLine($"Theoretical error rate: {theoreticalErrorRate:P4}");
+Console.WriteLine($"理论误报率: {theoreticalErrorRate:P4}");
 
-// Test actual false positive rate
+// 测试实际误报率
 int falsePositives = 0;
 int testCount = 100_000;
 
@@ -961,11 +959,11 @@ for (int i = 50_000; i < 50_000 + testCount; i++)
 }
 
 double actualErrorRate = (double)falsePositives / testCount;
-Console.WriteLine($"Actual error rate: {actualErrorRate:P4}");
-Console.WriteLine($"False positives: {falsePositives} / {testCount}");
+Console.WriteLine($"实际误报率: {actualErrorRate:P4}");
+Console.WriteLine($"误报数量: {falsePositives} / {testCount}");
 ```
 
-### Monitoring and Statistics
+### 监控和统计
 
 ```csharp
 public class BloomFilterMonitor
@@ -998,25 +996,25 @@ public class BloomFilterMonitor
 
     public void PrintStats()
     {
-        Console.WriteLine($"Total adds: {_addCount}");
-        Console.WriteLine($"Hits: {_hitCount}");
-        Console.WriteLine($"Misses: {_missCount}");
-        Console.WriteLine($"Hit rate: {(double)_hitCount / (_hitCount + _missCount):P2}");
+        Console.WriteLine($"总添加: {_addCount}");
+        Console.WriteLine($"命中: {_hitCount}");
+        Console.WriteLine($"未命中: {_missCount}");
+        Console.WriteLine($"命中率: {(double)_hitCount / (_hitCount + _missCount):P2}");
     }
 }
 ```
 
-## API Reference
+## API 参考
 
-### IBloomFilter Interface
+### IBloomFilter 接口
 
 ```csharp
 public interface IBloomFilter : IDisposable
 {
-    // Properties
+    // 属性
     string Name { get; }
 
-    // Synchronous methods
+    // 同步方法
     bool Add(ReadOnlySpan<byte> data);
     IList<bool> Add(IEnumerable<byte[]> elements);
     bool Contains(ReadOnlySpan<byte> element);
@@ -1025,7 +1023,7 @@ public interface IBloomFilter : IDisposable
     void Clear();
     long[] ComputeHash(ReadOnlySpan<byte> data);
 
-    // Asynchronous methods
+    // 异步方法
     ValueTask<bool> AddAsync(ReadOnlyMemory<byte> data);
     ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements);
     ValueTask<bool> ContainsAsync(ReadOnlyMemory<byte> element);
@@ -1035,12 +1033,12 @@ public interface IBloomFilter : IDisposable
 }
 ```
 
-### Filter Base Class
+### Filter 基类
 
 ```csharp
 public abstract class Filter : IBloomFilter
 {
-    // Properties
+    // 属性
     public string Name { get; }
     public HashFunction Hash { get; }
     public long Capacity { get; }
@@ -1048,7 +1046,7 @@ public abstract class Filter : IBloomFilter
     public long ExpectedElements { get; }
     public double ErrorRate { get; }
 
-    // Static methods (mathematical calculations)
+    // 静态方法 (数学计算)
     public static long BestM(long n, double p);
     public static int BestK(long n, long m);
     public static long BestN(int k, long m);
@@ -1061,16 +1059,16 @@ public abstract class Filter : IBloomFilter
 ```csharp
 public static class FilterBuilder
 {
-    // Using expected elements and error rate
+    // 使用预期元素数和误报率
     public static IBloomFilter Build(long expectedElements, double errorRate);
     public static IBloomFilter Build(long expectedElements, double errorRate, HashMethod method);
     public static IBloomFilter Build(long expectedElements, double errorRate, HashFunction hash);
 
-    // Using capacity and number of hash functions
+    // 使用容量和哈希函数数量
     public static IBloomFilter Build(long capacity, int hashes, HashMethod method);
     public static IBloomFilter Build(long capacity, int hashes, HashFunction hash);
 
-    // Using configuration object
+    // 使用配置对象
     public static IBloomFilter Build(FilterMemoryOptions options);
 }
 ```
@@ -1089,10 +1087,10 @@ public static class FilterRedisBuilder
 }
 ```
 
-### Extension Methods
+### 扩展方法
 
 ```csharp
-// Service registration
+// 服务注册
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBloomFilter(
@@ -1100,7 +1098,7 @@ public static class ServiceCollectionExtensions
         Action<BloomFilterOptions> setupAction);
 }
 
-// Configuration extensions
+// 配置扩展
 public static class BloomFilterOptionsExtensions
 {
     public static BloomFilterOptions UseInMemory(
@@ -1125,111 +1123,111 @@ public static class BloomFilterOptionsExtensions
 }
 ```
 
-## Frequently Asked Questions (FAQ)
+## 常见问题 (FAQ)
 
-### 1. What is the false positive rate of a Bloom filter?
+### 1. 布隆过滤器的误报率是多少?
 
-The false positive rate is determined by the `errorRate` parameter you specify when creating the filter. For example:
+误报率由您在创建时指定的 `errorRate` 参数决定。例如:
 
 ```csharp
-// 1% false positive rate
+// 1% 误报率
 var bf = FilterBuilder.Build(1_000_000, 0.01);
 
-// 0.1% false positive rate (more accurate, but uses more memory)
+// 0.1% 误报率 (更准确,但占用更多内存)
 var bf2 = FilterBuilder.Build(1_000_000, 0.001);
 ```
 
-**Note**: Lower error rates require more memory space.
+**注意**: 误报率越低,需要的内存空间越大。
 
-### 2. How to choose expectedElements?
+### 2. 如何选择 expectedElements?
 
-`expectedElements` should be set to the number of elements you expect to add. If the actual number exceeds this, the false positive rate will increase.
+`expectedElements` 应设置为您预期要添加的元素数量。如果实际添加的元素超过这个数量,误报率会增加。
 
-Recommendations:
-- Estimate actual element count
-- Add 20%-50% buffer
-- Monitor actual false positive rate regularly
+建议:
+- 估算实际元素数量
+- 留出 20%-50% 的冗余
+- 定期监控实际误报率
 
-### 3. In-Memory vs Redis Mode - How to Choose?
+### 3. 内存模式 vs Redis 模式如何选择?
 
-| Scenario | Recommended Mode | Reason |
-|----------|-----------------|---------|
-| Single-instance application | In-Memory | Highest performance, no network overhead |
-| Multi-instance application | Redis | Shared state, distributed support |
-| Persistence required | Redis | Redis provides persistence |
-| Temporary deduplication | In-Memory | Simple and fast |
-| Cross-service sharing | Redis | Multi-language access support |
+| 场景 | 推荐模式 | 原因 |
+|------|---------|------|
+| 单实例应用 | 内存模式 | 性能最高,无网络开销 |
+| 多实例应用 | Redis 模式 | 共享状态,支持分布式 |
+| 需要持久化 | Redis 模式 | Redis 提供持久化 |
+| 临时去重 | 内存模式 | 简单快速 |
+| 跨服务共享 | Redis 模式 | 支持多语言访问 |
 
-### 4. How to clear a Bloom filter?
+### 4. 如何清空布隆过滤器?
 
 ```csharp
-// Synchronous clear
+// 同步清空
 bf.Clear();
 
-// Asynchronous clear
+// 异步清空
 await bf.ClearAsync();
 ```
 
-**Note**: Clear operation deletes all data, use with caution!
+**注意**: 清空操作会删除所有数据,谨慎使用!
 
-### 5. How much memory does a Bloom filter use?
+### 5. 布隆过滤器占用多少内存?
 
-Memory usage depends on capacity (m):
+内存占用取决于容量 (m):
 
 ```
-Memory (bytes) = m / 8
+内存 (字节) = m / 8
 ```
 
-Example calculation:
+示例计算:
 
 ```csharp
-// 10 million elements, 1% false positive rate
+// 1000 万元素, 1% 误报率
 var bf = FilterBuilder.Build(10_000_000, 0.01);
 var filter = (Filter)bf;
 
-// Calculate memory usage
+// 计算内存占用
 long bits = filter.Capacity;
 long bytes = bits / 8;
 double mb = bytes / (1024.0 * 1024.0);
 
-Console.WriteLine($"Bit array size: {bits:N0} bits");
-Console.WriteLine($"Memory usage: {bytes:N0} bytes ({mb:F2} MB)");
-// Output: approximately 11.4 MB
+Console.WriteLine($"位数组大小: {bits:N0} bits");
+Console.WriteLine($"内存占用: {bytes:N0} bytes ({mb:F2} MB)");
+// 输出: 约 11.4 MB
 ```
 
-### 6. Can elements be deleted?
+### 6. 可以删除元素吗?
 
-**No**. Standard Bloom filters do not support deletion because:
-- Multiple elements may map to the same bits
-- Deleting one element may affect detection of other elements
+**不可以**。标准布隆过滤器不支持删除操作,因为:
+- 多个元素可能映射到相同的位
+- 删除一个元素可能影响其他元素的检测
 
-If deletion is needed, consider:
-- Counting Bloom Filter
-- Cuckoo Filter
+如果需要删除功能,考虑使用:
+- Counting Bloom Filter (计数布隆过滤器)
+- Cuckoo Filter (布谷鸟过滤器)
 
-### 7. Is it thread-safe?
+### 7. 线程安全吗?
 
-Yes, BloomFilter.NetCore is thread-safe:
+是的,BloomFilter.NetCore 是线程安全的:
 
 ```csharp
-// Multi-threaded concurrent access
+// 多线程并发访问
 var bf = FilterBuilder.Build(10_000_000, 0.01);
 
 Parallel.For(0, 1000, i =>
 {
-    bf.Add($"item:{i}"); // Thread-safe
+    bf.Add($"item:{i}"); // 线程安全
 });
 
 Parallel.For(0, 1000, i =>
 {
-    var exists = bf.Contains($"item:{i}"); // Thread-safe
+    var exists = bf.Contains($"item:{i}"); // 线程安全
 });
 ```
 
-### 8. How to monitor Redis connections?
+### 8. 如何监控 Redis 连接?
 
 ```csharp
-// Use StackExchange.Redis connection monitoring
+// 使用 StackExchange.Redis 的连接监控
 services.AddBloomFilter(setupAction =>
 {
     setupAction.UseRedis(new FilterRedisOptions
@@ -1237,66 +1235,66 @@ services.AddBloomFilter(setupAction =>
         Name = "MyFilter",
         RedisKey = "BF:Key",
         Endpoints = new List<string> { "localhost:6379" },
-        // Enable connection logging
+        // 启用连接日志
         AbortOnConnectFail = false,
         ConnectTimeout = 5000,
         ConnectRetry = 3
     });
 });
 
-// Get Redis connection information
+// 获取 Redis 连接信息
 var bf = serviceProvider.GetService<IBloomFilter>();
 if (bf is FilterRedis redisFilter)
 {
     var connection = redisFilter.Connection;
-    Console.WriteLine($"Connection status: {connection.IsConnected}");
-    Console.WriteLine($"Endpoints: {string.Join(", ", connection.GetEndPoints())}");
+    Console.WriteLine($"连接状态: {connection.IsConnected}");
+    Console.WriteLine($"端点: {string.Join(", ", connection.GetEndPoints())}");
 }
 ```
 
-## Contributing
+## 贡献指南
 
-We welcome community contributions!
+我们欢迎社区贡献!
 
-### How to Contribute
+### 如何贡献
 
-1. Fork this repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Create a Pull Request
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
 
-### Development Guidelines
+### 开发指南
 
 ```bash
-# Clone repository
+# 克隆仓库
 git clone https://github.com/vla/BloomFilter.NetCore.git
 cd BloomFilter.NetCore
 
-# Restore dependencies
+# 还原依赖
 dotnet restore
 
-# Build project
+# 构建项目
 dotnet build
 
-# Run tests
+# 运行测试
 dotnet test
 
-# Run benchmarks
+# 运行基准测试
 cd test/BenchmarkTest
 dotnet run -c Release
 ```
 
-### Code Standards
+### 代码规范
 
-- Follow C# coding conventions
-- Add XML documentation comments
-- Write unit tests
-- Update relevant documentation
+- 遵循 C# 编码规范
+- 添加 XML 文档注释
+- 编写单元测试
+- 更新相关文档
 
-## License
+## 许可证
 
-This project is licensed under the [MIT License](LICENSE).
+本项目采用 [MIT License](LICENSE) 许可证。
 
 ```
 MIT License
@@ -1322,21 +1320,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## Acknowledgments
+## 致谢
 
-Thanks to all developers who contributed to this project!
+感谢所有为本项目做出贡献的开发者!
 
-Special thanks to:
+特别感谢:
 - .NET Foundation
-- StackExchange.Redis team
-- All dependency library authors
+- StackExchange.Redis 团队
+- 所有依赖库的作者
 
-## Contact
+## 联系方式
 
-- **Author**: v.la@live.cn
+- **作者**: v.la@live.cn
 - **GitHub**: [github.com/vla/BloomFilter.NetCore](https://github.com/vla/BloomFilter.NetCore)
-- **Issue Tracking**: [GitHub Issues](https://github.com/vla/BloomFilter.NetCore/issues)
+- **问题反馈**: [GitHub Issues](https://github.com/vla/BloomFilter.NetCore/issues)
 
 ---
 
-If this project helps you, please give us a ⭐️ Star!
+如果这个项目对您有帮助,请给我们一个 ⭐️ Star!
