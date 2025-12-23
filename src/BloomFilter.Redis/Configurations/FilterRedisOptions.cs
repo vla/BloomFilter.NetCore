@@ -45,7 +45,7 @@ namespace BloomFilter.Redis.Configurations
         /// <summary>
         /// Gets or sets the timeout for any connect operations.
         /// </summary>
-        public int ConnectionTimeout { get; set; } = 5000;
+        public int ConnectionTimeout { get; set; } = 5_000;
 
         /// <summary>
         /// Gets the list of endpoints to be used to connect to the Redis server.

@@ -32,7 +32,6 @@ public class DefaultBloomFilterFactory : IBloomFilterFactory
         out IBloomFilter bloomFilter)
     {
         bloomFilter = _bloomFilters.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        var dict = new Dictionary<string, string>();
         return bloomFilter != null;
     }
 }

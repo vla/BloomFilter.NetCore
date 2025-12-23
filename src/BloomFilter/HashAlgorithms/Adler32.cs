@@ -6,7 +6,7 @@ public class Adler32 : HashFunction
 {
     public override HashMethod Method => HashMethod.Adler32;
 
-    private const int seed32 = 89478583;
+    private const int seed32 = 89_478_583;
 
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {

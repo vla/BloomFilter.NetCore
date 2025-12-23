@@ -12,8 +12,8 @@ internal class ModifiedFNV1 : NonCryptoHashAlgorithm
 
     private uint _current;
 
-    private const uint Prime = 16777619;
-    private const uint InitialState = 2166136261;
+    private const uint Prime = 16_777_619;
+    private const uint InitialState = 2_166_136_261;
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="FNV1"/> class.

@@ -20,10 +20,10 @@ internal sealed partial class Adler32 : NonCryptoHashAlgorithm
     private uint _alderInitial;
 
     // largest prime smaller than 65536
-    private const int MOD32 = 65521;
+    private const int MOD32 = 65_521;
 
     // NMAX32 is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1
-    private const int NMAX32 = 5552;
+    private const int NMAX32 = 5_552;
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="Adler32"/> class.

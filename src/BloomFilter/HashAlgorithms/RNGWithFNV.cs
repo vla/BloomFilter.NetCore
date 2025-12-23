@@ -35,8 +35,8 @@ public class RNGWithFNV1 : HashFunction
 {
     public override HashMethod Method => HashMethod.RNGWithFNV1;
 
-    protected const long Prime = 16777619;
-    protected const long Init = 2166136261;
+    protected const long Prime = 16_777_619;
+    protected const long Init = 2_166_136_261;
 
     public override long[] ComputeHash(ReadOnlySpan<byte> data, long m, int k)
     {
