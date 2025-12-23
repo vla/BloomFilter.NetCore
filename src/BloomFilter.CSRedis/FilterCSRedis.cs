@@ -63,41 +63,85 @@ public class FilterCSRedis : FilterRedisBase
 
     protected override bool[] SetBits(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use pipeline for batch execution
+        using var pipe = _client.StartPipe();
+
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = _client.SetBit(_redisKey, (uint)positions[i], true);
+            pipe.SetBit(_redisKey, (uint)positions[i], true);
         }
+
+        var pipeResults = pipe.EndPipe();
+        var results = new bool[positions.Length];
+
+        for (int i = 0; i < pipeResults.Length; i++)
+        {
+            results[i] = Convert.ToBoolean(pipeResults[i]);
+        }
+
         return results;
     }
 
     protected override bool[] GetBits(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use pipeline for batch execution
+        using var pipe = _client.StartPipe();
+
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = _client.GetBit(_redisKey, (uint)positions[i]);
+            pipe.GetBit(_redisKey, (uint)positions[i]);
         }
+
+        var pipeResults = pipe.EndPipe();
+        var results = new bool[positions.Length];
+
+        for (int i = 0; i < pipeResults.Length; i++)
+        {
+            results[i] = Convert.ToBoolean(pipeResults[i]);
+        }
+
         return results;
     }
 
     protected override async Task<bool[]> SetBitsAsync(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Execute all operations in parallel
+        var tasks = new Task<bool>[positions.Length];
+
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = await _client.SetBitAsync(_redisKey, (uint)positions[i], true);
+            tasks[i] = _client.SetBitAsync(_redisKey, (uint)positions[i], true);
         }
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var results = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            results[i] = tasks[i].Result;
+        }
+
         return results;
     }
 
     protected override async Task<bool[]> GetBitsAsync(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Execute all operations in parallel
+        var tasks = new Task<bool>[positions.Length];
+
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = await _client.GetBitAsync(_redisKey, (uint)positions[i]);
+            tasks[i] = _client.GetBitAsync(_redisKey, (uint)positions[i]);
         }
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var results = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            results[i] = tasks[i].Result;
+        }
+
         return results;
     }
 

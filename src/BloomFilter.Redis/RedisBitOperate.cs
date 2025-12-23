@@ -89,16 +89,25 @@ public class RedisBitOperate : IRedisBitOperate
 
     public async Task<bool[]> GetAsync(string redisKey, long[] positions)
     {
-        var results = new bool[positions.Length];
+        var db = await DatabaseAsync().ConfigureAwait(false);
 
-        var db = await DatabaseAsync();
-
+        // Use batch for pipeline execution
+        var batch = db.CreateBatch();
+        var tasks = new Task<bool>[positions.Length];
 
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = await db.StringGetBitAsync(redisKey, positions[i]).ConfigureAwait(false);
+            tasks[i] = batch.StringGetBitAsync(redisKey, positions[i]);
         }
 
+        batch.Execute();
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var results = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            results[i] = tasks[i].Result;
+        }
 
         return results;
     }
@@ -122,13 +131,24 @@ public class RedisBitOperate : IRedisBitOperate
 
     public async Task<bool[]> SetAsync(string redisKey, long[] positions, bool value)
     {
-        var results = new bool[positions.Length];
+        var db = await DatabaseAsync().ConfigureAwait(false);
 
-        var db = await DatabaseAsync();
+        // Use batch for pipeline execution
+        var batch = db.CreateBatch();
+        var tasks = new Task<bool>[positions.Length];
 
         for (int i = 0; i < positions.Length; i++)
         {
-            results[i] = await db.StringSetBitAsync(redisKey, positions[i], value).ConfigureAwait(false);
+            tasks[i] = batch.StringSetBitAsync(redisKey, positions[i], value);
+        }
+
+        batch.Execute();
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var results = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            results[i] = tasks[i].Result;
         }
 
         return results;

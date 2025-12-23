@@ -80,50 +80,148 @@ public class FilterEasyCachingRedis : FilterRedisBase
 
     protected override bool[] SetBits(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use Lua script for batch execution
+        const string luaScript = @"
+local results = {}
+for i, pos in ipairs(ARGV) do
+    results[i] = redis.call('SETBIT', KEYS[1], pos, 1)
+end
+return results";
+
+        var result = _provider.Eval(luaScript, _redisKey, positions.Cast<object>().ToList());
+
+        if (result is object[] resultArray)
+        {
+            var results = new bool[resultArray.Length];
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                results[i] = resultArray[i].ToString() == "1";
+            }
+            return results;
+        }
+
+        // Fallback: if Lua script fails, use sequential execution
+        var fallbackResults = new bool[positions.Length];
         for (int i = 0; i < positions.Length; i++)
         {
-            var result = _provider.Eval("return redis.call('SETBIT', KEYS[1], ARGV[1], 1)",
+            var singleResult = _provider.Eval("return redis.call('SETBIT', KEYS[1], ARGV[1], 1)",
                 _redisKey, new object[] { positions[i] }.ToList());
-            results[i] = result.ToString() == "1";
+            fallbackResults[i] = singleResult.ToString() == "1";
         }
-        return results;
+        return fallbackResults;
     }
 
     protected override bool[] GetBits(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use Lua script for batch execution
+        const string luaScript = @"
+local results = {}
+for i, pos in ipairs(ARGV) do
+    results[i] = redis.call('GETBIT', KEYS[1], pos)
+end
+return results";
+
+        var result = _provider.Eval(luaScript, _redisKey, positions.Cast<object>().ToList());
+
+        if (result is object[] resultArray)
+        {
+            var results = new bool[resultArray.Length];
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                results[i] = resultArray[i].ToString() == "1";
+            }
+            return results;
+        }
+
+        // Fallback: if Lua script fails, use sequential execution
+        var fallbackResults = new bool[positions.Length];
         for (int i = 0; i < positions.Length; i++)
         {
-            var result = _provider.Eval("return redis.call('GETBIT', KEYS[1], ARGV[1])",
+            var singleResult = _provider.Eval("return redis.call('GETBIT', KEYS[1], ARGV[1])",
                 _redisKey, new object[] { positions[i] }.ToList());
-            results[i] = result.ToString() == "1";
+            fallbackResults[i] = singleResult.ToString() == "1";
         }
-        return results;
+        return fallbackResults;
     }
 
     protected override async Task<bool[]> SetBitsAsync(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use Lua script for batch execution
+        const string luaScript = @"
+local results = {}
+for i, pos in ipairs(ARGV) do
+    results[i] = redis.call('SETBIT', KEYS[1], pos, 1)
+end
+return results";
+
+        var result = await _provider.EvalAsync(luaScript, _redisKey, positions.Cast<object>().ToList()).ConfigureAwait(false);
+
+        if (result is object[] resultArray)
+        {
+            var results = new bool[resultArray.Length];
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                results[i] = resultArray[i].ToString() == "1";
+            }
+            return results;
+        }
+
+        // Fallback: if Lua script fails, use parallel execution
+        var tasks = new Task<object>[positions.Length];
         for (int i = 0; i < positions.Length; i++)
         {
-            var result = await _provider.EvalAsync("return redis.call('SETBIT', KEYS[1], ARGV[1], 1)",
-                _redisKey, new object[] { positions[i] }.ToList()).ConfigureAwait(false);
-            results[i] = result.ToString() == "1";
+            tasks[i] = _provider.EvalAsync("return redis.call('SETBIT', KEYS[1], ARGV[1], 1)",
+                _redisKey, new object[] { positions[i] }.ToList());
         }
-        return results;
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var fallbackResults = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            fallbackResults[i] = tasks[i].Result.ToString() == "1";
+        }
+        return fallbackResults;
     }
 
     protected override async Task<bool[]> GetBitsAsync(long[] positions)
     {
-        var results = new bool[positions.Length];
+        // Use Lua script for batch execution
+        const string luaScript = @"
+local results = {}
+for i, pos in ipairs(ARGV) do
+    results[i] = redis.call('GETBIT', KEYS[1], pos)
+end
+return results";
+
+        var result = await _provider.EvalAsync(luaScript, _redisKey, positions.Cast<object>().ToList()).ConfigureAwait(false);
+
+        if (result is object[] resultArray)
+        {
+            var results = new bool[resultArray.Length];
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                results[i] = resultArray[i].ToString() == "1";
+            }
+            return results;
+        }
+
+        // Fallback: if Lua script fails, use parallel execution
+        var tasks = new Task<object>[positions.Length];
         for (int i = 0; i < positions.Length; i++)
         {
-            var result = await _provider.EvalAsync("return redis.call('GETBIT', KEYS[1], ARGV[1])",
-                _redisKey, new object[] { positions[i] }.ToList()).ConfigureAwait(false);
-            results[i] = result.ToString() == "1";
+            tasks[i] = _provider.EvalAsync("return redis.call('GETBIT', KEYS[1], ARGV[1])",
+                _redisKey, new object[] { positions[i] }.ToList());
         }
-        return results;
+
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var fallbackResults = new bool[tasks.Length];
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            fallbackResults[i] = tasks[i].Result.ToString() == "1";
+        }
+        return fallbackResults;
     }
 
     protected override void ClearBits()

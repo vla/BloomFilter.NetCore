@@ -93,8 +93,11 @@ public abstract class FilterRedisBase : Filter
 
     public override IList<bool> Add(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
@@ -105,8 +108,11 @@ public abstract class FilterRedisBase : Filter
 
     public override async ValueTask<IList<bool>> AddAsync(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
@@ -117,8 +123,11 @@ public abstract class FilterRedisBase : Filter
 
     public override IList<bool> Contains(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
@@ -129,8 +138,11 @@ public abstract class FilterRedisBase : Filter
 
     public override async ValueTask<IList<bool>> ContainsAsync(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
