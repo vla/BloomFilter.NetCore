@@ -17,7 +17,7 @@ public class FilterMemory : Filter
     //The upper limit per bucket is 2147483640
     private BitArray[] _buckets;
 
-    private readonly AsyncLock _mutex = new();
+    private readonly AsyncLock _asyncLock = new();
     private readonly IFilterMemorySerializer _filterMemorySerializer;
 
     private static readonly ValueTask Empty = new();
@@ -105,7 +105,7 @@ public class FilterMemory : Filter
     /// <returns></returns>
     public async ValueTask SerializeAsync(Stream stream)
     {
-        using var _ = await _mutex.AcquireAsync();
+        using var _ = await _asyncLock.AcquireAsync();
 
         await _filterMemorySerializer.SerializeAsync(new FilterMemorySerializerParam
         {
@@ -124,8 +124,6 @@ public class FilterMemory : Filter
     /// <returns></returns>
     public async ValueTask DeserializeAsync(Stream stream)
     {
-        using var _ = await _mutex.AcquireAsync();
-
         var param = await _filterMemorySerializer.DeserializeAsync(stream);
 
         if (param.Buckets is null)
@@ -140,6 +138,8 @@ public class FilterMemory : Filter
         {
             throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(FilterMemorySerializerParam.Buckets));
         }
+
+        using var _ = await _asyncLock.AcquireAsync();
 
         _buckets = new BitArray[param.Buckets.Length];
 
@@ -167,7 +167,7 @@ public class FilterMemory : Filter
             throw new ArgumentOutOfRangeException($"The length must less than or equal to {Capacity}", nameof(buckets));
         }
 
-        using var _ = _mutex.Acquire();
+        using var _ = _asyncLock.Acquire();
 
         _buckets = new BitArray[buckets.Length];
 
@@ -198,7 +198,7 @@ public class FilterMemory : Filter
     /// </summary>
     public BitArray[] Export()
     {
-        using var _ = _mutex.Acquire();
+        using var _ = _asyncLock.Acquire();
         return _buckets.Select(s => new BitArray(s)).ToArray();
     }
 
@@ -211,14 +211,13 @@ public class FilterMemory : Filter
 
         var result = new List<byte[]>();
 
-        using (var _ = _mutex.Acquire())
+        using var _ = _asyncLock.Acquire();
+
+        foreach (var bucket in _buckets)
         {
-            foreach (var bucket in _buckets)
-            {
-                var bits = new byte[bucket.Length / 8 + Mod(bucket.Length)];
-                bucket.CopyTo(bits, 0);
-                result.Add(bits);
-            }
+            var bits = new byte[bucket.Length / 8 + Mod(bucket.Length)];
+            bucket.CopyTo(bits, 0);
+            result.Add(bits);
         }
 
         return result;
@@ -233,17 +232,18 @@ public class FilterMemory : Filter
     {
         bool added = false;
         var positions = ComputeHash(data);
-        using (var _ = _mutex.Acquire())
+
+        using var _ = _asyncLock.Acquire();
+
+        foreach (var position in positions)
         {
-            foreach (var position in positions)
+            if (!Get(position))
             {
-                if (!Get(position))
-                {
-                    added = true;
-                    Set(position);
-                }
+                added = true;
+                Set(position);
             }
         }
+
         return added;
     }
 
@@ -259,14 +259,18 @@ public class FilterMemory : Filter
 
     public override IList<bool> Add(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
 
         var processResults = new bool[hashes.Count];
-        using (var _ = _mutex.Acquire())
+
+        using (var _ = _asyncLock.Acquire())
         {
             for (var i = 0; i < hashes.Count; i++)
             {
@@ -282,7 +286,7 @@ public class FilterMemory : Filter
             }
         }
 
-        IList<bool> results = new List<bool>();
+        IList<bool> results = new List<bool>(elementsList.Count);
         bool wasAdded = false;
         int processed = 0;
 
@@ -314,13 +318,13 @@ public class FilterMemory : Filter
     public override bool Contains(ReadOnlySpan<byte> element)
     {
         var positions = ComputeHash(element);
-        using (var _ = _mutex.Acquire())
+
+        using var _ = _asyncLock.Acquire();
+
+        foreach (var position in positions)
         {
-            foreach (var position in positions)
-            {
-                if (!Get(position))
-                    return false;
-            }
+            if (!Get(position))
+                return false;
         }
         return true;
     }
@@ -332,22 +336,27 @@ public class FilterMemory : Filter
 
     public override IList<bool> Contains(IEnumerable<byte[]> elements)
     {
-        var hashes = new List<long>();
-        foreach (var element in elements)
+        // Pre-allocate capacity if possible
+        var elementsList = elements as IList<byte[]> ?? elements.ToList();
+        var hashes = new List<long>(elementsList.Count * Hashes);
+
+        foreach (var element in elementsList)
         {
             hashes.AddRange(ComputeHash(element));
         }
 
         var processResults = new bool[hashes.Count];
-        using (var _ = _mutex.Acquire())
+
+        using (var _ = _asyncLock.Acquire())
         {
             for (var i = 0; i < hashes.Count; i++)
             {
                 processResults[i] = Get(hashes[i]);
             }
+
         }
 
-        IList<bool> results = new List<bool>();
+        IList<bool> results = new List<bool>(elementsList.Count);
         bool isPresent = true;
         int processed = 0;
 
@@ -386,7 +395,8 @@ public class FilterMemory : Filter
     /// </summary>
     public override void Clear()
     {
-        using var _ = _mutex.Acquire();
+        using var _ = _asyncLock.Acquire();
+
         foreach (var item in _buckets)
         {
             item.SetAll(false);
@@ -414,5 +424,6 @@ public class FilterMemory : Filter
 
     public override void Dispose()
     {
+        _asyncLock.Dispose();
     }
 }
