@@ -47,8 +47,8 @@ public class FilterMemorySerializerParam
     /// bitmap
     /// </summary>
 #if NET5_0_OR_GREATER
-    public BitArray[]? Buckets { get; init; }
+    public BitArray[] Buckets { get; init; } = default!;
 #else
-    public BitArray[]? Buckets { get; set; }
+    public BitArray[] Buckets { get; set; } = default!;
 #endif
 }
