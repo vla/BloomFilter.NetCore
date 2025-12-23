@@ -273,6 +273,65 @@ await bf.AddAsync(users);
 var results = await bf.ContainsAsync(users);
 ```
 
+### Fluent API（v3.0 新增）
+
+v3.0 引入了现代化的流式 API，提供更好的可发现性和表达力：
+
+```csharp
+// 内存模式 Fluent API
+var filter = FilterBuilder.Create()
+    .WithName("UserFilter")
+    .ExpectingElements(10_000_000)
+    .WithErrorRate(0.001)
+    .UsingHashMethod(HashMethod.XXHash3)
+    .BuildInMemory();
+
+// Redis Fluent API (StackExchange.Redis)
+var redisFilter = FilterRedisBuilder.Create()
+    .WithRedisConnection("localhost:6379")
+    .WithRedisKey("bloom:users")
+    .WithName("UserFilter")
+    .ExpectingElements(10_000_000)
+    .WithErrorRate(0.001)
+    .BuildRedis();
+
+// CSRedis Fluent API
+var csredisFilter = FilterCSRedisBuilder.Create()
+    .WithRedisClient(csredisClient)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildCSRedis();
+
+// FreeRedis Fluent API
+var freeRedisFilter = FilterFreeRedisBuilder.Create()
+    .WithRedisClient(redisClient)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildFreeRedis();
+
+// EasyCaching Fluent API
+var easyCachingFilter = FilterEasyCachingBuilder.Create()
+    .WithRedisCachingProvider(provider)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildEasyCaching();
+
+// 所有通用配置方法：
+// - WithName(string) - 设置过滤器名称
+// - ExpectingElements(long) - 设置预期元素数量
+// - WithErrorRate(double) - 设置误报率 (0-1)
+// - UsingHashMethod(HashMethod) - 使用预定义哈希算法
+// - UsingCustomHash(HashFunction) - 使用自定义哈希函数
+// - WithSerializer(IFilterMemorySerializer) - 设置自定义序列化器（仅内存模式）
+```
+
+**为什么使用 Fluent API？**
+- 🔍 通过 IntelliSense 更好的可发现性
+- 📖 代码更易读、更自文档化
+- ⛓️ 可链式调用方法
+- 🎯 类型安全的配置
+- ✅ 向后兼容 - 旧的静态方法仍然可用！
+
 ## 使用示例
 
 ### 内存模式

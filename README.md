@@ -275,6 +275,65 @@ await bf.AddAsync(users);
 var results = await bf.ContainsAsync(users);
 ```
 
+### Fluent API (New in v3.0)
+
+v3.0 introduces a modern fluent API for building Bloom filters with improved discoverability and expressiveness:
+
+```csharp
+// In-Memory Fluent API
+var filter = FilterBuilder.Create()
+    .WithName("UserFilter")
+    .ExpectingElements(10_000_000)
+    .WithErrorRate(0.001)
+    .UsingHashMethod(HashMethod.XXHash3)
+    .BuildInMemory();
+
+// Redis Fluent API (StackExchange.Redis)
+var redisFilter = FilterRedisBuilder.Create()
+    .WithRedisConnection("localhost:6379")
+    .WithRedisKey("bloom:users")
+    .WithName("UserFilter")
+    .ExpectingElements(10_000_000)
+    .WithErrorRate(0.001)
+    .BuildRedis();
+
+// CSRedis Fluent API
+var csredisFilter = FilterCSRedisBuilder.Create()
+    .WithRedisClient(csredisClient)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildCSRedis();
+
+// FreeRedis Fluent API
+var freeRedisFilter = FilterFreeRedisBuilder.Create()
+    .WithRedisClient(redisClient)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildFreeRedis();
+
+// EasyCaching Fluent API
+var easyCachingFilter = FilterEasyCachingBuilder.Create()
+    .WithRedisCachingProvider(provider)
+    .WithRedisKey("bloom:users")
+    .ExpectingElements(10_000_000)
+    .BuildEasyCaching();
+
+// All common configuration methods:
+// - WithName(string) - Set filter name
+// - ExpectingElements(long) - Set expected element count
+// - WithErrorRate(double) - Set false positive rate (0-1)
+// - UsingHashMethod(HashMethod) - Use predefined hash algorithm
+// - UsingCustomHash(HashFunction) - Use custom hash function
+// - WithSerializer(IFilterMemorySerializer) - Set custom serializer (memory only)
+```
+
+**Why use Fluent API?**
+- 🔍 Better discoverability with IntelliSense
+- 📖 More readable and self-documenting code
+- ⛓️ Chainable method calls
+- 🎯 Type-safe configuration
+- ✅ Backward compatible - old static methods still work!
+
 ## Usage Examples
 
 ### In-Memory Mode
