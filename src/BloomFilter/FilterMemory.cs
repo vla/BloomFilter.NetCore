@@ -103,6 +103,11 @@ public class FilterMemory : Filter
     /// </summary>
     /// <param name="stream"></param>
     /// <returns></returns>
+    /// <remarks>
+    /// This method holds the lock during the entire serialization process (including I/O).
+    /// This ensures data consistency but will block other operations (Add/Contains) during serialization.
+    /// The BitArray is not cloned to save memory (50% reduction for large filters).
+    /// </remarks>
     public async ValueTask SerializeAsync(Stream stream)
     {
         using var _ = await _asyncLock.AcquireAsync();
@@ -113,7 +118,7 @@ public class FilterMemory : Filter
             Method = Hash.Method,
             ExpectedElements = ExpectedElements,
             ErrorRate = ErrorRate,
-            Buckets = _buckets.Select(s => new BitArray(s)).ToArray()
+            Buckets = _buckets  // No cloning - serializer only reads data
         }, stream);
     }
 
