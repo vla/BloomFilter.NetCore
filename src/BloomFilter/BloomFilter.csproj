@@ -12,60 +12,13 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'net462'  ">
-		<PackageReference Include="System.Runtime" Version="4.3.1" />
-		<PackageReference Include="System.Memory" Version="4.6.3" />
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+		<PackageReference Include="System.Runtime" />
+		<PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" />
 	</ItemGroup>
 
-	<Choose>
-
-		<When Condition="'$(TargetFramework)' == 'net462'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'netstandard2.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'netstandard2.1'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'net6.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'net7.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'net8.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'net9.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
-			</ItemGroup>
-		</When>
-
-		<When Condition="'$(TargetFramework)' == 'net10.0'">
-			<ItemGroup>
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
-			</ItemGroup>
-		</When>
-
-	</Choose>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+	</ItemGroup>
+	
 </Project>
