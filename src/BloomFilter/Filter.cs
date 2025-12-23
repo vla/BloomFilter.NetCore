@@ -63,10 +63,17 @@ public abstract class Filter : IBloomFilter
         if (errorRate >= 1 || errorRate <= 0)
             throw new ArgumentOutOfRangeException("errorRate", errorRate, string.Format("errorRate must be between 0 and 1, exclusive. Was {0}", errorRate));
 
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(hashFunction);
+#else
+        if (hashFunction == null)
+            throw new ArgumentNullException(nameof(hashFunction));
+#endif
+
         Name = name;
         ExpectedElements = expectedElements;
         ErrorRate = errorRate;
-        Hash = hashFunction ?? throw new ArgumentNullException(nameof(hashFunction));
+        Hash = hashFunction;
 
         Capacity = BestM(expectedElements, errorRate);
         Hashes = BestK(expectedElements, Capacity);
@@ -92,10 +99,17 @@ public abstract class Filter : IBloomFilter
         if (hashes < 1)
             throw new ArgumentOutOfRangeException("hashes", hashes, "hashes must be > 0");
 
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(hashFunction);
+#else
+        if (hashFunction == null)
+            throw new ArgumentNullException(nameof(hashFunction));
+#endif
+
         Name = name;
         Capacity = capacity;
         Hashes = hashes;
-        Hash = hashFunction ?? throw new ArgumentNullException(nameof(hashFunction));
+        Hash = hashFunction;
 
         ExpectedElements = BestN(hashes, capacity);
         ErrorRate = BestP(hashes, capacity, ExpectedElements);

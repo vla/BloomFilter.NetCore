@@ -131,8 +131,12 @@ public class FilterMemory : Filter
     {
         var param = await _filterMemorySerializer.DeserializeAsync(stream);
 
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(param.Buckets);
+#else
         if (param.Buckets is null)
             throw new ArgumentNullException(nameof(FilterMemorySerializerParam.Buckets));
+#endif
 
         if (param.Buckets.Length == 0)
             throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(FilterMemorySerializerParam.Buckets));
@@ -161,8 +165,12 @@ public class FilterMemory : Filter
     [MemberNotNull(nameof(_buckets))]
     public void Import(BitArray[] buckets)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(buckets);
+#else
         if (buckets is null)
             throw new ArgumentNullException(nameof(buckets));
+#endif
 
         if (buckets.Length == 0)
             throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(buckets));
@@ -189,8 +197,12 @@ public class FilterMemory : Filter
     [MemberNotNull(nameof(_buckets))]
     public void Import(IList<byte[]> bucketBytes)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(bucketBytes);
+#else
         if (bucketBytes is null)
             throw new ArgumentNullException(nameof(bucketBytes));
+#endif
 
         if (bucketBytes.Count == 0)
             throw new ArgumentOutOfRangeException($"The length must greater than 0", nameof(bucketBytes));

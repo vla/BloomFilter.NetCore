@@ -30,30 +30,32 @@ public class DefaultFilterMemorySerializer : IFilterMemorySerializer
 
     public async ValueTask<FilterMemorySerializerParam> DeserializeAsync(Stream stream)
     {
-        var param = new FilterMemorySerializerParam();
-
         byte[] lengthBytes = new byte[4];
         byte[] int64Bytes = new byte[8];
 
+        // Read name
         await ReadExactlyAsync(stream, lengthBytes);
         int nameLength = BitConverter.ToInt32(lengthBytes, 0);
-
         byte[] nameBytes = new byte[nameLength];
         await ReadExactlyAsync(stream, nameBytes);
-        param.Name = Encoding.UTF8.GetString(nameBytes);
+        string name = Encoding.UTF8.GetString(nameBytes);
 
+        // Read expected elements
         await ReadExactlyAsync(stream, int64Bytes);
-        param.ExpectedElements = BitConverter.ToInt64(int64Bytes, 0);
+        long expectedElements = BitConverter.ToInt64(int64Bytes, 0);
 
+        // Read error rate
         await ReadExactlyAsync(stream, int64Bytes);
-        param.ErrorRate = BitConverter.ToDouble(int64Bytes, 0);
+        double errorRate = BitConverter.ToDouble(int64Bytes, 0);
 
+        // Read method
         await ReadExactlyAsync(stream, lengthBytes);
-        param.Method = (HashMethod)BitConverter.ToInt32(lengthBytes, 0);
+        HashMethod method = (HashMethod)BitConverter.ToInt32(lengthBytes, 0);
 
+        // Read buckets
         await ReadExactlyAsync(stream, lengthBytes);
         int bucketsLength = BitConverter.ToInt32(lengthBytes, 0);
-        param.Buckets = new BitArray[bucketsLength];
+        var buckets = new BitArray[bucketsLength];
 
         for (int i = 0; i < bucketsLength; i++)
         {
@@ -63,10 +65,18 @@ public class DefaultFilterMemorySerializer : IFilterMemorySerializer
             byte[] bucketBytes = new byte[bitArrayLength];
             await ReadExactlyAsync(stream, bucketBytes);
 
-            param.Buckets[i] = new BitArray(bucketBytes);
+            buckets[i] = new BitArray(bucketBytes);
         }
 
-        return param;
+        // Create param with object initializer (compatible with init properties)
+        return new FilterMemorySerializerParam
+        {
+            Name = name,
+            ExpectedElements = expectedElements,
+            ErrorRate = errorRate,
+            Method = method,
+            Buckets = buckets
+        };
     }
 
     private async Task ReadExactlyAsync(Stream stream, byte[] data)

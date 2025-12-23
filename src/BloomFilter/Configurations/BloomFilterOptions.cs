@@ -20,7 +20,11 @@ public class BloomFilterOptions
     /// <param name="extension">Extension.</param>
     public void RegisterExtension(IBloomFilterOptionsExtension extension)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(extension);
+#else
         if (extension == null) throw new ArgumentNullException(nameof(extension));
+#endif
         Extensions.Add(extension);
     }
 }

@@ -13,7 +13,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="setupAction">Setup action.</param>
         public static IServiceCollection AddBloomFilter(this IServiceCollection services, Action<BloomFilterOptions> setupAction)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(setupAction);
+#else
             if (setupAction == null) throw new ArgumentNullException(nameof(setupAction));
+#endif
 
             //Options and extension service
             var options = new BloomFilterOptions();
@@ -52,7 +56,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="filterMemoryOptions"></param>
         public static BloomFilterOptions UseInMemory(this BloomFilterOptions options, FilterMemoryOptions filterMemoryOptions)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(filterMemoryOptions);
+#else
             if (filterMemoryOptions == null) throw new ArgumentNullException(nameof(filterMemoryOptions));
+#endif
             options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions));
             return options;
         }
@@ -84,7 +92,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static BloomFilterOptions UseInMemoryWithSerializer<TSerializer>(this BloomFilterOptions options, FilterMemoryOptions filterMemoryOptions)
               where TSerializer : IFilterMemorySerializer
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(filterMemoryOptions);
+#else
             if (filterMemoryOptions == null) throw new ArgumentNullException(nameof(filterMemoryOptions));
+#endif
             options.RegisterExtension(new FilterMemoryOptionsExtension(filterMemoryOptions, typeof(TSerializer)));
             return options;
         }

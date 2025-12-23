@@ -31,10 +31,14 @@ internal abstract class NonCryptoHashAlgorithm
 
     public void Append(byte[] source)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(source);
+#else
         if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
+#endif
 
         Append(new ReadOnlySpan<byte>(source));
     }

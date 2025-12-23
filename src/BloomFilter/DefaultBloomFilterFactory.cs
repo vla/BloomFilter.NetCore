@@ -16,7 +16,11 @@ public class DefaultBloomFilterFactory : IBloomFilterFactory
 
     public IBloomFilter Get(string name)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(name);
+#else
         if (name == null) throw new ArgumentNullException(nameof(name));
+#endif
 
         var filter = _bloomFilters.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
