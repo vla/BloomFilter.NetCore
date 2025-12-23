@@ -9,14 +9,14 @@ namespace BloomFilterTest
         [Fact]
         public void Create_ReturnsNewBuilder()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
             Assert.NotNull(builder);
         }
 
         [Fact]
         public void BuildInMemory_WithDefaults_CreatesFilter()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .BuildInMemory();
 
             Assert.NotNull(filter);
@@ -26,7 +26,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithName_SetsFilterName()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .WithName("TestFilter")
                 .BuildInMemory();
 
@@ -36,7 +36,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithName_Null_ThrowsArgumentException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             // ArgumentException.ThrowIfNullOrWhiteSpace throws ArgumentNullException for null
             Assert.ThrowsAny<ArgumentException>(() => builder.WithName(null!));
@@ -45,7 +45,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithName_EmptyOrWhitespace_ThrowsArgumentException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             Assert.ThrowsAny<ArgumentException>(() => builder.WithName(""));
             Assert.ThrowsAny<ArgumentException>(() => builder.WithName("   "));
@@ -54,7 +54,7 @@ namespace BloomFilterTest
         [Fact]
         public void ExpectingElements_SetsExpectedElements()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .ExpectingElements(5_000_000)
                 .BuildInMemory();
 
@@ -65,7 +65,7 @@ namespace BloomFilterTest
         [Fact]
         public void ExpectingElements_ZeroOrNegative_ThrowsArgumentOutOfRangeException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => builder.ExpectingElements(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => builder.ExpectingElements(-1));
@@ -74,7 +74,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithErrorRate_SetsErrorRate()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .WithErrorRate(0.001)
                 .BuildInMemory();
 
@@ -85,7 +85,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithErrorRate_InvalidRange_ThrowsArgumentOutOfRangeException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => builder.WithErrorRate(0));
             Assert.Throws<ArgumentOutOfRangeException>(() => builder.WithErrorRate(-0.1));
@@ -96,7 +96,7 @@ namespace BloomFilterTest
         [Fact]
         public void UsingHashMethod_SetsHashMethod()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .UsingHashMethod(HashMethod.XXHash3)
                 .BuildInMemory();
 
@@ -109,7 +109,7 @@ namespace BloomFilterTest
         {
             var customHash = HashFunction.Functions[HashMethod.Murmur3];
 
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .UsingCustomHash(customHash)
                 .BuildInMemory();
 
@@ -119,7 +119,7 @@ namespace BloomFilterTest
         [Fact]
         public void UsingCustomHash_Null_ThrowsArgumentNullException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             Assert.Throws<ArgumentNullException>(() => builder.UsingCustomHash(null!));
         }
@@ -127,7 +127,7 @@ namespace BloomFilterTest
         [Fact]
         public void ChainedCalls_BuildsCorrectFilter()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .WithName("ChainedFilter")
                 .ExpectingElements(10_000_000)
                 .WithErrorRate(0.001)
@@ -141,7 +141,7 @@ namespace BloomFilterTest
         [Fact]
         public void BuildInMemory_FilterFunctionsCorrectly()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .ExpectingElements(1000)
                 .WithErrorRate(0.01)
                 .BuildInMemory();
@@ -158,7 +158,7 @@ namespace BloomFilterTest
         [Fact]
         public void BuildInMemoryWithCapacity_CreatesFilterWithSpecificCapacity()
         {
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .WithName("CapacityFilter")
                 .BuildInMemoryWithCapacity(capacity: 1000, hashes: 5);
 
@@ -169,7 +169,7 @@ namespace BloomFilterTest
         [Fact]
         public void MultipleBuilds_EachBuildIsIndependent()
         {
-            var builder = FluentFilterBuilder.Create()
+            var builder = FilterBuilder.Create()
                 .ExpectingElements(1000)
                 .WithErrorRate(0.01);
 
@@ -187,7 +187,7 @@ namespace BloomFilterTest
         {
             var customSerializer = new DefaultFilterMemorySerializer();
 
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .WithSerializer(customSerializer)
                 .BuildInMemory();
 
@@ -197,7 +197,7 @@ namespace BloomFilterTest
         [Fact]
         public void WithSerializer_Null_ThrowsArgumentNullException()
         {
-            var builder = FluentFilterBuilder.Create();
+            var builder = FilterBuilder.Create();
 
             Assert.Throws<ArgumentNullException>(() => builder.WithSerializer(null!));
         }
@@ -207,7 +207,7 @@ namespace BloomFilterTest
         {
             var customHash = HashFunction.Functions[HashMethod.Murmur3];
 
-            var filter = FluentFilterBuilder.Create()
+            var filter = FilterBuilder.Create()
                 .UsingCustomHash(customHash)
                 .UsingHashMethod(HashMethod.XXHash3) // Should override custom hash
                 .BuildInMemory();
