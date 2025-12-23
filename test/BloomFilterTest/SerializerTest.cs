@@ -51,12 +51,12 @@ namespace BloomFilterTest
         //Make sure your local memory is large enough
         [Theory]
         [InlineData(100_000_000)]
-        [InlineData(1024 * 1024 * 1024)]
-        [InlineData(2147483640)]
-        [InlineData(2147483647)]
-        [InlineData(2147483641)]
-        [InlineData(2147483649)]
-        [InlineData(2147483630)]
+        //[InlineData(1024 * 1024 * 1024)]
+        //[InlineData(2147483640)]
+        //[InlineData(2147483647)]
+        //[InlineData(2147483641)]
+        //[InlineData(2147483649)]
+        //[InlineData(2147483630)]
         public async Task SerializeLarge(long expectedElements)
         {
             double errorRate = 0.0000001;

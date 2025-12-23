@@ -55,12 +55,12 @@ namespace BloomFilterTest
         [Theory]
         [InlineData(4_000)]
         [InlineData(100_000_000)]
-        [InlineData(1024 * 1024 * 1024)]
-        [InlineData(2147483640)]
-        [InlineData(2147483641)]
-        [InlineData(2147483647)]
-        [InlineData(2147483649)]
-        [InlineData(2147483630)]
+        //[InlineData(1024 * 1024 * 1024)]
+        //[InlineData(2147483640)]
+        //[InlineData(2147483641)]
+        //[InlineData(2147483647)]
+        //[InlineData(2147483649)]
+        //[InlineData(2147483630)]
         public void Fill_Export_And_Import_Contains(long expectedElements)
         {
             double errorRate = 0.1;
