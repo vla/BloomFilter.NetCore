@@ -26,12 +26,12 @@ public partial class FilterBuilder
 {
     #region Fluent API - Instance Members
 
-    private string _name = BloomFilterConstValue.DefaultInMemoryName;
-    private long _expectedElements = 1_000_000;
-    private double _errorRate = 0.01;
-    private HashMethod _method = HashMethod.Murmur3;
-    private HashFunction? _customHashFunction;
-    private IFilterMemorySerializer? _customSerializer;
+    protected string _name = BloomFilterConstValue.DefaultInMemoryName;
+    protected long _expectedElements = 1_000_000;
+    protected double _errorRate = 0.01;
+    protected HashMethod _method = HashMethod.Murmur3;
+    protected HashFunction? _customHashFunction;
+    protected IFilterMemorySerializer? _customSerializer;
 
     /// <summary>
     /// Protected constructor for fluent API pattern and inheritance
