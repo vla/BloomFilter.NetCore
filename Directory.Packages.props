@@ -3,33 +3,27 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-
   <ItemGroup>
     <!-- Core Dependencies -->
     <PackageVersion Include="System.Runtime" Version="4.3.1" />
     <PackageVersion Include="System.Memory" Version="4.6.3" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
-
     <!-- Redis Clients -->
-    <PackageVersion Include="StackExchange.Redis" Version="2.9.32" />
+    <PackageVersion Include="StackExchange.Redis" Version="3.1.3" />
     <PackageVersion Include="CSRedisCore" Version="3.8.807" />
-    <PackageVersion Include="FreeRedis" Version="1.5.2" />
-
+    <PackageVersion Include="FreeRedis" Version="1.5.5" />
     <!-- EasyCaching -->
     <PackageVersion Include="EasyCaching.Core" Version="1.9.2" />
     <PackageVersion Include="EasyCaching.CSRedis" Version="1.9.2" />
     <PackageVersion Include="EasyCaching.Serialization.Json" Version="1.9.2" />
-
     <!-- Testing -->
-    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="FluentAssertions" Version="8.10.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-
     <!-- Benchmarking -->
-    <PackageVersion Include="BenchmarkDotNet" Version="0.15.6" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
   </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
